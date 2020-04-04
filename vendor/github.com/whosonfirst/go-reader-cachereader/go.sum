@@ -1,0 +1,10 @@
+github.com/aaronland/go-roster v0.0.1 h1:r1l4n1HfWvEtOXZvhfXX0Won9Xf6QJsigdUdzOtuy/M=
+github.com/aaronland/go-roster v0.0.1/go.mod h1:AcovpxlG1XxJxX2Fjqlm63fEIBhCjEIBV4lP87FZDmI=
+github.com/patrickmn/go-cache v2.1.0+incompatible h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc=
+github.com/patrickmn/go-cache v2.1.0+incompatible/go.mod h1:3Qf8kWWT7OJRJbdiICTKqZju1ZixQ/KpMGzzAfe6+WQ=
+github.com/whosonfirst/go-cache v0.0.2 h1:O6DxFeSkHPSCxmXSmsTX5tXCY8m/FStEPgglR/Z8q5M=
+github.com/whosonfirst/go-cache v0.0.2/go.mod h1:SUK9m5/Dh2WvYGCtlu1Uxo1h+6VUaRra1QHaPSOF+gI=
+github.com/whosonfirst/go-reader v0.0.4 h1:DucfFJB9IY35QU8kzdy8O99Nmn0r/gE7IIBdTg8qyMk=
+github.com/whosonfirst/go-reader v0.0.4/go.mod h1:TNCpgVgg71qA+jhPltXpGum8gTG5TAJYNGTMJmxFZtQ=
+github.com/whosonfirst/go-reader v0.1.1 h1:0fXoYQR/Yyh3PKk+9Huwoc6dCAt8l1tjg2dEShjqcFI=
+github.com/whosonfirst/go-reader v0.1.1/go.mod h1:w0AeU+Ojyfmxb7r+rcSYyxpCxrhxlHv+D9EgEwQsqcM=
