@@ -68,13 +68,15 @@ $> bin/server -h
     	The URL path for the interactive debug endpoint. (default "/debug")
 ```
 
-For example:
+#### Example:
+
+First get some data:
 
 ```
 $> git clone https://github.com/whosonfirst-data/whosonfirst-data-admin-cn.git /usr/local/data/whosonfirst-data-admin-cn
 ```
 
-And then:
+Then index it, and make it available via the HTTP `server` tool on port 8080:
 
 ```
 $> go run -mod vendor cmd/server/main.go \
@@ -89,9 +91,9 @@ $> go run -mod vendor cmd/server/main.go \
 13:58:12.670963 [main] STATUS finished indexing in 1h17m0.812868967s
 ```
 
-See the way it took an hour and seventeen minutes to index 680, 000 records? That's not great, it just _is_ right now.
+See the way it took an hour and seventeen minutes to index 680, 000 records? That's not great, it just _is_ right now. The default spatial index (database) is an in-memory RTree that needs to be populated at start up so the amount of time that takes will depend on the amount of data you have and the constraints of the machine you're working. There is ongoing work to use precompiled (SQLite) spatial indexes but that work isn't complete yet.
 
-And then:
+Finally, start querying the data:
 
 ```
 $> curl 'http://localhost:8080/api/point-in-polygon?latitude=39.509167&longitude=116.410556'
