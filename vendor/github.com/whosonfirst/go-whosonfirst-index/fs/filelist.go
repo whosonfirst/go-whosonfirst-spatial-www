@@ -52,6 +52,8 @@ func (d *FileListDriver) IndexURI(ctx context.Context, index_cb index.IndexerFun
 			return err
 		}
 
+		ctx = index.AssignPathContext(ctx, path)
+
 		err = index_cb(ctx, fh)
 
 		if err != nil {

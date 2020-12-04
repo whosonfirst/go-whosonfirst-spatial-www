@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"io/ioutil"
 )
@@ -54,7 +55,7 @@ func (d *FeatureCollectionDriver) IndexURI(ctx context.Context, index_cb index.I
 		return err
 	}
 
-	for _, f := range collection.Features {
+	for i, f := range collection.Features {
 
 		select {
 		case <-ctx.Done():
@@ -70,6 +71,10 @@ func (d *FeatureCollectionDriver) IndexURI(ctx context.Context, index_cb index.I
 		}
 
 		fh := bytes.NewBuffer(feature)
+
+		path := fmt.Sprintf("%s#%d", uri, i)
+		ctx = index.AssignPathContext(ctx, path)
+
 		err = index_cb(ctx, fh)
 
 		if err != nil {

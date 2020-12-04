@@ -23,10 +23,6 @@ func NewCacheReader(r reader.Reader, c cache.Cache) (reader.Reader, error) {
 	return cr, nil
 }
 
-func (cr *CacheReader) Open(ctx context.Context, uri string) error {
-	return nil
-}
-
 func (cr *CacheReader) Read(ctx context.Context, key string) (io.ReadCloser, error) {
 
 	fh, err := cr.cache.Get(ctx, key)
@@ -52,4 +48,8 @@ func (cr *CacheReader) Read(ctx context.Context, key string) (io.ReadCloser, err
 	}
 
 	return fh, nil
+}
+
+func (cr *CacheReader) URI(key string) string {
+	return cr.reader.URI(key)
 }

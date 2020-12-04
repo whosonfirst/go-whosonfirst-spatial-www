@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"io"
 )
@@ -43,6 +44,8 @@ func (d *GeojsonLDriver) IndexURI(ctx context.Context, index_cb index.IndexerFun
 	reader := bufio.NewReader(fh)
 	raw := bytes.NewBuffer([]byte(""))
 
+	i := 0
+
 	for {
 
 		select {
@@ -51,6 +54,9 @@ func (d *GeojsonLDriver) IndexURI(ctx context.Context, index_cb index.IndexerFun
 		default:
 			// pass
 		}
+
+		path := fmt.Sprintf("%s#%d", uri, i)
+		i += 1
 
 		fragment, is_prefix, err := reader.ReadLine()
 
@@ -70,6 +76,7 @@ func (d *GeojsonLDriver) IndexURI(ctx context.Context, index_cb index.IndexerFun
 
 		fh := bytes.NewReader(raw.Bytes())
 
+		ctx = index.AssignPathContext(ctx, path)
 		err = index_cb(ctx, fh)
 
 		if err != nil {

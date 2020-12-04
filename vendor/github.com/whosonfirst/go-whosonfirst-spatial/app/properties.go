@@ -2,6 +2,7 @@ package app
 
 import (
 	_ "github.com/whosonfirst/go-reader-http"
+	_ "github.com/whosonfirst/go-reader-whosonfirst-data"	
 )
 
 import (
