@@ -1,4 +1,4 @@
-package spatial
+package rtree
 
 import (
 	"context"

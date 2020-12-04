@@ -1,10 +1,6 @@
 package app
 
 import (
-	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/spatial"
-)
-
-import (
 	"context"
 	"flag"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"

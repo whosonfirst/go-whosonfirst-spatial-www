@@ -93,11 +93,11 @@ github.com/whosonfirst/go-whosonfirst-reader
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.2
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.3
 github.com/whosonfirst/go-whosonfirst-spatial/app
 github.com/whosonfirst/go-whosonfirst-spatial/cache
 github.com/whosonfirst/go-whosonfirst-spatial/database
-github.com/whosonfirst/go-whosonfirst-spatial/database/spatial
+github.com/whosonfirst/go-whosonfirst-spatial/database/rtree
 github.com/whosonfirst/go-whosonfirst-spatial/filter
 github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo

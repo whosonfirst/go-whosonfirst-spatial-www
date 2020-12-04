@@ -154,7 +154,7 @@ func staticJavascriptWhosonfirstSpatialApiJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.api.js", size: 1555, mode: os.FileMode(420), modTime: time.Unix(1585871200, 0)}
+	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.api.js", size: 1555, mode: os.FileMode(420), modTime: time.Unix(1586216485, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -174,7 +174,7 @@ func staticJavascriptWhosonfirstSpatialInitJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.init.js", size: 167, mode: os.FileMode(420), modTime: time.Unix(1585872954, 0)}
+	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.init.js", size: 167, mode: os.FileMode(420), modTime: time.Unix(1586203532, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -214,7 +214,7 @@ func staticJavascriptWhosonfirstSpatialPipInitJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.pip.init.js", size: 4642, mode: os.FileMode(420), modTime: time.Unix(1585954725, 0)}
+	info := bindataFileInfo{name: "static/javascript/whosonfirst.spatial.pip.init.js", size: 4642, mode: os.FileMode(420), modTime: time.Unix(1586203611, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

@@ -14,6 +14,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/www"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
+	_ "github.com/whosonfirst/go-whosonfirst-index/fs"		
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
 	"log"
@@ -70,7 +72,7 @@ func main() {
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Failed to create new spatial application, because %s", err))
+		log.Fatal(fmt.Sprintf("Failed to create new spatial application, because: %v", err))
 	}
 
 	logger := spatial_app.Logger
