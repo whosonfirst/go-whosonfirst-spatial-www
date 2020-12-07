@@ -5,13 +5,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/aaronland/go-http-server"	
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/www"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
@@ -20,7 +20,6 @@ import (
 	"html/template"
 	"log"
 	gohttp "net/http"
-	gourl "net/url"
 )
 
 func main() {
@@ -65,10 +64,13 @@ func main() {
 
 	data_endpoint, _ := flags.StringVar(fs, "data-endpoint")
 
+	// REPLACE ALL OF THIS WITH PLAIN VANILLA -server-uri FLAG
+	
 	host, _ := flags.StringVar(fs, "host")
 	port, _ := flags.IntVar(fs, "port")
-	proto := "http" // FIX ME
 
+	server_uri := fmt.Sprintf("http://%s:%d", host, port)
+	
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
@@ -217,23 +219,15 @@ func main() {
 		mux.Handle("/point-in-polygon", www_pip_handler)
 	}
 
-	address := fmt.Sprintf("spatial://%s:%d", host, port)
-
-	u, err := gourl.Parse(address)
+	s, err := server.NewServer(ctx, server_uri)
 
 	if err != nil {
-		logger.Fatal("Failed to parse address '%s', %v", address, err)
-	}
-
-	s, err := server.NewStaticServer(proto, u)
-
-	if err != nil {
-		logger.Fatal("Failed to create new server for '%s' (%s), %v", u, proto, err)
+		logger.Fatal("Failed to create new server for '%s', %v", server_uri, err)
 	}
 
 	logger.Info("Listening on %s", s.Address())
 
-	err = s.ListenAndServe(mux)
+	err = s.ListenAndServe(ctx, mux)
 
 	if err != nil {
 		logger.Fatal("Failed to start server, %v", err)

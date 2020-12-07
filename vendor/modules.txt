@@ -7,6 +7,8 @@ github.com/aaronland/go-http-leaflet
 github.com/aaronland/go-http-rewrite
 # github.com/aaronland/go-http-sanitize v0.0.4
 github.com/aaronland/go-http-sanitize
+# github.com/aaronland/go-http-server v0.0.5
+github.com/aaronland/go-http-server
 # github.com/aaronland/go-http-tangramjs v0.0.7
 github.com/aaronland/go-http-tangramjs
 # github.com/aaronland/go-roster v0.0.2
@@ -93,7 +95,7 @@ github.com/whosonfirst/go-whosonfirst-reader
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.3
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.4
 github.com/whosonfirst/go-whosonfirst-spatial/app
 github.com/whosonfirst/go-whosonfirst-spatial/cache
 github.com/whosonfirst/go-whosonfirst-spatial/database
