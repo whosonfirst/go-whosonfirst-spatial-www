@@ -6,6 +6,8 @@ import (
 	"context"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
+	_ "github.com/whosonfirst/go-whosonfirst-index/fs"	
 	"log"
 )
 

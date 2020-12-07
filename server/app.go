@@ -8,13 +8,11 @@ import (
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
-	_ "github.com/whosonfirst/go-whosonfirst-index/fs"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/www"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
-	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
 	"log"
@@ -35,13 +33,13 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 	fs, err := flags.CommonFlags()
 
 	if err != nil {
-		return nil
+		return fmt.Errorf("Failed to instantiate common flags, %v", err)
 	}
 
 	err = flags.AppendWWWFlags(fs)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to append www flags, %v", err)
 	}
 
 	flags.Parse(fs)
@@ -54,13 +52,13 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	err := flags.ValidateCommonFlags(fs)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to validate common flags, %v", err)
 	}
 
 	err = flags.ValidateWWWFlags(fs)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to validate www flags, %v", err)		
 	}
 
 	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
