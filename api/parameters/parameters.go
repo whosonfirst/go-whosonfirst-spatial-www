@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/aaronland/go-http-sanitize"
 	"github.com/skelterjohn/geom"
-	geojson_utils "github.com/whosonfirst/go-whosonfirst-geojson-v2/utils"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"net/http"
 	"strconv"
@@ -75,13 +74,7 @@ func Coordinate(req *http.Request) (*geom.Coord, error) {
 		return nil, err
 	}
 
-	coord, err := geojson_utils.NewCoordinateFromLatLons(lat, lon)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &coord, err
+	return geo.NewCoordinate(lon, lat)
 }
 
 func Properties(req *http.Request) ([]string, error) {
