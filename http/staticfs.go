@@ -13,7 +13,7 @@
 // static/css/whosonfirst.spatial.pip.css
 // DO NOT EDIT!
 
-package www
+package http
 
 import (
 	"github.com/whosonfirst/go-bindata-assetfs"

@@ -1,5 +1,8 @@
 package server
 
+// This is a first-cut at making the core application in to an extensible
+// package - it is likely that it will change (20201207/thisisaaronland)
+
 import (
 	"context"
 	"flag"
@@ -11,7 +14,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/www"
+	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
@@ -206,13 +209,13 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = www.AppendStaticAssetHandlers(mux)
+		err = http.AppendStaticAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append static assets, %v", err)
 		}
 
-		www_pip_opts := &www.PointInPolygonHandlerOptions{
+		http_pip_opts := &http.PointInPolygonHandlerOptions{
 			Templates:        t,
 			InitialLatitude:  initial_lat,
 			InitialLongitude: initial_lon,
@@ -220,16 +223,16 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			DataEndpoint:     data_endpoint,
 		}
 
-		www_pip_handler, err := www.PointInPolygonHandler(spatial_app, www_pip_opts)
+		http_pip_handler, err := http.PointInPolygonHandler(spatial_app, http_pip_opts)
 
 		if err != nil {
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		www_pip_handler = bootstrap.AppendResourcesHandler(www_pip_handler, bootstrap_opts)
-		www_pip_handler = tangramjs.AppendResourcesHandler(www_pip_handler, tangramjs_opts)
+		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
+		http_pip_handler = tangramjs.AppendResourcesHandler(http_pip_handler, tangramjs_opts)
 
-		mux.Handle("/point-in-polygon", www_pip_handler)
+		mux.Handle("/point-in-polygon", http_pip_handler)
 	}
 
 	s, err := server.NewServer(ctx, server_uri)
