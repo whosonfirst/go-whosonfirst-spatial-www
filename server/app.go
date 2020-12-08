@@ -81,8 +81,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	data_endpoint, _ := flags.StringVar(fs, "data-endpoint")
 
-	// REPLACE ALL OF THIS WITH PLAIN VANILLA -server-uri FLAG
-
 	server_uri, _ := flags.StringVar(fs, "server-uri")
 
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
