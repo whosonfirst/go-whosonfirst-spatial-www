@@ -2,7 +2,7 @@ package flags
 
 import (
 	"flag"
-	"github.com/aaronland/go-http-tangramjs"	
+	"github.com/aaronland/go-http-tangramjs"
 )
 
 func AppendWWWFlags(fs *flag.FlagSet) error {
@@ -26,8 +26,6 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.Float64("initial-latitude", 37.616906, "...")
 	fs.Float64("initial-longitude", -122.386665, "...")
 	fs.Int("initial-zoom", 13, "...")
-
-	fs.String("data-endpoint", "https://data.whosonfirst.org", "...")
 
 	return nil
 }

@@ -13,9 +13,9 @@ import (
 	"github.com/rs/cors"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
+	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
-	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"	
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
@@ -59,10 +59,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to validate common flags, %v", err)
 	}
 
-	err = flags.ValidateWWWFlags(fs)
+	err = http_flags.ValidateWWWFlags(fs)
 
 	if err != nil {
-		return fmt.Errorf("Failed to validate www flags, %v", err)		
+		return fmt.Errorf("Failed to validate www flags, %v", err)
 	}
 
 	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")

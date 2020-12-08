@@ -1,13 +1,13 @@
 package main
 
-// go run -mod vendor cmd/spatial-server/main.go -enable-www -mode repo:// /usr/local/data/sfomuseum-data-maps/
-
 import (
 	"context"
+	_ "github.com/whosonfirst/go-whosonfirst-index/fs"
+	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-reader"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	_ "github.com/whosonfirst/go-whosonfirst-spatial/database/rtree"
-	_ "github.com/whosonfirst/go-whosonfirst-index/fs"	
 	"log"
 )
 
@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = flags.AppendWWWFlags(fs)
+	err = http_flags.AppendWWWFlags(fs)
 
 	if err != nil {
 		log.Fatal(err)
