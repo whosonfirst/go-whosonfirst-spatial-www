@@ -15,6 +15,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
+	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"	
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
@@ -39,7 +40,7 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 		return fmt.Errorf("Failed to instantiate common flags, %v", err)
 	}
 
-	err = flags.AppendWWWFlags(fs)
+	err = http_flags.AppendWWWFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to append www flags, %v", err)
@@ -82,10 +83,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	// REPLACE ALL OF THIS WITH PLAIN VANILLA -server-uri FLAG
 
-	host, _ := flags.StringVar(fs, "host")
-	port, _ := flags.IntVar(fs, "port")
-
-	server_uri := fmt.Sprintf("http://%s:%d", host, port)
+	server_uri, _ := flags.StringVar(fs, "server-uri")
 
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
