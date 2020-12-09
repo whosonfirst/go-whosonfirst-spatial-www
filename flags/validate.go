@@ -26,7 +26,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	fs.Set("enable-properties", "true")
 	fs.Set("enable-candidates", "true")
 
-	properties_reader_uri, err := StringVar(fs, "properties-reader-uri")
+	properties_reader_uri, err := spatial_flags.StringVar(fs, "properties-reader-uri")
 
 	if err != nil {
 		return err

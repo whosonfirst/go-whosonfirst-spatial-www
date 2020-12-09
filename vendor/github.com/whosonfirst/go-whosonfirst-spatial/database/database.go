@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"github.com/aaronland/go-roster"
 	"github.com/skelterjohn/geom"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
@@ -9,13 +10,14 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
+	"sort"
 )
 
 type SpatialDatabase interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
-	PointInPolygon(context.Context, *geom.Coord, filter.Filter) (spr.StandardPlacesResults, error)
+	PointInPolygon(context.Context, *geom.Coord, ...filter.Filter) (spr.StandardPlacesResults, error)
 	PointInPolygonCandidates(context.Context, *geom.Coord) (*geojson.GeoJSONFeatureCollection, error)
-	PointInPolygonWithChannels(context.Context, *geom.Coord, filter.Filter, chan spr.StandardPlacesResult, chan error, chan bool)
+	PointInPolygonWithChannels(context.Context, chan spr.StandardPlacesResult, chan error, chan bool, *geom.Coord, ...filter.Filter)
 	PointInPolygonCandidatesWithChannels(context.Context, *geom.Coord, chan geojson.GeoJSONFeature, chan error, chan bool)
 	StandardPlacesResultsToFeatureCollection(context.Context, spr.StandardPlacesResults) (*geojson.GeoJSONFeatureCollection, error)
 	Close(context.Context) error
@@ -50,6 +52,20 @@ func RegisterSpatialDatabase(ctx context.Context, scheme string, f SpatialDataba
 	}
 
 	return spatial_databases.Register(ctx, scheme, f)
+}
+
+func Schemes() []string {
+
+	ctx := context.Background()
+	schemes := []string{}
+
+	for _, dr := range spatial_databases.Drivers(ctx) {
+		scheme := fmt.Sprintf("%s://", dr)
+		schemes = append(schemes, scheme)
+	}
+
+	sort.Strings(schemes)
+	return schemes
 }
 
 func NewSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, error) {

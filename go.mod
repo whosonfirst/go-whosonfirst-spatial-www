@@ -14,6 +14,7 @@ require (
 	github.com/whosonfirst/go-bindata-assetfs v1.0.1
 	github.com/whosonfirst/go-whosonfirst-index v0.3.2
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.2.4
-	github.com/whosonfirst/go-whosonfirst-spatial v0.0.4
+	github.com/whosonfirst/go-whosonfirst-spatial v0.0.6
+	github.com/whosonfirst/go-whosonfirst-spatial-mock v0.0.0-20201209170405-9f66da3e56a9
 	github.com/whosonfirst/go-whosonfirst-spr v0.1.0
 )

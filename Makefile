@@ -22,7 +22,7 @@ bake-templates:
 
 debug:
 	@make bake
-	go run -mod vendor cmd/server/main.go -enable-www -enable-properties -spatial-database-uri 'rtree:///?strict=false' -properties-reader-uri 'whosonfirst:///?reader=whosonfirst-data://&cache=gocache://' -nextzen-apikey $(APIKEY) -mode directory:// $(REPO)/data
+	go run -mod vendor cmd/server/main.go -enable-www -enable-properties -spatial-database-uri 'mock:///?strict=false' -properties-reader-uri 'mock://' -nextzen-apikey $(APIKEY) -mode directory:// $(REPO)/data
 
 tools:
 	go build -mod vendor -o bin/server cmd/server/main.go

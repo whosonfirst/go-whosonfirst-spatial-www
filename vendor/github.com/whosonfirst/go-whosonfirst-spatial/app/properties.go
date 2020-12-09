@@ -1,11 +1,6 @@
 package app
 
 import (
-	_ "github.com/whosonfirst/go-reader-http"
-	_ "github.com/whosonfirst/go-reader-whosonfirst-data"
-)
-
-import (
 	"context"
 	"flag"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"

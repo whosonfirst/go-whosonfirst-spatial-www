@@ -2,11 +2,13 @@ package properties
 
 import (
 	"context"
+	"fmt"
 	"github.com/aaronland/go-roster"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
+	"sort"
 )
 
 type PropertiesResponse map[string]interface{}
@@ -51,6 +53,20 @@ func RegisterPropertiesReader(ctx context.Context, scheme string, f PropertiesRe
 	}
 
 	return properties_readers.Register(ctx, scheme, f)
+}
+
+func Schemes() []string {
+
+	ctx := context.Background()
+	schemes := []string{}
+
+	for _, dr := range properties_readers.Drivers(ctx) {
+		scheme := fmt.Sprintf("%s://", dr)
+		schemes = append(schemes, scheme)
+	}
+
+	sort.Strings(schemes)
+	return schemes
 }
 
 func NewPropertiesReader(ctx context.Context, uri string) (PropertiesReader, error) {
