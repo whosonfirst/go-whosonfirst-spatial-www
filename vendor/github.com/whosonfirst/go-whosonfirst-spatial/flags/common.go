@@ -61,7 +61,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.Bool("setenv", false, "Set flags from environment variables.")
 	fs.Bool("verbose", false, "Be chatty.")
-	fs.Bool("strict", false, "Be strict about flags and fail if any are missing or deprecated flags are used.")
 
 	return fs, nil
 }

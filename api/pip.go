@@ -77,6 +77,11 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			return
 		}
 
+		if results == nil {
+			http.Error(rsp, "Unable to yield results", http.StatusInternalServerError)
+			return
+		}
+		
 		var final interface{}
 		final = results
 
@@ -90,6 +95,11 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 				return
 			}
 
+			if collection == nil {
+				http.Error(rsp, "Unable to yield GeoJSON results", http.StatusInternalServerError)
+				return				
+			}
+			
 			err = properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
 
 			if err != nil {

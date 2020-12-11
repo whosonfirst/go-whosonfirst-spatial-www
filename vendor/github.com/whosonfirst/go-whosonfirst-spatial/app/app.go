@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"flag"
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
@@ -30,25 +31,25 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 	spatial_db, err := NewSpatialDatabaseWithFlagSet(ctx, fl)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed instantiate spatial database, %v", err)
 	}
 
 	properties_r, err := NewPropertiesReaderWithFlagSet(ctx, fl)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to instantiate properties reader, %v", err)
 	}
 
 	walker, err := NewWalkerWithFlagSet(ctx, fl, spatial_db, properties_r)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to instantiate indexer, %v", err)
 	}
 
 	err = AppendCustomPlacetypesWithFlagSet(ctx, fl)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to append custom placetypes, %v", err)
 	}
 
 	sp := SpatialApplication{

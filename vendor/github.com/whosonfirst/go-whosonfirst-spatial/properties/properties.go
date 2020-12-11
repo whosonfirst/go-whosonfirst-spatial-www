@@ -9,6 +9,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
 	"sort"
+	"strings"
 )
 
 type PropertiesResponse map[string]interface{}
@@ -60,8 +61,14 @@ func Schemes() []string {
 	ctx := context.Background()
 	schemes := []string{}
 
+	err := ensurePropertiesRoster()
+
+	if err != nil {
+		return schemes
+	}
+
 	for _, dr := range properties_readers.Drivers(ctx) {
-		scheme := fmt.Sprintf("%s://", dr)
+		scheme := fmt.Sprintf("%s://", strings.ToLower(dr))
 		schemes = append(schemes, scheme)
 	}
 
