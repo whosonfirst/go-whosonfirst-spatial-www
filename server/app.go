@@ -18,6 +18,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	"github.com/NYTimes/gziphandler"
 	"html/template"
 	"log"
 	gohttp "net/http"
@@ -110,6 +111,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	mux.Handle("/health/ping", ping_handler)
 
 	enable_cors := true
+	enable_gzip := true
+	
 	cors_origins := []string{"*"}
 
 	var cors_wrapper *cors.Cors
@@ -135,6 +138,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		api_pip_handler = cors_wrapper.Handler(api_pip_handler)
 	}
 
+	if enable_gzip {
+		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
+	}
+	
 	mux.Handle("/api/point-in-polygon", api_pip_handler)
 
 	if enable_candidates {

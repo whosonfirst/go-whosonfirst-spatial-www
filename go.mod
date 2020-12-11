@@ -3,6 +3,7 @@ module github.com/whosonfirst/go-whosonfirst-spatial-http
 go 1.12
 
 require (
+	github.com/NYTimes/gziphandler v1.1.1
 	github.com/aaronland/go-http-bootstrap v0.0.6
 	github.com/aaronland/go-http-rewrite v0.0.6
 	github.com/aaronland/go-http-sanitize v0.0.4
