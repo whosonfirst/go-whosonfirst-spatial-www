@@ -27,8 +27,8 @@ func main() {
 	}
 
 	fs.Set("database-uri", "mock://")
-	fs.Set("properties-reader-uri", "mock://")	
-	
+	fs.Set("properties-reader-uri", "mock://")
+
 	flags.Parse(fs)
 
 	app, err := server.NewHTTPServerApplication(ctx)

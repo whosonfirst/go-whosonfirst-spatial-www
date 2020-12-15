@@ -1,10 +1,10 @@
 package properties
 
 import (
-	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
+	"github.com/paulmach/go.geojson"
 )
 
 type ChannelResponse struct {
 	Index   int
-	Feature geojson.GeoJSONFeature
+	Feature *geojson.Feature
 }

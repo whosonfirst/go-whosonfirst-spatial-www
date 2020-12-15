@@ -7,6 +7,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
@@ -18,7 +19,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"github.com/NYTimes/gziphandler"
 	"html/template"
 	"log"
 	gohttp "net/http"
@@ -112,7 +112,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	enable_cors := true
 	enable_gzip := true
-	
+
 	cors_origins := []string{"*"}
 
 	var cors_wrapper *cors.Cors
@@ -141,7 +141,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	if enable_gzip {
 		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
 	}
-	
+
 	mux.Handle("/api/point-in-polygon", api_pip_handler)
 
 	if enable_candidates {

@@ -81,7 +81,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			http.Error(rsp, "Unable to yield results", http.StatusInternalServerError)
 			return
 		}
-		
+
 		var final interface{}
 		final = results
 
@@ -97,28 +97,34 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 			if collection == nil {
 				http.Error(rsp, "Unable to yield GeoJSON results", http.StatusInternalServerError)
-				return				
-			}
-			
-			err = properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
-
-			if err != nil {
-				http.Error(rsp, err.Error(), http.StatusInternalServerError)
 				return
+			}
+
+			if len(properties_paths) > 0 {
+
+				err = properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
+
+				if err != nil {
+					http.Error(rsp, err.Error(), http.StatusInternalServerError)
+					return
+				}
 			}
 
 			final = collection
 
 		case "properties":
 
-			props, err := properties_r.PropertiesResponseResultsWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
+			if len(properties_paths) > 0 {
 
-			if err != nil {
-				http.Error(rsp, err.Error(), http.StatusInternalServerError)
-				return
+				props, err := properties_r.PropertiesResponseResultsWithStandardPlacesResults(ctx, final.(spr.StandardPlacesResults), properties_paths)
+
+				if err != nil {
+					http.Error(rsp, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				final = props
 			}
-
-			final = props
 
 		default:
 			// spr (above)

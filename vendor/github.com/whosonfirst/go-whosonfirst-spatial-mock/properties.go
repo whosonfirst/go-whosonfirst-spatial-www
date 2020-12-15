@@ -3,9 +3,9 @@ package mock
 import (
 	"context"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	spatial_properties "github.com/whosonfirst/go-whosonfirst-spatial/properties"
 	"github.com/whosonfirst/go-whosonfirst-spr"
+	"github.com/paulmach/go.geojson"	
 )
 
 type MockPropertiesReader struct {
@@ -30,7 +30,7 @@ func (pr *MockPropertiesReader) PropertiesResponseResultsWithStandardPlacesResul
 	return nil, nil
 }
 
-func (pr *MockPropertiesReader) AppendPropertiesWithFeatureCollection(ctx context.Context, fc *geojson.GeoJSONFeatureCollection, properties []string) error {
+func (pr *MockPropertiesReader) AppendPropertiesWithFeatureCollection(ctx context.Context, fc *geojson.FeatureCollection, properties []string) error {
 	return nil
 }
 

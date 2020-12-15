@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/aaronland/go-roster"
+	"github.com/paulmach/go.geojson"
 	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-spatial/geojson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"net/url"
 	"sort"
@@ -21,7 +21,7 @@ type PropertiesResponseResults struct {
 type PropertiesReader interface {
 	IndexFeature(context.Context, wof_geojson.Feature) error
 	PropertiesResponseResultsWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) (*PropertiesResponseResults, error)
-	AppendPropertiesWithFeatureCollection(context.Context, *geojson.GeoJSONFeatureCollection, []string) error
+	AppendPropertiesWithFeatureCollection(context.Context, *geojson.FeatureCollection, []string) error
 	Close(context.Context) error
 }
 
