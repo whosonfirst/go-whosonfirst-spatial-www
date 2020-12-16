@@ -82,7 +82,7 @@ window.addEventListener("load", function load(event){
 	var args = {
 	    'latitude': pos['lat'],
 	    'longitude': pos['lng'],
-	    'format': 'geojson',
+	    // 'format': 'geojson',
 	};
 	
 	var properties = [];
@@ -140,6 +140,8 @@ window.addEventListener("load", function load(event){
 	var on_success = function(rsp){
 
 	    layers.clearLayers();
+
+	    // FIX ME...
 	    
 	    var l = L.geoJSON(rsp, {
 		style: function(feature){
@@ -152,7 +154,7 @@ window.addEventListener("load", function load(event){
 
 	    //
 	    
-	    var features = rsp["features"];
+	    var places = rsp["places"];
 
 	    var table_props = whosonfirst.spatial.pip.default_properties();
 
@@ -162,7 +164,7 @@ window.addEventListener("load", function load(event){
 		table_props[properties[i]] = "";
 	    }
 	    
-	    var table = whosonfirst.spatial.pip.render_properties_table(features, table_props);
+	    var table = whosonfirst.spatial.pip.render_properties_table(places, table_props);
 	    
 	    var matches = document.getElementById("pip-matches");
 	    matches.innerHTML = "";

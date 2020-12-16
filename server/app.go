@@ -252,6 +252,15 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		}
 
 		data_handler := data.WhosOnFirstDataHandler(data_reader)
+
+		if enable_cors {
+			data_handler = cors_wrapper.Handler(data_handler)
+	}
+		
+		if enable_gzip {
+			data_handler = gziphandler.GzipHandler(data_handler)
+		}
+		
 		mux.Handle("/data", data_handler)		
 	}
 	

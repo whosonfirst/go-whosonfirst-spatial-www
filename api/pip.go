@@ -12,7 +12,6 @@ import (
 )
 
 type PointInPolygonHandlerOptions struct {
-	EnableGeoJSON    bool
 	EnableProperties bool
 }
 
@@ -43,11 +42,6 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		if str_format == "geojson" && !opts.EnableGeoJSON {
-			http.Error(rsp, "Invalid format", http.StatusBadRequest)
 			return
 		}
 
@@ -86,32 +80,6 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		final = results
 
 		switch str_format {
-		case "geojson":
-
-			collection, err := spatial_db.StandardPlacesResultsToFeatureCollection(ctx, results)
-
-			if err != nil {
-				http.Error(rsp, err.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			if collection == nil {
-				http.Error(rsp, "Unable to yield GeoJSON results", http.StatusInternalServerError)
-				return
-			}
-
-			if len(properties_paths) > 0 {
-
-				err = properties_r.AppendPropertiesWithFeatureCollection(ctx, collection, properties_paths)
-
-				if err != nil {
-					http.Error(rsp, err.Error(), http.StatusInternalServerError)
-					return
-				}
-			}
-
-			final = collection
-
 		case "properties":
 
 			if len(properties_paths) > 0 {
