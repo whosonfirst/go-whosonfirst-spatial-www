@@ -12,6 +12,8 @@ import (
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
+	"github.com/whosonfirst/go-http-whosonfirst-data"		
+	"github.com/whosonfirst/go-reader"	
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
@@ -66,11 +68,15 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to validate www flags, %v", err)
 	}
 
-	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
+	// enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
+	
 	enable_properties, _ := flags.BoolVar(fs, "enable-properties")
 	enable_www, _ := flags.BoolVar(fs, "enable-www")
 	enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
 
+	enable_data, _ := flags.BoolVar(fs, "enable-data")
+	data_reader_uri, _ := flags.StringVar(fs, "data-reader-uri")
+	
 	path_templates, _ := flags.StringVar(fs, "path-templates")
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
@@ -124,7 +130,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}
 
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
-		EnableGeoJSON:    enable_geojson,
 		EnableProperties: enable_properties,
 	}
 
@@ -238,6 +243,18 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		mux.Handle("/point-in-polygon", http_pip_handler)
 	}
 
+	if enable_data {
+		
+		data_reader, err := reader.NewReader(ctx, data_reader_uri)
+
+		if err != nil {
+			return fmt.Errorf("Failed to create new data reader, %v", err)
+		}
+
+		data_handler := data.WhosOnFirstDataHandler(data_reader)
+		mux.Handle("/data", data_handler)		
+	}
+	
 	s, err := server.NewServer(ctx, server_uri)
 
 	if err != nil {
