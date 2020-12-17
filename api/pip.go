@@ -3,21 +3,21 @@ package api
 import (
 	"encoding/json"
 	"github.com/aaronland/go-http-sanitize"
+	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api/output"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api/parameters"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
-	"github.com/whosonfirst/go-reader"		
 	_ "log"
 	"net/http"
 )
 
 type PointInPolygonHandlerOptions struct {
-	EnableGeoJSON bool
+	EnableGeoJSON    bool
 	EnableProperties bool
-	GeoJSONReader reader.Reader
+	GeoJSONReader    reader.Reader
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (http.Handler, error) {
@@ -54,7 +54,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			http.Error(rsp, "GeoJSON formatting is disabled.", http.StatusBadRequest)
 			return
 		}
-		
+
 		if str_format == "properties" && !opts.EnableProperties {
 			http.Error(rsp, "Properties formatting is disabled.", http.StatusBadRequest)
 			return
@@ -87,24 +87,24 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		}
 
 		rsp.Header().Set("Content-Type", "application/json")
-		
+
 		var final interface{}
 		final = results
-		
+
 		enc := json.NewEncoder(rsp)
-		
+
 		switch str_format {
 		case "geojson":
 
 			err := geojson.AsFeatureCollection(ctx, results, opts.GeoJSONReader, rsp)
-			
+
 			if err != nil {
 				http.Error(rsp, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
 			return
-			
+
 		case "properties":
 
 			if len(properties_paths) > 0 {

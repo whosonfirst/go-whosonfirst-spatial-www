@@ -13,7 +13,7 @@ require (
 	github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 	github.com/whosonfirst/go-bindata v0.1.0
 	github.com/whosonfirst/go-bindata-assetfs v1.0.1
-	github.com/whosonfirst/go-http-whosonfirst-data v0.1.0
+	github.com/whosonfirst/go-http-whosonfirst-data v0.1.0 // indirect
 	github.com/whosonfirst/go-reader v0.2.0
 	github.com/whosonfirst/go-whosonfirst-index v0.3.2
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.2.4
