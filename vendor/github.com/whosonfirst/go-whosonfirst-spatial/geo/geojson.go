@@ -1,33 +1,14 @@
 package geo
 
 import (
-	"github.com/paulmach/go.geojson"
 	"github.com/skelterjohn/geom"
 )
 
-func GeoJSONFeatureContainsCoord(f *geojson.Feature, c *geom.Coord) bool {
-
-	return GeoJSONGeometryContainsCoord(f.Geometry, c)
-}
-
-func GeoJSONGeometryContainsCoord(geom *geojson.Geometry, c *geom.Coord) bool {
-
-	if geom.IsMultiPolygon() {
-		return GeoJSONMultiPolygonContainsCoord(geom.MultiPolygon, c)
-	}
-
-	if geom.IsPolygon() {
-		return GeoJSONPolygonContainsCoord(geom.Polygon, c)
-	}
-
-	return false
-}
-
-func GeoJSONMultiPolygonContainsCoord(multi [][][][]float64, c *geom.Coord) bool {
+func MultiPolygonContainsCoord(multi [][][][]float64, c *geom.Coord) bool {
 
 	for _, poly := range multi {
 
-		if GeoJSONPolygonContainsCoord(poly, c) {
+		if PolygonContainsCoord(poly, c) {
 			return true
 		}
 	}
@@ -35,7 +16,7 @@ func GeoJSONMultiPolygonContainsCoord(multi [][][][]float64, c *geom.Coord) bool
 	return false
 }
 
-func GeoJSONPolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
+func PolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
 
 	count := len(poly)
 
@@ -47,7 +28,7 @@ func GeoJSONPolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
 
 	exterior_ring := poly[0]
 
-	if !GeoJSONRingContainsCoord(exterior_ring, c) {
+	if !RingContainsCoord(exterior_ring, c) {
 		return false
 	}
 
@@ -57,7 +38,7 @@ func GeoJSONPolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
 
 		for _, interior_ring := range poly {
 
-			if GeoJSONRingContainsCoord(interior_ring, c) {
+			if RingContainsCoord(interior_ring, c) {
 				return false
 			}
 		}
@@ -66,7 +47,7 @@ func GeoJSONPolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
 	return true
 }
 
-func GeoJSONRingContainsCoord(ring [][]float64, c *geom.Coord) bool {
+func RingContainsCoord(ring [][]float64, c *geom.Coord) bool {
 
 	polygon := geom.Polygon{}
 

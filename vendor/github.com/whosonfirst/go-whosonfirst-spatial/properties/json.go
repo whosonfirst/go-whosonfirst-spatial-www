@@ -21,7 +21,13 @@ func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte,
 
 			e = strings.Replace(e, "*", "", -1)
 
-			props := gjson.GetBytes(source, "properties")
+			var props gjson.Result
+
+			if prefix != "" {
+				props = gjson.GetBytes(source, ".")
+			} else {
+				props = gjson.ParseBytes(source)
+			}
 
 			for k, _ := range props.Map() {
 
@@ -36,7 +42,12 @@ func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte,
 
 		for _, p := range paths {
 
-			get_path := fmt.Sprintf("properties.%s", p)
+			get_path := p
+
+			if prefix != "" {
+				get_path = fmt.Sprintf("%s.%s", prefix, get_path)
+			}
+
 			set_path := p
 
 			if prefix != "" {

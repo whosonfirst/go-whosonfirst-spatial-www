@@ -3,11 +3,11 @@ package mock
 import (
 	"context"
 	"github.com/skelterjohn/geom"
+	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-spr"
-	"github.com/paulmach/go.geojson"	
 )
 
 func init() {
@@ -19,7 +19,7 @@ type MockSpatialDatabase struct {
 	database.SpatialDatabase
 }
 
-func NewMockSpatialDatabase(ctx context.Context, uri string) (database.SpatialDatabase, error){
+func NewMockSpatialDatabase(ctx context.Context, uri string) (database.SpatialDatabase, error) {
 	db := &MockSpatialDatabase{}
 	return db, nil
 }
@@ -40,10 +40,10 @@ func (db *MockSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, r
 	return
 }
 
-func (db *MockSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *geom.Coord) (*geojson.FeatureCollection, error) {
+func (db *MockSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *geom.Coord, filters ...filter.Filter) ([]*spatial.PointInPolygonCandidate, error) {
 	return nil, nil
 }
 
-func (db *MockSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, coord *geom.Coord, rsp_ch chan *geojson.Feature, err_ch chan error, done_ch chan bool) {
+func (db *MockSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, rsp_ch chan *spatial.PointInPolygonCandidate, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...filter.Filter) {
 	return
 }
