@@ -83,6 +83,8 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/rs/cors v1.7.0 h1:+88SsELBHx5r+hZ8TCkggzSstaWNbDvThkVK8H6f9ik=
 github.com/rs/cors v1.7.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
+github.com/sfomuseum/go-flags v0.4.2 h1:sDSvp0c4QZKf3pNUcpfIwshAu9U6sjsNEopmPfC329U=
+github.com/sfomuseum/go-flags v0.4.2/go.mod h1:54KCZIGmvZkIOrSCHSNMvgSTKH2gJRJyISH+AiI+55w=
 github.com/shaxbee/go-spatialite v0.0.0-20180425212100-9b4c81899e0e/go.mod h1:tRDdwai9gBsMVwqexZx2+O5F9QY49MxJFo1zlI/MdkU=
 github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5 h1:qQF/q/+xaKD4CAVz3zfuvpij8U4ihSGIhHfOROI4NFc=
 github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5/go.mod h1:w8cQIijHlvvZM7afYlixPThHAdD+AkRFw3Mb9yQ2Y+I=
@@ -154,6 +156,8 @@ github.com/whosonfirst/go-whosonfirst-crawl v0.2.1/go.mod h1:MTD1TCgAkXlAtysPU98
 github.com/whosonfirst/go-whosonfirst-csv v0.1.0/go.mod h1:jhAZLURSWJN7mEpdQeXeSQnmLJq+FkTL2Q32iV0170I=
 github.com/whosonfirst/go-whosonfirst-flags v0.1.0 h1:llb2wtsI2y+gHZCmWaamMCx4YDRE8ZXQRRYqC7qB4so=
 github.com/whosonfirst/go-whosonfirst-flags v0.1.0/go.mod h1:bovMiQphaVhqemXFmNVf9Ts0tqnWtzHRFMUSKX+zTE8=
+github.com/whosonfirst/go-whosonfirst-flags v0.2.0 h1:zia/L+rhKSQ5iruITPnwU9lqsd1SavvF+HYRubEARSs=
+github.com/whosonfirst/go-whosonfirst-flags v0.2.0/go.mod h1:ECd0AJJZIlybmjTGB9z+CPz9pSiMTwxur7fPKmDnoqI=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.0/go.mod h1:hC145O2TiPTU8zemHRriKOkG972BNwEowqjxqHeWDwM=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.3 h1:v4BLn+kM/BB2x1ZiMLlPAiBcFjmWnEGJmnIGqvZC/LI=
 github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.3/go.mod h1:/F8jdjew5bCB9J6G0xyMMEay+pQv/WuARYhASMKZbR4=
@@ -196,6 +200,8 @@ github.com/whosonfirst/go-whosonfirst-spatial v0.0.11 h1:TYATIBYv/h8y1IyjbcQehAC
 github.com/whosonfirst/go-whosonfirst-spatial v0.0.11/go.mod h1:PywJosSLB0RCNgTPyWgQ+gMjxRj8Uw3hX3zPa+JZKug=
 github.com/whosonfirst/go-whosonfirst-spatial v0.0.14 h1:BwAuGx+zp793p7t9TDM5HC3HNe10MdX2FQaMiloQ4N0=
 github.com/whosonfirst/go-whosonfirst-spatial v0.0.14/go.mod h1:+zpBqUkaRifbarW9f3GIahiD87H+aNkJU3RsfRA/RxA=
+github.com/whosonfirst/go-whosonfirst-spatial v0.0.16 h1:PUu20GWUPG5KjK5ANQHWtj0v+yJA6aG9gbdtMMkPTcw=
+github.com/whosonfirst/go-whosonfirst-spatial v0.0.16/go.mod h1:42BvTtyfi7ZHT5zRVY3HdwRel/GVsRMePKo4L1xdnNQ=
 github.com/whosonfirst/go-whosonfirst-spatial-mock v0.0.0-20201209170405-9f66da3e56a9 h1:6UOW66sllwKRk/vzVuzNtCFLTpxeZmwse/WgXZUinoY=
 github.com/whosonfirst/go-whosonfirst-spatial-mock v0.0.0-20201209170405-9f66da3e56a9/go.mod h1:z4g6IXc7XhhLKntJntwyU89WjMKKew44D/GB+SQYhu8=
 github.com/whosonfirst/go-whosonfirst-spatial-mock v0.0.0-20201215230027-b5589ef56308 h1:fxz8lMkc/6zT4wHqphxLACC/VfdSLq3vof62LlKENPM=

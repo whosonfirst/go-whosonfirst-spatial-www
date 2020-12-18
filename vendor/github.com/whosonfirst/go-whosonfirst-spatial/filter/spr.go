@@ -1,31 +1,44 @@
 package filter
 
 import (
+	"fmt"
+	"github.com/whosonfirst/go-sanitize"
 	"github.com/whosonfirst/go-whosonfirst-flags"
 	"github.com/whosonfirst/go-whosonfirst-flags/existential"
+	"github.com/whosonfirst/go-whosonfirst-flags/geometry"
 	"github.com/whosonfirst/go-whosonfirst-flags/placetypes"
 	_ "log"
 	"strconv"
 	"strings"
 )
 
+var sanitizeOpts *sanitize.Options
+
+func init() {
+	sanitizeOpts = sanitize.DefaultOptions()
+}
+
 type SPRInputs struct {
-	Placetypes    []string
-	IsCurrent     []string
-	IsCeased      []string
-	IsDeprecated  []string
-	IsSuperseded  []string
-	IsSuperseding []string
+	Placetypes          []string
+	IsCurrent           []string
+	IsCeased            []string
+	IsDeprecated        []string
+	IsSuperseded        []string
+	IsSuperseding       []string
+	Geometries          []string
+	AlternateGeometries []string
 }
 
 type SPRFilter struct {
 	Filter
-	Placetypes  []flags.PlacetypeFlag
-	Current     []flags.ExistentialFlag
-	Deprecated  []flags.ExistentialFlag
-	Ceased      []flags.ExistentialFlag
-	Superseded  []flags.ExistentialFlag
-	Superseding []flags.ExistentialFlag
+	Placetypes          []flags.PlacetypeFlag
+	Current             []flags.ExistentialFlag
+	Deprecated          []flags.ExistentialFlag
+	Ceased              []flags.ExistentialFlag
+	Superseded          []flags.ExistentialFlag
+	Superseding         []flags.ExistentialFlag
+	AlternateGeometry   flags.AlternateGeometryFlag
+	AlternateGeometries []flags.AlternateGeometryFlag
 }
 
 func (f *SPRFilter) HasPlacetypes(fl flags.PlacetypeFlag) bool {
@@ -100,15 +113,34 @@ func (f *SPRFilter) IsSuperseding(fl flags.ExistentialFlag) bool {
 	return false
 }
 
+func (f *SPRFilter) IsAlternateGeometry(fl flags.AlternateGeometryFlag) bool {
+
+	return f.AlternateGeometry.MatchesAny(fl)
+}
+
+func (f *SPRFilter) HasAlternateGeometry(fl flags.AlternateGeometryFlag) bool {
+
+	for _, a := range f.AlternateGeometries {
+
+		if a.MatchesAny(fl) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func NewSPRInputs() (*SPRInputs, error) {
 
 	i := SPRInputs{
-		Placetypes:    make([]string, 0),
-		IsCurrent:     make([]string, 0),
-		IsDeprecated:  make([]string, 0),
-		IsCeased:      make([]string, 0),
-		IsSuperseded:  make([]string, 0),
-		IsSuperseding: make([]string, 0),
+		Placetypes:          make([]string, 0),
+		IsCurrent:           make([]string, 0),
+		IsDeprecated:        make([]string, 0),
+		IsCeased:            make([]string, 0),
+		IsSuperseded:        make([]string, 0),
+		IsSuperseding:       make([]string, 0),
+		Geometries:          make([]string, 0),
+		AlternateGeometries: make([]string, 0),
 	}
 
 	return &i, nil
@@ -118,17 +150,21 @@ func NewSPRFilter() (*SPRFilter, error) {
 
 	null_pt, _ := placetypes.NewNullFlag()
 	null_ex, _ := existential.NewNullFlag()
+	null_alt, _ := geometry.NewNullAlternateGeometryFlag()
 
 	col_pt := []flags.PlacetypeFlag{null_pt}
 	col_ex := []flags.ExistentialFlag{null_ex}
+	col_alt := []flags.AlternateGeometryFlag{null_alt}
 
 	f := SPRFilter{
-		Placetypes:  col_pt,
-		Current:     col_ex,
-		Deprecated:  col_ex,
-		Ceased:      col_ex,
-		Superseded:  col_ex,
-		Superseding: col_ex,
+		Placetypes:          col_pt,
+		Current:             col_ex,
+		Deprecated:          col_ex,
+		Ceased:              col_ex,
+		Superseded:          col_ex,
+		Superseding:         col_ex,
+		AlternateGeometry:   null_alt,
+		AlternateGeometries: col_alt,
 	}
 
 	return &f, nil
@@ -208,6 +244,50 @@ func NewSPRFilterFromInputs(inputs *SPRInputs) (Filter, error) {
 		f.Superseding = possible
 	}
 
+	if len(inputs.Geometries) != 0 {
+
+		geoms := inputs.Geometries[0]
+
+		switch geoms {
+		case "all":
+			// pass
+		case "alt", "alternate":
+
+			af, err := geometry.NewIsAlternateGeometryFlag(true)
+
+			if err != nil {
+				return nil, fmt.Errorf("Failed to create alternate geometry flag, %v", err)
+			}
+
+			f.AlternateGeometry = af
+
+		case "default":
+
+			af, err := geometry.NewIsAlternateGeometryFlag(false)
+
+			if err != nil {
+				return nil, fmt.Errorf("Failed to create alternate geometry flag, %v", err)
+			}
+
+			f.AlternateGeometry = af
+
+		default:
+			fmt.Errorf("Invalid geometries flag")
+		}
+
+	}
+
+	if len(inputs.AlternateGeometries) != 0 {
+
+		possible, err := hasAlternateGeometryFlags(inputs.AlternateGeometries)
+
+		if err != nil {
+			return nil, err
+		}
+
+		f.AlternateGeometries = possible
+	}
+
 	return f, nil
 }
 
@@ -215,11 +295,15 @@ func placetypeFlags(inputs []string) ([]flags.PlacetypeFlag, error) {
 
 	possible := make([]flags.PlacetypeFlag, 0)
 
-	for _, test := range inputs {
+	for _, raw := range inputs {
 
-		for _, pt := range strings.Split(test, ",") {
+		candidates, err := stringList(raw, ",")
 
-			pt = strings.Trim(pt, " ")
+		if err != nil {
+			return nil, err
+		}
+
+		for _, pt := range candidates {
 
 			fl, err := placetypes.NewPlacetypeFlag(pt)
 
@@ -238,17 +322,15 @@ func existentialFlags(inputs []string) ([]flags.ExistentialFlag, error) {
 
 	possible := make([]flags.ExistentialFlag, 0)
 
-	for _, test := range inputs {
+	for _, raw := range inputs {
 
-		for _, str_i := range strings.Split(test, ",") {
+		candidates, err := int64List(raw, ",")
 
-			str_i = strings.Trim(str_i, " ")
+		if err != nil {
+			return nil, err
+		}
 
-			i, err := strconv.ParseInt(str_i, 10, 64)
-
-			if err != nil {
-				return nil, err
-			}
+		for _, i := range candidates {
 
 			fl, err := existential.NewKnownUnknownFlag(i)
 
@@ -261,4 +343,91 @@ func existentialFlags(inputs []string) ([]flags.ExistentialFlag, error) {
 	}
 
 	return possible, nil
+}
+
+func hasAlternateGeometryFlags(input []string) ([]flags.AlternateGeometryFlag, error) {
+
+	possible := make([]flags.AlternateGeometryFlag, 0)
+
+	for _, raw := range input {
+
+		candidates, err := stringList(raw, ",")
+
+		if err != nil {
+			return nil, err
+		}
+
+		for _, alt_label := range candidates {
+
+			uri_str := geometry.DummyAlternateGeometryURIWithLabel(alt_label)
+
+			fl, err := geometry.NewAlternateGeometryFlag(uri_str)
+
+			if err != nil {
+				return nil, err
+			}
+
+			possible = append(possible, fl)
+		}
+	}
+
+	return possible, nil
+}
+
+func stringList(raw string, sep string) ([]string, error) {
+
+	str, err := sanitize.SanitizeString(raw, sanitizeOpts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	str_list := make([]string, 0)
+
+	str = strings.Trim(str, " ")
+
+	for _, str_i := range strings.Split(str, sep) {
+
+		str_i = strings.Trim(str_i, " ")
+
+		if str_i == "" {
+			continue
+		}
+
+		str_list = append(str_list, str_i)
+	}
+
+	return str_list, nil
+}
+
+func int64List(raw string, sep string) ([]int64, error) {
+
+	str, err := sanitize.SanitizeString(raw, sanitizeOpts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	int64_list := make([]int64, 0)
+
+	str = strings.Trim(str, " ")
+
+	for _, str_i := range strings.Split(str, sep) {
+
+		str_i = strings.Trim(str_i, " ")
+
+		if str_i == "" {
+			continue
+		}
+
+		i, err := strconv.ParseInt(str_i, 10, 64)
+
+		if err != nil {
+			return nil, err
+		}
+
+		int64_list = append(int64_list, i)
+	}
+
+	return int64_list, nil
 }

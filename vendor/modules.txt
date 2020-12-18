@@ -31,6 +31,8 @@ github.com/mmcloughlin/geohash
 github.com/paulmach/go.geojson
 # github.com/rs/cors v1.7.0
 github.com/rs/cors
+# github.com/sfomuseum/go-flags v0.4.2
+github.com/sfomuseum/go-flags/multi
 # github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 github.com/skelterjohn/geom
 # github.com/tidwall/gjson v1.6.4
@@ -53,9 +55,10 @@ github.com/whosonfirst/go-reader
 github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-crawl v0.2.1
 github.com/whosonfirst/go-whosonfirst-crawl
-# github.com/whosonfirst/go-whosonfirst-flags v0.1.0
+# github.com/whosonfirst/go-whosonfirst-flags v0.2.0
 github.com/whosonfirst/go-whosonfirst-flags
 github.com/whosonfirst/go-whosonfirst-flags/existential
+github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
 # github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.14.0
 github.com/whosonfirst/go-whosonfirst-geojson-v2
@@ -77,7 +80,7 @@ github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.14
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.16
 github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/app
 github.com/whosonfirst/go-whosonfirst-spatial/database

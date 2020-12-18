@@ -19,5 +19,8 @@ func NewSPRFilterFromQuery(query url.Values) (Filter, error) {
 	inputs.IsSuperseded = query["is_superseded"]
 	inputs.IsSuperseding = query["is_superseding"]
 
+	inputs.Geometries = query["geometries"]
+	inputs.AlternateGeometries = query["alternate_geometry"]
+
 	return NewSPRFilterFromInputs(inputs)
 }

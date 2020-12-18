@@ -4,11 +4,8 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
-	"sort"
-	"strings"
 )
 
 func CommonFlags() (*flag.FlagSet, error) {
@@ -30,18 +27,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 	desc_property_readers := fmt.Sprintf("Valid options are: %s", available_property_readers)
 
 	fs.String("properties-reader-uri", "", desc_property_readers)
-
-	// indexing modes
-
-	modes := index.Modes()
-	sort.Strings(modes)
-
-	valid_modes := strings.Join(modes, ", ")
-	desc_modes := fmt.Sprintf("Valid modes are: %s.", valid_modes)
-
-	fs.String("mode", "repo://", desc_modes)
-
-	//
 
 	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
@@ -66,12 +51,6 @@ func CommonFlags() (*flag.FlagSet, error) {
 }
 
 func ValidateCommonFlags(fs *flag.FlagSet) error {
-
-	_, err := StringVar(fs, "mode")
-
-	if err != nil {
-		return err
-	}
 
 	spatial_database_uri, err := StringVar(fs, "spatial-database-uri")
 

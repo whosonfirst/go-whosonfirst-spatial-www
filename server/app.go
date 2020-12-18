@@ -42,6 +42,12 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 		return fmt.Errorf("Failed to instantiate common flags, %v", err)
 	}
 
+	err = flags.AppendIndexingFlags(fs)
+
+	if err != nil {
+		return fmt.Errorf("Failed to append indexings flags, %v", err)
+	}
+
 	err = http_flags.AppendWWWFlags(fs)
 
 	if err != nil {
@@ -59,6 +65,12 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	if err != nil {
 		return fmt.Errorf("Failed to validate common flags, %v", err)
+	}
+
+	err = flags.ValidateIndexingFlags(fs)
+
+	if err != nil {
+		return fmt.Errorf("Failed to validate indexing flags, %v", err)
 	}
 
 	err = http_flags.ValidateWWWFlags(fs)
