@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/sfomuseum/go-flags/multi"
 )
 
 func Lookup(fl *flag.FlagSet, k string) (interface{}, error) {
@@ -17,6 +18,17 @@ func Lookup(fl *flag.FlagSet, k string) (interface{}, error) {
 
 	// Go is weird...
 	return v.Value.(flag.Getter).Get(), nil
+}
+
+func MultiStringVar(fl *flag.FlagSet, k string) ([]string, error) {
+
+	i, err := Lookup(fl, k)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return i.(multi.MultiString), nil
 }
 
 func StringVar(fl *flag.FlagSet, k string) (string, error) {

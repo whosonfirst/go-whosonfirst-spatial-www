@@ -16,7 +16,7 @@ require (
 	github.com/whosonfirst/go-reader v0.2.0
 	github.com/whosonfirst/go-whosonfirst-index v0.3.2
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.2.4
-	github.com/whosonfirst/go-whosonfirst-spatial v0.0.16
+	github.com/whosonfirst/go-whosonfirst-spatial v0.0.19
 	github.com/whosonfirst/go-whosonfirst-spatial-mock v0.0.0-20201217004625-8808105b99e5
 	github.com/whosonfirst/go-whosonfirst-spr v0.1.0
 	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.1

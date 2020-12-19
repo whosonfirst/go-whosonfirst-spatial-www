@@ -13,7 +13,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
-	"github.com/whosonfirst/go-whosonfirst-uri"
 	"github.com/whosonfirst/warning"
 	"io"
 	"log"
@@ -70,21 +69,13 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 	cb := func(ctx context.Context, fh io.Reader, args ...interface{}) error {
 
-		var f geojson.Feature
+		f, err := feature.LoadFeatureFromReader(fh)
+
+		if err != nil {
+			return err
+		}
 
 		if is_wof {
-
-			ok, err := isValidRecord(fh, ctx)
-
-			if err != nil {
-				return err
-			}
-
-			if !ok {
-				return err
-			}
-
-			tmp, err := feature.LoadWOFFeatureFromReader(fh)
 
 			if err != nil {
 
@@ -99,12 +90,12 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 					return err
 				}
 
-				log.Printf("Feature ID %s triggered the following warning: %s\n", tmp.Id(), err)
+				log.Printf("Feature ID %s triggered the following warning: %s\n", f.Id(), err)
 			}
 
 			if !include_notcurrent {
 
-				fl, err := whosonfirst.IsCurrent(tmp)
+				fl, err := whosonfirst.IsCurrent(f)
 
 				if err != nil {
 					return err
@@ -117,7 +108,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 			if !include_deprecated {
 
-				fl, err := whosonfirst.IsDeprecated(tmp)
+				fl, err := whosonfirst.IsDeprecated(f)
 
 				if err != nil {
 					return err
@@ -130,7 +121,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 			if !include_ceased {
 
-				fl, err := whosonfirst.IsCeased(tmp)
+				fl, err := whosonfirst.IsCeased(f)
 
 				if err != nil {
 					return err
@@ -143,7 +134,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 
 			if !include_superseded {
 
-				fl, err := whosonfirst.IsSuperseded(tmp)
+				fl, err := whosonfirst.IsSuperseded(f)
 
 				if err != nil {
 					return err
@@ -154,17 +145,6 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 				}
 			}
 
-			f = tmp
-
-		} else {
-
-			tmp, err := feature.LoadGeoJSONFeatureFromReader(fh)
-
-			if err != nil {
-				return err
-			}
-
-			f = tmp
 		}
 
 		geom_type := geometry.Type(f)
@@ -173,7 +153,7 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 			return nil
 		}
 
-		err := spatial_db.IndexFeature(ctx, f)
+		err = spatial_db.IndexFeature(ctx, f)
 
 		if err != nil {
 
@@ -218,39 +198,4 @@ func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db data
 	}
 
 	return idx, err
-}
-
-func isValidRecord(fh io.Reader, ctx context.Context) (bool, error) {
-
-	path, err := index.PathForContext(ctx)
-
-	if err != nil {
-		return false, err
-	}
-
-	if path == index.STDIN {
-		return true, nil
-	}
-
-	is_wof, err := uri.IsWOFFile(path)
-
-	if err != nil {
-		return false, err
-	}
-
-	if !is_wof {
-		return false, nil
-	}
-
-	is_alt, err := uri.IsAltFile(path)
-
-	if err != nil {
-		return false, err
-	}
-
-	if is_alt {
-		return false, nil
-	}
-
-	return true, nil
 }
