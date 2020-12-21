@@ -92,7 +92,7 @@ github.com/whosonfirst/go-whosonfirst-spatial/properties
 github.com/whosonfirst/go-whosonfirst-spatial-mock
 # github.com/whosonfirst/go-whosonfirst-spr v0.1.0
 github.com/whosonfirst/go-whosonfirst-spr
-# github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.1
+# github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.2
 github.com/whosonfirst/go-whosonfirst-spr-geojson
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 github.com/whosonfirst/go-whosonfirst-uri

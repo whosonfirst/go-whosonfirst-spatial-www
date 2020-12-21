@@ -26,8 +26,13 @@ func main() {
 
 	reader_uri := "fs://usr/local/data/whosonfirst-data-admin-us"
 	r, _ := reader.NewReader(ctx, reader_uri)
+	
+	opts := &geojson.AsFeatureCollectionOptions{
+		Reader: r:
+		Writer: os.Stdout,
+	}
 
-	geojson.AsFeatureCollection(ctx, results, r, os.Stdout)
+	geojson.AsFeatureCollection(ctx, results, opts)
 }
 ```
 
@@ -52,12 +57,69 @@ func main() {
 
 	r, _ := reader.NewReader(ctx, reader_uri)
 
+	resolver_func := geojson.JSONPathResolverFunc(path)
+
+	as_opts := &geojson.AsFeatureCollectionOptions{
+		Reader: r:
+		Writer: os.Stdout,
+		JSONPathResolver: resolver_func,		
+	}
+
 	reader := bufio.NewReader(os.Stdin)
 	body, _ := ioutil.ReadAll(reader)
 
-	geojson.AsFeatureCollectionWithJSON(ctx, body, path, r, os.Stdout)
+	geojson.AsFeatureCollectionWithJSON(ctx, body, path, as_opts)
 }
 ```
+
+Here's how you might use this with "plain old" GeoJSON records that use a WOF-style ID/URI structure:
+
+```
+import (
+	"bufio"
+	"context"
+	"github.com/whosonfirst/go-reader"
+	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
+	"io/ioutil"
+	"os"
+)
+
+func main() {
+
+	reader_uri := "fs://usr/local/data/woeplanet-state-us/data"
+	path := "places.#.spr:id"
+
+	ctx := context.Background()
+
+	r, _ := reader.NewReader(ctx, reader_uri)
+
+	cb = func(ctx context.Context, path string) (string, error) {
+		return geojson.WhosOnFirstPathWithString(path)
+	}
+
+	resolver_func := geojson.JSONPathResolverFuncWithCallback(path, cb)
+	
+	as_opts := &geojson.AsFeatureCollectionOptions{
+		Reader: r:
+		Writer: os.Stdout,
+		JSONPathResolver: resolver_func,		
+	}
+
+	reader := bufio.NewReader(os.Stdin)
+	body, _ := ioutil.ReadAll(reader)
+
+	geojson.AsFeatureCollectionWithJSON(ctx, body, as_opts)
+}
+```
+
+Here's what's going on:
+
+* We're using data from the [woeplanet-state-us](https://github.com/woeplanet-data/woeplanet-state-us) repository. In this case we have a local checkout (as defined by the `reader_uri` variable).
+* We're assuming that `woeplanet-data` SPR records are being passed in with a JSON encoding mapping the `spr.Id()` method to a `spr:id` property.
+* W're also taking it for granted that `woeplanet-data` records have numeric IDs and are stored using the same nested directory structure as Who's On First records.
+* The `geojson.JSONPathResolverFunc` returns a list of WOEPlanet IDs (using the `places.#.spr:id` syntax defined in the `path` variable).
+* Each WOEPlanet Id is transformed in to a Who's On First style path using the callback defined by the `cb` variable.
+* Theses are the final paths that are passed to the `reader.Reader` instance for loading the actual GeoJSON record.
 
 ## Tools
 
