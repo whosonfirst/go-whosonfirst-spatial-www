@@ -18,7 +18,7 @@ type PointInPolygonHandlerOptions struct {
 	EnableGeoJSON    bool
 	EnableProperties bool
 	GeoJSONReader    reader.Reader
-	SPRPathResolver geojson.SPRPathResolver
+	SPRPathResolver  geojson.SPRPathResolver
 }
 
 func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPolygonHandlerOptions) (http.Handler, error) {
@@ -98,11 +98,11 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		case "geojson":
 
 			as_opts := &geojson.AsFeatureCollectionOptions{
-				Reader: opts.GeoJSONReader,
-				Writer: rsp,
+				Reader:          opts.GeoJSONReader,
+				Writer:          rsp,
 				SPRPathResolver: opts.SPRPathResolver,
 			}
-			
+
 			err := geojson.AsFeatureCollection(ctx, results, as_opts)
 
 			if err != nil {

@@ -20,6 +20,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
 	"html/template"
 	"log"
 	gohttp "net/http"
@@ -85,6 +86,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
 	geojson_reader_uri, _ := flags.StringVar(fs, "geojson-reader-uri")
+	wof_resolver, _ := flags.BoolVar(fs, "geojson-wof-path-resolver")
 
 	path_templates, _ := flags.StringVar(fs, "path-templates")
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
@@ -152,6 +154,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		}
 
 		api_pip_opts.GeoJSONReader = geojson_reader
+
+		if wof_resolver {
+			api_pip_opts.SPRPathResolver = geojson.WhosOnFirstSPRPathResolverFunc()
+		}
 	}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)

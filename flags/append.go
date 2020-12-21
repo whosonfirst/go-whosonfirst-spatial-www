@@ -10,7 +10,7 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.String("server-uri", "http://localhost:8080", "A valid aaronland/go-http-server URI.")
 
 	fs.Bool("enable-geojson", false, "Allow users to request GeoJSON FeatureCollection formatted responses.")
-	fs.Bool("geojson-wof-path-resolver", false, "Use whosonfirst/go-whosonfirst-spr-geojson to resolve SPR Path() values to Who's On First style relative paths. Necessary for plain-old GeoJSON records that conform to WOF-style filenames.")	
+	fs.Bool("geojson-wof-path-resolver", false, "Use whosonfirst/go-whosonfirst-spr-geojson to resolve SPR Path() values to Who's On First style relative paths. Necessary for plain-old GeoJSON records that conform to WOF-style filenames.")
 
 	// fs.Bool("enable-candidates", false, "Enable the /candidates endpoint to return candidate bounding boxes (as GeoJSON) for requests.")
 	fs.Bool("enable-www", false, "Enable the interactive /debug endpoint to query points and display results.")

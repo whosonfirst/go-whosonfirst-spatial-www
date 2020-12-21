@@ -81,6 +81,6 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
