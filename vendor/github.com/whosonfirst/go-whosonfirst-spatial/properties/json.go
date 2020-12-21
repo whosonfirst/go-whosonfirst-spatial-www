@@ -24,7 +24,7 @@ func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte,
 			var props gjson.Result
 
 			if prefix != "" {
-				props = gjson.GetBytes(source, ".")
+				props = gjson.GetBytes(source, prefix)
 			} else {
 				props = gjson.ParseBytes(source)
 			}
