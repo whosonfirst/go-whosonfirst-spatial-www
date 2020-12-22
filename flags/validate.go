@@ -76,7 +76,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		return errors.New("Invalid zoom")
 	}
 
-	_, err = spatial_flags.BoolVar(fs, "geojson-wof-path-resolver")
+	_, err = spatial_flags.StringVar(fs, "geojson-path-resolver-uri")
 
 	if err != nil {
 		return err

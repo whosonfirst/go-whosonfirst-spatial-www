@@ -86,7 +86,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
 	geojson_reader_uri, _ := flags.StringVar(fs, "geojson-reader-uri")
-	wof_resolver, _ := flags.BoolVar(fs, "geojson-wof-path-resolver")
+	resolver_uri, _ := flags.StringVar(fs, "geojson-path-resolver-uri")
 
 	path_templates, _ := flags.StringVar(fs, "path-templates")
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
@@ -155,8 +155,15 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		api_pip_opts.GeoJSONReader = geojson_reader
 
-		if wof_resolver {
-			api_pip_opts.SPRPathResolver = geojson.WhosOnFirstSPRPathResolverFunc()
+		if resolver_uri != "" {
+
+			resolver_func, err := geojson.NewSPRPathResolverFunc(ctx, resolver_uri)
+
+			if err != nil {
+				return err
+			}
+
+			api_pip_opts.SPRPathResolver = resolver_func
 		}
 	}
 
