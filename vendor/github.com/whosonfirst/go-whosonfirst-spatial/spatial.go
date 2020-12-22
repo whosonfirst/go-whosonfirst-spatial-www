@@ -5,11 +5,11 @@ import (
 )
 
 type PointInPolygonCandidate struct {
-	Id       string
-	WOFId    int64
-	IsAlt    bool
-	AltLabel string
-	Bounds   *geom.Rect
+	Id        string
+	FeatureId string
+	IsAlt     bool
+	AltLabel  string
+	Bounds    *geom.Rect
 }
 
 type PropertiesResponse map[string]interface{}

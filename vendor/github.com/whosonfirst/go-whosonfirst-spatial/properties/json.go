@@ -9,11 +9,17 @@ import (
 	"strings"
 )
 
-func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte, extras []string, prefix string) ([]byte, error) {
+type AppendPropertiesOptions struct {
+	SourcePrefix string
+	TargetPrefix string
+	Keys         []string
+}
+
+func AppendPropertiesWithJSON(ctx context.Context, opts *AppendPropertiesOptions, source []byte, target []byte) ([]byte, error) {
 
 	var err error
 
-	for _, e := range extras {
+	for _, e := range opts.Keys {
 
 		paths := make([]string, 0)
 
@@ -23,8 +29,8 @@ func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte,
 
 			var props gjson.Result
 
-			if prefix != "" {
-				props = gjson.GetBytes(source, prefix)
+			if opts.SourcePrefix != "" {
+				props = gjson.GetBytes(source, opts.SourcePrefix)
 			} else {
 				props = gjson.ParseBytes(source)
 			}
@@ -43,15 +49,14 @@ func AppendPropertiesWithJSON(ctx context.Context, source []byte, target []byte,
 		for _, p := range paths {
 
 			get_path := p
-
-			if prefix != "" {
-				get_path = fmt.Sprintf("%s.%s", prefix, get_path)
-			}
-
 			set_path := p
 
-			if prefix != "" {
-				set_path = fmt.Sprintf("%s.%s", prefix, p)
+			if opts.SourcePrefix != "" {
+				get_path = fmt.Sprintf("%s.%s", opts.SourcePrefix, get_path)
+			}
+
+			if opts.TargetPrefix != "" {
+				set_path = fmt.Sprintf("%s.%s", opts.TargetPrefix, p)
 			}
 
 			v := gjson.GetBytes(source, get_path)

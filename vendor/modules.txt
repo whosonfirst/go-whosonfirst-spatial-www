@@ -80,7 +80,7 @@ github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.21
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.23
 github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/app
 github.com/whosonfirst/go-whosonfirst-spatial/database
@@ -92,7 +92,7 @@ github.com/whosonfirst/go-whosonfirst-spatial/properties
 github.com/whosonfirst/go-whosonfirst-spatial-mock
 # github.com/whosonfirst/go-whosonfirst-spr v0.1.0
 github.com/whosonfirst/go-whosonfirst-spr
-# github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.2
+# github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.3
 github.com/whosonfirst/go-whosonfirst-spr-geojson
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 github.com/whosonfirst/go-whosonfirst-uri

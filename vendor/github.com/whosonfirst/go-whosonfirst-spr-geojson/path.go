@@ -3,9 +3,11 @@ package geojson
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/tidwall/gjson"
 	"github.com/whosonfirst/go-whosonfirst-spr"
 	"github.com/whosonfirst/go-whosonfirst-uri"
+	"net/url"
 )
 
 type SPRPathResolver func(context.Context, spr.StandardPlacesResult) (string, error)
@@ -25,10 +27,45 @@ func WhosOnFirstPathWithString(path string) (string, error) {
 	return uri.Id2RelPath(id, uri_args)
 }
 
-func WhosOnFirstSPRPathResolverFunc() SPRPathResolver {
+func NewSPRPathResolverFunc(ctx context.Context, uri string) (SPRPathResolver, error) {
+
+	u, err := url.Parse(uri)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// in advance of using aaronland/go-roster
+	// (20201222/thisisaaronland)
+
+	switch u.Scheme {
+	case "wofid":
+		return WhosOnFirstIdSPRPathResolverFunc(), nil
+	case "spatialid":
+		return WhosOnFirstSpatialSPRPathResolverFunc(), nil
+	default:
+		return nil, errors.New("Invalid resolver func URI")
+	}
+}
+
+func WhosOnFirstIdSPRPathResolverFunc() SPRPathResolver {
 
 	fn := func(ctx context.Context, r spr.StandardPlacesResult) (string, error) {
 		return WhosOnFirstPathWithString(r.Id())
+	}
+
+	return fn
+}
+
+func WhosOnFirstSpatialSPRPathResolverFunc() SPRPathResolver {
+
+	// really we should be using methods in go-whosonfirst-spatial
+	// but I don't want to create that depedency cycle (yet)
+	// (20201222/thisisaaronland)
+
+	fn := func(ctx context.Context, r spr.StandardPlacesResult) (string, error) {
+		path := fmt.Sprintf("%s:", r.Id())
+		return path, nil
 	}
 
 	return fn
