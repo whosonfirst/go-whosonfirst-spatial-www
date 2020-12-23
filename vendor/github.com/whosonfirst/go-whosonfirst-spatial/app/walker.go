@@ -23,8 +23,9 @@ import (
 func NewWalkerWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, properties_r properties.PropertiesReader) (*index.Indexer, error) {
 
 	mode, _ := flags.StringVar(fl, "mode")
+
 	is_wof, _ := flags.BoolVar(fl, "is-wof")
-	index_properties, _ := flags.BoolVar(fl, "is-properties")
+	index_properties, _ := flags.BoolVar(fl, "index-properties")
 
 	include_deprecated := true
 	include_superseded := true

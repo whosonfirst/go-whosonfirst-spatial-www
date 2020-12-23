@@ -16,7 +16,7 @@ func SpatialIdWithFeature(f geojson.Feature, extra ...interface{}) (string, erro
 	if len(extra) > 0 {
 
 		for _, v := range extra {
-			sp_id = fmt.Sprintf("%s:%v", sp_id, v)			
+			sp_id = fmt.Sprintf("%s:%v", sp_id, v)
 		}
 	}
 	return sp_id, nil

@@ -19,16 +19,17 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String("spatial-database-uri", "rtree://", desc_databases)
 
+	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
+
 	// property readers
 
 	fs.Bool("enable-properties", false, "Enable support for 'properties' parameters in queries.")
+	fs.Bool("index-properties", false, "Index properties reader.")
 
 	available_property_readers := properties.Schemes()
 	desc_property_readers := fmt.Sprintf("Valid options are: %s", available_property_readers)
 
 	fs.String("properties-reader-uri", "", desc_property_readers)
-
-	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
 	fs.Bool("enable-custom-placetypes", false, "...")
 	fs.String("custom-placetypes-source", "", "...")
@@ -79,6 +80,13 @@ func ValidateCommonFlags(fs *flag.FlagSet) error {
 		if properties_reader_uri == "" {
 			return errors.New("Invalid or missing -properties-reader-uri flag")
 		}
+
+		_, err = BoolVar(fs, "index-properties")
+
+		if err != nil {
+			return err
+		}
+
 	}
 
 	return nil
