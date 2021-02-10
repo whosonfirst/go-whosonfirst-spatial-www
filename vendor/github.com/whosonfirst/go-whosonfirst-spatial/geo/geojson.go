@@ -36,7 +36,7 @@ func PolygonContainsCoord(poly [][][]float64, c *geom.Coord) bool {
 
 	if count > 1 {
 
-		for _, interior_ring := range poly {
+		for _, interior_ring := range poly[1:] {
 
 			if RingContainsCoord(interior_ring, c) {
 				return false

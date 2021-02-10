@@ -3,30 +3,33 @@ package multi
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
-type KeyValueFlag struct {
+const SEP string = "="
+
+type KeyValueStringFlag struct {
 	Key   string
 	Value string
 }
 
-type KeyValue []*KeyValueFlag
+type KeyValueString []*KeyValueStringFlag
 
-func (e *KeyValue) String() string {
+func (e *KeyValueString) String() string {
 	return fmt.Sprintf("%v", *e)
 }
 
-func (e *KeyValue) Set(value string) error {
+func (e *KeyValueString) Set(value string) error {
 
 	value = strings.Trim(value, " ")
-	kv := strings.Split(value, "=")
+	kv := strings.Split(value, SEP)
 
 	if len(kv) != 2 {
 		return errors.New("Invalid key=value argument")
 	}
 
-	a := KeyValueFlag{
+	a := KeyValueStringFlag{
 		Key:   kv[0],
 		Value: kv[1],
 	}
@@ -35,17 +38,84 @@ func (e *KeyValue) Set(value string) error {
 	return nil
 }
 
-func (e *KeyValue) Get() interface{} {
+func (e *KeyValueString) Get() interface{} {
 	return *e
 }
 
-func (e *KeyValue) ToMap() map[string]string {
+type KeyValueInt64Flag struct {
+	Key   string
+	Value int64
+}
 
-	m := make(map[string]string)
+type KeyValueInt64 []*KeyValueInt64Flag
 
-	for _, arg := range *e {
-		m[arg.Key] = arg.Value
+func (e *KeyValueInt64) String() string {
+	return fmt.Sprintf("%v", *e)
+}
+
+func (e *KeyValueInt64) Set(value string) error {
+
+	value = strings.Trim(value, " ")
+	kv := strings.Split(value, SEP)
+
+	if len(kv) != 2 {
+		return errors.New("Invalid key=value argument")
 	}
 
-	return m
+	v, err := strconv.ParseInt(kv[1], 10, 64)
+
+	if err != nil {
+		return err
+	}
+
+	a := KeyValueInt64Flag{
+		Key:   kv[0],
+		Value: v,
+	}
+
+	*e = append(*e, &a)
+	return nil
+}
+
+func (e *KeyValueInt64) Get() interface{} {
+	return *e
+}
+
+type KeyValueFloat64Flag struct {
+	Key   string
+	Value float64
+}
+
+type KeyValueFloat64 []*KeyValueFloat64Flag
+
+func (e *KeyValueFloat64) String() string {
+	return fmt.Sprintf("%v", *e)
+}
+
+func (e *KeyValueFloat64) Set(value string) error {
+
+	value = strings.Trim(value, " ")
+	kv := strings.Split(value, SEP)
+
+	if len(kv) != 2 {
+		return errors.New("Invalid key=value argument")
+	}
+
+	v, err := strconv.ParseFloat(kv[1], 64)
+
+	if err != nil {
+		return err
+	}
+
+	a := KeyValueFloat64Flag{
+		Key:   kv[0],
+		Value: v,
+	}
+
+	*e = append(*e, &a)
+	return nil
+}
+
+func (e *KeyValueFloat64) Get() interface{} {
+	return *e
 }

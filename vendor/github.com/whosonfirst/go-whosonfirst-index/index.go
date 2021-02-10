@@ -34,21 +34,6 @@ type Indexer struct {
 	count   int64
 }
 
-// used by the IndexGit stuff
-// https://godoc.org/gopkg.in/src-d/go-git.v4/plumbing/protocol/packp/sideband#Progress
-
-/*
-type WOFLoggerProgress struct {
-	sideband.Progress
-	logger *log.WOFLogger
-}
-
-func (p *WOFLoggerProgress) Write(msg []byte) (int, error) {
-	p.logger.Status(string(msg))
-	return -1, nil
-}
-*/
-
 func Register(name string, driver Driver) {
 
 	driversMu.Lock()
