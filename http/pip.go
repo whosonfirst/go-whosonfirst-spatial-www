@@ -33,7 +33,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 		return nil, errors.New("Missing pointinpolygon template")
 	}
 
-	walker := spatial_app.Walker
+	iterator := spatial_app.Iterator
 
 	pt_list, err := placetypes.Placetypes()
 
@@ -43,7 +43,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
-		if walker.IsIndexing() {
+		if iterator.IsIndexing() {
 			gohttp.Error(rsp, "indexing records", gohttp.StatusServiceUnavailable)
 			return
 		}

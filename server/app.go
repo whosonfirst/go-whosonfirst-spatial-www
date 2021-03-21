@@ -12,12 +12,14 @@ import (
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
+	"github.com/sfomuseum/go-flags/flagset"
+	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/templates/html"	
+	"github.com/whosonfirst/go-whosonfirst-spatial-http/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
@@ -55,7 +57,7 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 		return fmt.Errorf("Failed to append www flags, %v", err)
 	}
 
-	flags.Parse(fs)
+	flagset.Parse(fs)
 
 	return server_app.RunWithFlagSet(ctx, fs)
 }
@@ -80,25 +82,25 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to validate www flags, %v", err)
 	}
 
-	enable_properties, _ := flags.BoolVar(fs, "enable-properties")
-	enable_www, _ := flags.BoolVar(fs, "enable-www")
-	// enable_candidates, _ := flags.BoolVar(fs, "enable-candidates")
+	enable_properties, _ := lookup.BoolVar(fs, "enable-properties")
+	enable_www, _ := lookup.BoolVar(fs, "enable-www")
+	// enable_candidates, _ := lookup.BoolVar(fs, "enable-candidates")
 
-	enable_geojson, _ := flags.BoolVar(fs, "enable-geojson")
-	geojson_reader_uri, _ := flags.StringVar(fs, "geojson-reader-uri")
-	resolver_uri, _ := flags.StringVar(fs, "geojson-path-resolver-uri")
+	enable_geojson, _ := lookup.BoolVar(fs, "enable-geojson")
+	geojson_reader_uri, _ := lookup.StringVar(fs, "geojson-reader-uri")
+	resolver_uri, _ := lookup.StringVar(fs, "geojson-path-resolver-uri")
 
-	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
-	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
-	nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
+	nextzen_apikey, _ := lookup.StringVar(fs, "nextzen-apikey")
+	nextzen_style_url, _ := lookup.StringVar(fs, "nextzen-style-url")
+	nextzen_tile_url, _ := lookup.StringVar(fs, "nextzen-tile-url")
 
-	initial_lat, _ := flags.Float64Var(fs, "initial-latitude")
-	initial_lon, _ := flags.Float64Var(fs, "initial-longitude")
-	initial_zoom, _ := flags.IntVar(fs, "initial-zoom")
+	initial_lat, _ := lookup.Float64Var(fs, "initial-latitude")
+	initial_lon, _ := lookup.Float64Var(fs, "initial-longitude")
+	initial_zoom, _ := lookup.IntVar(fs, "initial-zoom")
 
-	server_uri, _ := flags.StringVar(fs, "server-uri")
+	server_uri, _ := lookup.StringVar(fs, "server-uri")
 
-	data_endpoint, _ := flags.StringVar(fs, "data-endpoint")
+	data_endpoint, _ := lookup.StringVar(fs, "data-endpoint")
 
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 

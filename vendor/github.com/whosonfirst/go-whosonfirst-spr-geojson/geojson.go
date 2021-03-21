@@ -8,7 +8,7 @@ import (
 	"fmt"
 	go_geojson "github.com/paulmach/go.geojson"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-spr"
+	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"io"
 	_ "log"
 )

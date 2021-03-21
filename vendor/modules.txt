@@ -77,10 +77,6 @@ github.com/tidwall/pretty
 github.com/tidwall/sjson
 # github.com/whosonfirst/algnhsa v0.1.0
 github.com/whosonfirst/algnhsa
-# github.com/whosonfirst/go-bindata v0.1.0
-## explicit
-# github.com/whosonfirst/go-bindata-assetfs v1.0.1
-## explicit
 # github.com/whosonfirst/go-cache v0.2.0
 github.com/whosonfirst/go-cache
 # github.com/whosonfirst/go-ioutil v0.0.1
@@ -128,7 +124,7 @@ github.com/whosonfirst/go-whosonfirst-reader
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.44
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.45
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/app
@@ -141,13 +137,12 @@ github.com/whosonfirst/go-whosonfirst-spatial/timer
 # github.com/whosonfirst/go-whosonfirst-spatial-reader v0.0.8
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial-reader
-# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.0.6
+# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.0.7
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial-rtree
 # github.com/whosonfirst/go-whosonfirst-spr v0.1.0
-## explicit
 github.com/whosonfirst/go-whosonfirst-spr
-# github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.3
+# github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.4
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spr-geojson
 # github.com/whosonfirst/go-whosonfirst-spr/v2 v2.0.0

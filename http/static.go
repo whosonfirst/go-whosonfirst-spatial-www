@@ -1,23 +1,18 @@
 package http
 
 import (
+	"fmt"
 	"github.com/aaronland/go-http-rewrite"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/static"
+	"io/fs"
 	gohttp "net/http"
 	"path/filepath"
 	"strings"
-	"io/fs"
 )
 
-func StaticFileSystem() (gohttp.FileSystem, error) {
-	fs := assetFS()
-	return fs, nil
-}
-
 func StaticAssetsHandler() (gohttp.Handler, error) {
-
-	http_fs := http.FS(static.FS)
-	return http.FileServer(http_fs), nil
+	http_fs := gohttp.FS(static.FS)
+	return gohttp.FileServer(http_fs), nil
 }
 
 func StaticAssetsHandlerWithPrefix(prefix string) (gohttp.Handler, error) {
@@ -55,7 +50,7 @@ func AppendStaticAssetHandlersWithPrefix(mux *gohttp.ServeMux, prefix string) er
 		return nil
 	}
 
-		walk_func := func(path string, info fs.DirEntry, err error) error {
+	walk_func := func(path string, info fs.DirEntry, err error) error {
 
 		if path == "." {
 			return nil

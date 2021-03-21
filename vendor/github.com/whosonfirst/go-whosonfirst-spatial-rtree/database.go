@@ -17,7 +17,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spatial/timer"
-	"github.com/whosonfirst/go-whosonfirst-spr"
+	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"net/url"
 	"strconv"
 	"sync"
@@ -226,7 +226,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 	return nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *geom.Coord, filters ...filter.Filter) (spr.StandardPlacesResults, error) {
+func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *geom.Coord, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -266,7 +266,7 @@ func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *geom.C
 	return spr_results, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...filter.Filter) {
+func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...spatial.Filter) {
 
 	defer func() {
 		done_ch <- true
@@ -283,7 +283,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, r
 	return
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *geom.Coord, filters ...filter.Filter) ([]*spatial.PointInPolygonCandidate, error) {
+func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *geom.Coord, filters ...spatial.Filter) ([]*spatial.PointInPolygonCandidate, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -319,7 +319,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coo
 	return candidates, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, rsp_ch chan *spatial.PointInPolygonCandidate, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...filter.Filter) {
+func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, rsp_ch chan *spatial.PointInPolygonCandidate, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...spatial.Filter) {
 
 	defer func() {
 		done_ch <- true
@@ -376,7 +376,7 @@ func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreeg
 	return results, nil
 }
 
-func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, possible []rtreego.Spatial, c *geom.Coord, filters ...filter.Filter) {
+func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, possible []rtreego.Spatial, c *geom.Coord, filters ...spatial.Filter) {
 
 	seen := make(map[string]bool)
 

@@ -3,8 +3,8 @@ package flags
 import (
 	"errors"
 	"flag"
-	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"log"
 )
 

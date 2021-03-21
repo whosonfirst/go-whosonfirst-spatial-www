@@ -50,13 +50,13 @@ func NewSPRInputsFromFlagSet(fs *flag.FlagSet) (*SPRInputs, error) {
 
 	inputs.CessationDate = cessation_date
 
-	geometries, err := lookup.MultiStringVar(fs, flags.GEOMETRIES)
+	geometries, err := lookup.StringVar(fs, flags.GEOMETRIES)
 
 	if err != nil {
 		return nil, err
 	}
 
-	inputs.Geometries = geometries
+	inputs.Geometries = []string{geometries}
 
 	alt_geoms, err := lookup.MultiStringVar(fs, flags.ALTERNATE_GEOMETRIES)
 

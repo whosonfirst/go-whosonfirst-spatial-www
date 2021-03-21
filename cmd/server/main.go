@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"github.com/sfomuseum/go-flags/flagset"
 	_ "github.com/whosonfirst/go-whosonfirst-index/fs"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-reader"
 	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
-	_ "github.com/whosonfirst/go-whosonfirst-spatial-reader"	
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"log"
 )
@@ -35,8 +36,8 @@ func main() {
 
 	fs.Set("spatial-database-uri", "rtree://")
 	fs.Set("properties-reader-uri", "mock://")
-	
-	flags.Parse(fs)
+
+	flagset.Parse(fs)
 
 	err = flags.ValidateCommonFlags(fs)
 

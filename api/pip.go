@@ -8,8 +8,8 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api/parameters"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
+	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	_ "log"
 	"net/http"
 )
@@ -25,11 +25,11 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 	spatial_db := spatial_app.SpatialDatabase
 	properties_r := spatial_app.PropertiesReader
-	walker := spatial_app.Walker
+	iterator := spatial_app.Iterator
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
-		if walker.IsIndexing() {
+		if iterator.IsIndexing() {
 			http.Error(rsp, "indexing records", http.StatusServiceUnavailable)
 			return
 		}
@@ -144,12 +144,12 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 
 func PointInPolygonCandidatesHandler(spatial_app *app.SpatialApplication) (http.Handler, error) {
 
-	walker := spatial_app.Walker
+	iterator := spatial_app.Iterator
 	spatial_db := spatial_app.SpatialDatabase
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
-		if walker.IsIndexing() {
+		if iterator.IsIndexing() {
 			http.Error(rsp, "indexing records", http.StatusServiceUnavailable)
 			return
 		}
