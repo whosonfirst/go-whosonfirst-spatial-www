@@ -60,6 +60,7 @@ github.com/sfomuseum/go-edtf/parser
 github.com/sfomuseum/go-edtf/re
 github.com/sfomuseum/go-edtf/tests
 # github.com/sfomuseum/go-flags v0.8.1
+## explicit
 github.com/sfomuseum/go-flags/flagset
 github.com/sfomuseum/go-flags/lookup
 github.com/sfomuseum/go-flags/multi
@@ -78,10 +79,8 @@ github.com/tidwall/sjson
 github.com/whosonfirst/algnhsa
 # github.com/whosonfirst/go-bindata v0.1.0
 ## explicit
-github.com/whosonfirst/go-bindata
 # github.com/whosonfirst/go-bindata-assetfs v1.0.1
 ## explicit
-github.com/whosonfirst/go-bindata-assetfs
 # github.com/whosonfirst/go-cache v0.2.0
 github.com/whosonfirst/go-cache
 # github.com/whosonfirst/go-ioutil v0.0.1
@@ -152,6 +151,7 @@ github.com/whosonfirst/go-whosonfirst-spr
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spr-geojson
 # github.com/whosonfirst/go-whosonfirst-spr/v2 v2.0.0
+## explicit
 github.com/whosonfirst/go-whosonfirst-spr/v2
 # github.com/whosonfirst/go-whosonfirst-uri v0.2.0
 github.com/whosonfirst/go-whosonfirst-uri

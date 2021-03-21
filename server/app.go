@@ -14,10 +14,10 @@ import (
 	"github.com/rs/cors"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/assets/templates"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
+	"github.com/whosonfirst/go-whosonfirst-spatial-http/templates/html"	
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
@@ -88,7 +88,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	geojson_reader_uri, _ := flags.StringVar(fs, "geojson-reader-uri")
 	resolver_uri, _ := flags.StringVar(fs, "geojson-path-resolver-uri")
 
-	path_templates, _ := flags.StringVar(fs, "path-templates")
 	nextzen_apikey, _ := flags.StringVar(fs, "nextzen-apikey")
 	nextzen_style_url, _ := flags.StringVar(fs, "nextzen-style-url")
 	nextzen_tile_url, _ := flags.StringVar(fs, "nextzen-tile-url")
@@ -204,34 +203,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	if enable_www {
 
-		t := template.New("spatial").Funcs(template.FuncMap{
-			//
-		})
+		t, err := template.ParseFS(html.FS, "*.html")
 
-		if path_templates != "" {
-
-			t, err = t.ParseGlob(path_templates)
-
-			if err != nil {
-				return fmt.Errorf("Unable to parse templates, %v", err)
-			}
-
-		} else {
-
-			for _, name := range templates.AssetNames() {
-
-				body, err := templates.Asset(name)
-
-				if err != nil {
-					return fmt.Errorf("Unable to load template '%s', %v", name, err)
-				}
-
-				t, err = t.Parse(string(body))
-
-				if err != nil {
-					return fmt.Errorf("Unable to parse template '%s', %v", name, err)
-				}
-			}
+		if err != nil {
+			return fmt.Errorf("Unable to parse templates, %v", err)
 		}
 
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
