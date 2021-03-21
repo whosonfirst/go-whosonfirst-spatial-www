@@ -1,8 +1,11 @@
 package bootstrap
 
 import (
-	"github.com/aaronland/go-http-rewrite"	
+	"fmt"
 	"github.com/aaronland/go-http-bootstrap/resources"
+	"github.com/aaronland/go-http-bootstrap/static"
+	"github.com/aaronland/go-http-rewrite"
+	"io/fs"
 	_ "log"
 	"net/http"
 	"path/filepath"
@@ -18,7 +21,8 @@ func DefaultBootstrapOptions() *BootstrapOptions {
 
 	opts := &BootstrapOptions{
 		CSS: []string{"/css/bootstrap.min.css"},
-		JS:  []string{"/javascript/bootstrap.min.js"},
+		// JS:  []string{"/javascript/bootstrap.min.js"},				
+		JS:  make([]string, 0),
 	}
 
 	return opts
@@ -54,8 +58,8 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *BootstrapOptions,
 
 func AssetsHandler() (http.Handler, error) {
 
-	fs := assetFS()
-	return http.FileServer(fs), nil
+	http_fs := http.FS(static.FS)
+	return http.FileServer(http_fs), nil
 }
 
 func AssetsHandlerWithPrefix(prefix string) (http.Handler, error) {
@@ -67,12 +71,12 @@ func AssetsHandlerWithPrefix(prefix string) (http.Handler, error) {
 	}
 
 	prefix = strings.TrimRight(prefix, "/")
-	
+
 	if prefix == "" {
 		return fs_handler, nil
 	}
 
-	rewrite_func := func(req *http.Request) (*http.Request, error){
+	rewrite_func := func(req *http.Request) (*http.Request, error) {
 		req.URL.Path = strings.Replace(req.URL.Path, prefix, "", 1)
 		return req, nil
 	}
@@ -93,18 +97,30 @@ func AppendAssetHandlersWithPrefix(mux *http.ServeMux, prefix string) error {
 		return nil
 	}
 
-	for _, path := range AssetNames() {
+	walk_func := func(path string, info fs.DirEntry, err error) error {
 
-		path := strings.Replace(path, "static", "", 1)
+		if path == "." {
+			return nil
+		}
 
+		if info.IsDir(){
+			return nil
+		}
+		
 		if prefix != "" {
 			path = appendPrefix(prefix, path)
 		}
 
+		if !strings.HasPrefix(path, "/") {
+			path = fmt.Sprintf("/%s", path)
+		}
+
+		// log.Println("APPEND", path)
 		mux.Handle(path, asset_handler)
+		return nil
 	}
 
-	return nil
+	return fs.WalkDir(static.FS, ".", walk_func)
 }
 
 func appendPrefix(prefix string, path string) string {

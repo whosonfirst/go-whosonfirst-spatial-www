@@ -1,6 +1,6 @@
 # go-http-leaflet
 
-Go HTTP middleware for Leaflet (1.6.0)
+Go HTTP middleware for Leaflet (1.7.1)
 
 ## Important
 

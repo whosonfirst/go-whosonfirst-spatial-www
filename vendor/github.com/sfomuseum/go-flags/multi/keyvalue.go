@@ -9,9 +9,23 @@ import (
 
 const SEP string = "="
 
+type KeyValueFlag interface {
+	Key() string
+	Value() interface{}
+}
+
 type KeyValueStringFlag struct {
-	Key   string
-	Value string
+	KeyValueFlag
+	key   string
+	value string
+}
+
+func (e *KeyValueStringFlag) Key() string {
+	return e.key
+}
+
+func (e *KeyValueStringFlag) Value() interface{} {
+	return e.value
 }
 
 type KeyValueString []*KeyValueStringFlag
@@ -30,8 +44,8 @@ func (e *KeyValueString) Set(value string) error {
 	}
 
 	a := KeyValueStringFlag{
-		Key:   kv[0],
-		Value: kv[1],
+		key:   kv[0],
+		value: kv[1],
 	}
 
 	*e = append(*e, &a)
@@ -43,8 +57,16 @@ func (e *KeyValueString) Get() interface{} {
 }
 
 type KeyValueInt64Flag struct {
-	Key   string
-	Value int64
+	key   string
+	value int64
+}
+
+func (e *KeyValueInt64Flag) Key() string {
+	return e.key
+}
+
+func (e *KeyValueInt64Flag) Value() interface{} {
+	return e.value
 }
 
 type KeyValueInt64 []*KeyValueInt64Flag
@@ -69,8 +91,8 @@ func (e *KeyValueInt64) Set(value string) error {
 	}
 
 	a := KeyValueInt64Flag{
-		Key:   kv[0],
-		Value: v,
+		key:   kv[0],
+		value: v,
 	}
 
 	*e = append(*e, &a)
@@ -82,8 +104,16 @@ func (e *KeyValueInt64) Get() interface{} {
 }
 
 type KeyValueFloat64Flag struct {
-	Key   string
-	Value float64
+	key   string
+	value float64
+}
+
+func (e *KeyValueFloat64Flag) Key() string {
+	return e.key
+}
+
+func (e *KeyValueFloat64Flag) Value() interface{} {
+	return e.value
 }
 
 type KeyValueFloat64 []*KeyValueFloat64Flag
@@ -108,8 +138,8 @@ func (e *KeyValueFloat64) Set(value string) error {
 	}
 
 	a := KeyValueFloat64Flag{
-		Key:   kv[0],
-		Value: v,
+		key:   kv[0],
+		value: v,
 	}
 
 	*e = append(*e, &a)

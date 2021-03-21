@@ -1,57 +1,47 @@
 package flags
 
-import (
-	"flag"
-	"fmt"
-	"log"
-	"os"
-	"strings"
-)
+const ALTERNATE_GEOMETRIES string = "alternate-geometry"
 
-func NewFlagSet(name string) *flag.FlagSet {
+const CESSATION_DATE string = "cessation-date"
 
-	fs := flag.NewFlagSet(name, flag.ExitOnError)
+const CUSTOM_PLACETYPES string = "custom-placetypes"
 
-	fs.Usage = func() {
-		fs.PrintDefaults()
-	}
+const CUSTOM_PLACETYPES_SOURCE string = "custom-placetypes-source"
 
-	return fs
-}
+const ENABLE_CUSTOM_PLACETYPES string = "enable-custom-placetypes"
 
-func Parse(fs *flag.FlagSet) {
+const ENABLE_PROPERTIES string = "enable-properties"
 
-	args := os.Args[1:]
+const EXCLUDE string = "exclude"
 
-	if len(args) > 0 && args[0] == "-h" {
-		fs.Usage()
-		os.Exit(0)
-	}
+const GEOMETRIES string = "geometries"
 
-	if len(args) > 0 && args[0] == "-setenv" {
-		SetFromEnv(fs)
-	}
+const INCEPTION_DATE string = "inception-date"
 
-	fs.Parse(args)
-}
+const INDEX_PROPERTIES string = "index-properties"
 
-func SetFromEnv(fs *flag.FlagSet) {
+const IS_CEASED string = "is-ceased"
 
-	fs.VisitAll(func(fl *flag.Flag) {
+const IS_CURRENT string = "is-current"
 
-		name := fl.Name
-		env := name
+const IS_DEPRECATED string = "is-deprecated"
 
-		env = strings.ToUpper(env)
-		env = strings.Replace(env, "-", "_", -1)
-		env = fmt.Sprintf("WOF_%s", env)
+const IS_SUPERSEDED string = "is-superseded"
 
-		val, ok := os.LookupEnv(env)
+const IS_SUPERSEDING string = "is-superseding"
 
-		if ok {
-			log.Printf("set -%s flag (%s) from %s environment variable\n", name, val, env)
-			fs.Set(name, val)
-		}
+const ITERATOR_URI string = "iterator-uri"
 
-	})
-}
+const LATITUDE string = "latitude"
+
+const LONGITUDE string = "longitude"
+
+const PLACETYPES string = "placetype"
+
+const PROPERTIES string = "property"
+
+const PROPERTIES_READER_URI string = "properties-reader-uri"
+
+const SPATIAL_DATABASE_URI string = "spatial-database-uri"
+
+const VERBOSE string = "verbose"

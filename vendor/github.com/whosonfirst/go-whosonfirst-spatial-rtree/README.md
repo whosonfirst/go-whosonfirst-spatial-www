@@ -1,5 +1,11 @@
 # go-whosonfirst-spatial-rtree
 
+In-memory implementation of the go-whosonfirst-spatial interfaces.
+
+## Important
+
+This is work in progress. Document remains incomplete.
+
 ## Interfaces
 
 This package implements the following [go-whosonfirst-spatial](#) interfaces.
@@ -56,6 +62,8 @@ $> ./bin/query -h
     	Exclude (WOF) records based on their existential flags. Valid options are: ceased, deprecated, not-current, superseded.
   -geometries string
     	Valid options are: all, alt, default. (default "all")
+  -index-properties
+    	Index properties reader.
   -is-ceased value
     	One or more existential flags (-1, 0, 1) to filter results by.
   -is-current value
@@ -68,12 +76,12 @@ $> ./bin/query -h
     	One or more existential flags (-1, 0, 1) to filter results by.
   -is-wof
     	Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents. (default true)
+  -iterator-uri string
+    	A valid whosonfirst/go-whosonfirst-iterate/emitter URI. Supported schemes are: directory://, featurecollection://, file://, filelist://, geojsonl://, repo://. (default "repo://")
   -latitude float
     	A valid latitude.
   -longitude float
     	A valid longitude.
-  -mode string
-    	Valid modes are: directory, featurecollection, file, filelist, geojsonl, repo. (default "repo://")
   -placetype value
     	One or more place types to filter results by.
   -properties value
@@ -92,42 +100,20 @@ For example:
 
 ```
 $> ./bin/query \
-	-database-uri 'rtree://?strict=false' \
-	-latitude 37.616951 \
-	-longitude -122.383747 \
-	-mode repo:// \
-	/usr/local/data/sfomuseum-data-architecture/ \
+	-iterator-uri 'repo://?include=properties.mz:is_current=1' \
+	-latitude 37.613490350845794 \
+	-longitude -122.38882533303682 \
+	/usr/local/data/sfomuseum-data-architecture/
 
-| jq | grep wof:name
+| jq '.places[]["wof:name"]'
 
-17:08:24.974105 [query][index] ERROR 1159157931 failed indexing, (rtreego: improper distance). Strict mode is disabled, so skipping.
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "International Terminal",
-      "wof:name": "International Terminal",
-      "wof:name": "Central Terminal",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "Central Terminal",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "Terminal 2 Main Hall",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "Central Terminal",
-      "wof:name": "Terminal 2",
-      "wof:name": "Terminal 2 Main Hall",
-      "wof:name": "Terminal 2",
-      "wof:name": "Central Terminal",
-      "wof:name": "Boarding Area D",
-      "wof:name": "Boarding Area D",
-      "wof:name": "Central Terminal",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "SFO Terminal Complex",
-      "wof:name": "SFO Terminal Complex",
+"Boarding Area A"
+"SFO Terminal Complex"
+"International Terminal"
 ```
 
 ## See also
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial
+* https://github.com/whosonfirst/go-whosonfirst-iterate
 * https://github.com/dhconnelly/rtreego

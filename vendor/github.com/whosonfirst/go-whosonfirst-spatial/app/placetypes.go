@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"flag"
+	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-placetypes"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"io"
@@ -11,9 +12,9 @@ import (
 
 func AppendCustomPlacetypesWithFlagSet(ctx context.Context, fs *flag.FlagSet) error {
 
-	enable_custom_placetypes, _ := flags.BoolVar(fs, "enable-custom-placetypes")
-	custom_placetypes_source, _ := flags.StringVar(fs, "custom-placetypes-source")
-	custom_placetypes, _ := flags.StringVar(fs, "custom-placetypes")
+	enable_custom_placetypes, _ := lookup.BoolVar(fs, flags.ENABLE_CUSTOM_PLACETYPES)
+	custom_placetypes_source, _ := lookup.StringVar(fs, flags.CUSTOM_PLACETYPES_SOURCE)
+	custom_placetypes, _ := lookup.StringVar(fs, flags.CUSTOM_PLACETYPES)
 
 	if !enable_custom_placetypes {
 		return nil

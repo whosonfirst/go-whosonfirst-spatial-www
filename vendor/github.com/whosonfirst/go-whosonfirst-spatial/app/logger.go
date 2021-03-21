@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"flag"
+	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"io"
@@ -11,7 +12,7 @@ import (
 
 func NewApplicationLoggerWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*log.WOFLogger, error) {
 
-	verbose, _ := flags.BoolVar(fl, "verbose")
+	verbose, _ := lookup.BoolVar(fl, flags.VERBOSE)
 
 	logger := log.SimpleWOFLogger()
 	level := "status"

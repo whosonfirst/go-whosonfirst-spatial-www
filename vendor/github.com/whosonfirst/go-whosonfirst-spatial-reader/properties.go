@@ -10,7 +10,7 @@ import (
 	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
-	"github.com/whosonfirst/go-whosonfirst-spr"
+	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	_ "log"
 	"net/url"
 	"strconv"
@@ -48,13 +48,13 @@ func NewWhosonfirstPropertiesReader(ctx context.Context, uri string) (properties
 		cache_uri = "null://"
 	}
 
-	cr_q := url.Values{}
-	cr_q.Set("reader", reader_uri)
-	cr_q.Set("cache", cache_uri)
+	cr_params := url.Values{}
+	cr_params.Set("reader", reader_uri)
+	cr_params.Set("cache", cache_uri)
 
 	cr_uri := url.URL{}
 	cr_uri.Scheme = "cachereader"
-	cr_uri.RawQuery = cr_q.Encode()
+	cr_uri.RawQuery = cr_params.Encode()
 
 	cr, err := cachereader.NewCacheReader(ctx, cr_uri.String())
 
