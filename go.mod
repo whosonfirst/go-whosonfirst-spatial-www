@@ -12,8 +12,7 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/sfomuseum/go-flags v0.8.1
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
-	github.com/whosonfirst/go-whosonfirst-spatial v0.0.45
-	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.4
-	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.0.8
-	github.com/whosonfirst/go-whosonfirst-spatial-sqlite v0.0.34 // indirect
+	github.com/whosonfirst/go-whosonfirst-spatial v0.0.46
+	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.5
+	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.0.9
 )

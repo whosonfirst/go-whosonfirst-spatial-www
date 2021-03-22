@@ -30,7 +30,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 	available_property_readers := properties.Schemes()
 	desc_property_readers := fmt.Sprintf("Valid options are: %s", available_property_readers)
 
-	fs.String(PROPERTIES_READER_URI, "", desc_property_readers)
+	fs.String(PROPERTIES_READER_URI, "rtree://", desc_property_readers)
 
 	fs.Bool(ENABLE_CUSTOM_PLACETYPES, false, "...")
 	fs.String(CUSTOM_PLACETYPES_SOURCE, "", "...")

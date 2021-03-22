@@ -32,7 +32,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	}
 
 	if properties_reader_uri == "" {
-		return errors.New("Invalid or missing -properties-reader-uri flag")
+		// return errors.New("Invalid or missing -properties-reader-uri flag")
 	}
 
 	init_lat, err := lookup.Float64Var(fs, "initial-latitude")

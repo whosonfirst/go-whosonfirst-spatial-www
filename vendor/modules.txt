@@ -117,7 +117,7 @@ github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.45
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.46
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/app
@@ -127,15 +127,13 @@ github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo
 github.com/whosonfirst/go-whosonfirst-spatial/properties
 github.com/whosonfirst/go-whosonfirst-spatial/timer
-# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.4
+# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.5
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial-pip
 github.com/whosonfirst/go-whosonfirst-spatial-pip/api
-# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.0.8
+# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.0.9
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial-rtree
-# github.com/whosonfirst/go-whosonfirst-spatial-sqlite v0.0.34
-## explicit
 # github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.6
 github.com/whosonfirst/go-whosonfirst-spr-geojson
 # github.com/whosonfirst/go-whosonfirst-spr/v2 v2.0.0

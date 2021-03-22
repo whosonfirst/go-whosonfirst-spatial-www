@@ -7,9 +7,9 @@ import (
 import (
 	"context"
 	"github.com/sfomuseum/go-flags/flagset"
-	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
+	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
-	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"log"
 )
 
@@ -17,19 +17,19 @@ func main() {
 
 	ctx := context.Background()
 
-	fs, err := flags.CommonFlags()
+	fs, err := spatial_flags.CommonFlags()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = flags.AppendIndexingFlags(fs)
+	err = spatial_flags.AppendIndexingFlags(fs)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = http_flags.AppendWWWFlags(fs)
+	err = www_flags.AppendWWWFlags(fs)
 
 	if err != nil {
 		log.Fatal(err)
@@ -37,19 +37,19 @@ func main() {
 
 	flagset.Parse(fs)
 
-	err = flags.ValidateCommonFlags(fs)
+	err = spatial_flags.ValidateCommonFlags(fs)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = flags.ValidateIndexingFlags(fs)
+	err = spatial_flags.ValidateIndexingFlags(fs)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = http_flags.ValidateWWWFlags(fs)
+	err = www_flags.ValidateWWWFlags(fs)
 
 	if err != nil {
 		log.Fatal(err)
