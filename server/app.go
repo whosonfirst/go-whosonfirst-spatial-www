@@ -24,6 +24,7 @@ import (
 	"html/template"
 	"log"
 	gohttp "net/http"
+	"path/filepath"
 )
 
 type HTTPServerApplication struct {
@@ -113,6 +114,26 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to index paths, because %s", err)
 	}
 
+	// START OF ...
+
+	path_prefix := ""
+
+	path_ping := "/health/ping"
+	path_api_pip := "/api/point-in-polygon"
+	path_www_pip := "/point-in-polygon"
+	path_www_index := "/"
+
+	if path_prefix != "" {
+
+		path_ping = filepath.Join(path_prefix, path_ping)
+		path_api_pip = filepath.Join(path_prefix, path_api_pip)
+		path_www_pip = filepath.Join(path_prefix, path_www_pip)
+		path_www_index = filepath.Join(path_prefix, path_www_index)
+
+	}
+
+	// END OF ...
+
 	mux := gohttp.NewServeMux()
 
 	ping_handler, err := ping.PingHandler()
@@ -121,7 +142,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("failed to create ping handler because %s", err)
 	}
 
-	mux.Handle("/health/ping", ping_handler)
+	mux.Handle(path_ping, ping_handler)
 
 	enable_cors := true
 	enable_gzip := true
@@ -154,8 +175,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
 	}
 
-	logger.Info("Register /api/point-in-polygon handler")
-	mux.Handle("/api/point-in-polygon", api_pip_handler)
+	logger.Info("Register %s handler", path_api_pip)
+	mux.Handle(path_api_pip, api_pip_handler)
 
 	/*
 		if enable_candidates {
@@ -191,19 +212,19 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = tangramjs.AppendAssetHandlers(mux)
+		err = tangramjs.AppendAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append tangram.js assets, %v", err)
 		}
 
-		err = bootstrap.AppendAssetHandlers(mux)
+		err = bootstrap.AppendAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlers(mux)
+		err = http.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append static assets, %v", err)
@@ -223,11 +244,11 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
-		http_pip_handler = tangramjs.AppendResourcesHandler(http_pip_handler, tangramjs_opts)
+		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
+		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_prefix)
 
-		logger.Info("Register /point-in-polygon handler")
-		mux.Handle("/point-in-polygon", http_pip_handler)
+		logger.Info("Register %s handler", path_www_pip)
+		mux.Handle(path_www_pip, http_pip_handler)
 
 		index_opts := &http.IndexHandlerOptions{
 			Templates: t,
@@ -239,10 +260,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("Failed to create index handler, %v", err)
 		}
 
-		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
+		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
 
-		logger.Info("Register / handler")
-		mux.Handle("/", index_handler)
+		logger.Info("Register %s handler", path_www_index)
+		mux.Handle(path_www_index, index_handler)
 	}
 
 	s, err := server.NewServer(ctx, server_uri)
