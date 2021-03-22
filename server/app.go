@@ -14,15 +14,13 @@ import (
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/api"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/templates/html"
+	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
 	"html/template"
 	"log"
 	gohttp "net/http"
@@ -82,13 +80,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to validate www flags, %v", err)
 	}
 
-	enable_properties, _ := lookup.BoolVar(fs, "enable-properties")
 	enable_www, _ := lookup.BoolVar(fs, "enable-www")
 	// enable_candidates, _ := lookup.BoolVar(fs, "enable-candidates")
 
 	enable_geojson, _ := lookup.BoolVar(fs, "enable-geojson")
-	geojson_reader_uri, _ := lookup.StringVar(fs, "geojson-reader-uri")
-	resolver_uri, _ := lookup.StringVar(fs, "geojson-path-resolver-uri")
 
 	nextzen_apikey, _ := lookup.StringVar(fs, "nextzen-apikey")
 	nextzen_style_url, _ := lookup.StringVar(fs, "nextzen-style-url")
@@ -142,30 +137,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}
 
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
-		EnableGeoJSON:    enable_geojson,
-		EnableProperties: enable_properties,
-	}
-
-	if enable_geojson {
-
-		geojson_reader, err := reader.NewReader(ctx, geojson_reader_uri)
-
-		if err != nil {
-			return fmt.Errorf("Failed to create new geojson reader, %v", err)
-		}
-
-		api_pip_opts.GeoJSONReader = geojson_reader
-
-		if resolver_uri != "" {
-
-			resolver_func, err := geojson.NewSPRPathResolverFunc(ctx, resolver_uri)
-
-			if err != nil {
-				return err
-			}
-
-			api_pip_opts.SPRPathResolver = resolver_func
-		}
+		EnableGeoJSON: enable_geojson,
 	}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)
