@@ -20,6 +20,15 @@ func IndexHandler(opts *IndexHandlerOptions) (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
+		rsp.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		err := t.Execute(rsp, nil)
+
+		if err != nil {
+			gohttp.Error(rsp, err.Error(), gohttp.StatusInternalServerError)
+			return
+		}
+
 		return
 	}
 

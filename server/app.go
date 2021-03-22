@@ -262,8 +262,14 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_root)
 
-		logger.Info("Register %s handler", path_root)
-		mux.Handle(path_root, index_handler)
+		path_index := path_root
+
+		if path_index == "" {
+			path_index = "/"
+		}
+
+		logger.Info("Register %s handler", path_index)
+		mux.Handle(path_index, index_handler)
 	}
 
 	s, err := server.NewServer(ctx, server_uri)
