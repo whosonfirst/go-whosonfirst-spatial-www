@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
+	"github.com/aaronland/go-http-ping"
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
-	"github.com/aaronland/go-http-ping"	
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
@@ -154,6 +154,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
 	}
 
+	log.Println("Register /api/point-in-polygon handler")
 	mux.Handle("/api/point-in-polygon", api_pip_handler)
 
 	/*
@@ -225,6 +226,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
 		http_pip_handler = tangramjs.AppendResourcesHandler(http_pip_handler, tangramjs_opts)
 
+		log.Println("Register /point-in-polygon handler")
 		mux.Handle("/point-in-polygon", http_pip_handler)
 	}
 
@@ -234,6 +236,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to create new server for '%s', %v", server_uri, err)
 	}
 
+	log.Println(s.Address())
 	logger.Info("Listening on %s", s.Address())
 
 	err = s.ListenAndServe(ctx, mux)
