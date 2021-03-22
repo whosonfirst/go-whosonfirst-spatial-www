@@ -131,14 +131,11 @@ window.addEventListener("load", function load(event){
 	}
 
 	if (placetypes.length > 0){
-	    args['placetype'] = placetypes;
+	    args['placetypes'] = placetypes;
 	}
 
-	console.log("ARGS", args);
-	
 	var on_success = function(rsp){
 
-	    console.log("SUCCESS", rsp);
 	    layers.clearLayers();
 
 	    // FIX ME...
