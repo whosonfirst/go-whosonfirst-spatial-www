@@ -2,9 +2,9 @@ package http
 
 import (
 	"fmt"
-	"github.com/aaronland/go-http-rewrite"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/static"
 	"io/fs"
+	"log"
 	gohttp "net/http"
 	"path/filepath"
 	"strings"
@@ -23,19 +23,8 @@ func StaticAssetsHandlerWithPrefix(prefix string) (gohttp.Handler, error) {
 		return nil, err
 	}
 
-	prefix = strings.TrimRight(prefix, "/")
-
-	if prefix == "" {
-		return fs_handler, nil
-	}
-
-	rewrite_func := func(req *gohttp.Request) (*gohttp.Request, error) {
-		req.URL.Path = strings.Replace(req.URL.Path, prefix, "", 1)
-		return req, nil
-	}
-
-	rewrite_handler := rewrite.RewriteRequestHandler(fs_handler, rewrite_func)
-	return rewrite_handler, nil
+	fs_handler = gohttp.StripPrefix(prefix, fs_handler)
+	return fs_handler, nil
 }
 
 func AppendStaticAssetHandlers(mux *gohttp.ServeMux) error {
@@ -68,7 +57,7 @@ func AppendStaticAssetHandlersWithPrefix(mux *gohttp.ServeMux, prefix string) er
 			path = fmt.Sprintf("/%s", path)
 		}
 
-		// log.Println("APPEND", path)
+		log.Println("APPEND", path)
 
 		mux.Handle(path, asset_handler)
 		return nil

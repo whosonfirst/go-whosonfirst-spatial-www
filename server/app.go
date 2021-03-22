@@ -20,7 +20,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
-	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
 	"log"
 	gohttp "net/http"
@@ -38,13 +38,13 @@ func NewHTTPServerApplication(ctx context.Context) (*HTTPServerApplication, erro
 
 func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 
-	fs, err := flags.CommonFlags()
+	fs, err := spatial_flags.CommonFlags()
 
 	if err != nil {
 		return fmt.Errorf("Failed to instantiate common flags, %v", err)
 	}
 
-	err = flags.AppendIndexingFlags(fs)
+	err = spatial_flags.AppendIndexingFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to append indexings flags, %v", err)
@@ -63,13 +63,13 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 
 func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs *flag.FlagSet) error {
 
-	err := flags.ValidateCommonFlags(fs)
+	err := spatial_flags.ValidateCommonFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to validate common flags, %v", err)
 	}
 
-	err = flags.ValidateIndexingFlags(fs)
+	err = spatial_flags.ValidateIndexingFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to validate indexing flags, %v", err)
@@ -82,7 +82,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}
 
 	enable_www, _ := lookup.BoolVar(fs, "enable-www")
-	// enable_candidates, _ := lookup.BoolVar(fs, "enable-candidates")
 
 	enable_geojson, _ := lookup.BoolVar(fs, "enable-geojson")
 
@@ -108,13 +107,14 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	paths := fs.Args()
 
-	err = spatial_app.IndexPaths(ctx, paths...)
+	go func() {
 
-	if err != nil {
-		return fmt.Errorf("Failed to index paths, because %s", err)
-	}
+		err = spatial_app.IndexPaths(ctx, paths...)
 
-	// START OF ...
+		if err != nil {
+			log.Printf("Failed to index paths, because %s", err)
+		}
+	}()
 
 	path_prefix, _ := lookup.StringVar(fs, www_flags.PATH_PREFIX)
 	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
@@ -131,8 +131,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		path_www_index = filepath.Join(path_prefix, path_www_index)
 
 	}
-
-	// END OF ...
 
 	mux := gohttp.NewServeMux()
 
@@ -177,25 +175,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	logger.Info("Register %s handler", path_api_pip)
 	mux.Handle(path_api_pip, api_pip_handler)
-
-	/*
-		if enable_candidates {
-
-			logger.Debug("setting up candidates handler")
-
-			candidates_handler, err := api.PointInPolygonCandidatesHandler(spatial_app)
-
-			if err != nil {
-				return fmt.Errorf("failed to create Spatial handler because %s", err)
-			}
-
-			if enable_cors {
-				candidates_handler = cors_wrapper.Handler(candidates_handler)
-			}
-
-			mux.Handle("/api/point-in-polygon/candidates", candidates_handler)
-		}
-	*/
 
 	if enable_www {
 
