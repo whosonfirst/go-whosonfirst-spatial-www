@@ -25,7 +25,6 @@ whosonfirst.spatial.pip = (function(){
 		"wof:id":"",
 		"wof:name":"",
 		"wof:placetype":"",
-		// "wof:repo":"",
 		"edtf:inception":"",
 		"edtf:cessation":"",		
 	    };

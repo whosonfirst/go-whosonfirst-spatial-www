@@ -1,6 +1,14 @@
 var whosonfirst = whosonfirst || {};
 whosonfirst.spatial = whosonfirst.spatial || {};
 
+/*
+
+This is really a whosonfirst-spatial-pip API right now. It is too
+soon to say whether this reflect a common approach for all API-related
+stuff (20210322/thisisaaronland)
+
+*/
+
 whosonfirst.spatial.api = (function(){
 
     var self = {
@@ -21,25 +29,6 @@ whosonfirst.spatial.api = (function(){
 	    var abs_url = self.abs_url(rel_url);
 	    
 	    var req = new XMLHttpRequest();
-
-	    /*
-	    var form_data = args;
-
-	    if (! form_data.append){
-		
-		form_data = new FormData();
-		
-		for (key in args){
-		    form_data.append(key, args[key]);
-		}
-	    }
-
-	    if (method.verb() == "GET"){
-
-		if (form_data.keys()){}
-	    }
-
-	    */
 					    
 	    req.onload = function(){
 		

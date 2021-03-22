@@ -134,6 +134,32 @@ window.addEventListener("load", function load(event){
 	    args['placetypes'] = placetypes;
 	}
 
+	var edtf_filters = document.getElementsByClassName("point-in-polygon-filter-edtf");
+	var count_edtf = edtf_filters.length;
+
+	for (var i=0; i < count_edtf; i++){
+
+	    var el = edtf_filters[i];
+
+	    var id = el.getAttribute("id");
+
+	    if (! id.match("^(inception|cessation)$")){
+		continue
+	    }
+
+	    var value = el.value;
+
+	    if (value == ""){
+		continue;
+	    }
+	    
+	    // TO DO: VALIDATE EDTF HERE WITH WASM
+	    // https://millsfield.sfomuseum.org/blog/2021/01/14/edtf/
+
+	    var key = id + "_date";
+	    args[key] = value;
+	}
+	
 	var on_success = function(rsp){
 
 	    layers.clearLayers();
