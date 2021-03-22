@@ -51,11 +51,13 @@ whosonfirst.spatial.api = (function(){
 
 	    req.setRequestHeader("Content-type", "application/json");
 	    req.setRequestHeader("Accept", "application/geo+json");
-	    
+
+	    console.log("POST", args);
 	    var enc_args = JSON.stringify(args);
 	    req.send(enc_args);	    
 	},
-	
+
+	/*
 	'get': function(rel_url, args, on_success, on_error) {
 
 	    var qs = self.query_string(args);
@@ -85,7 +87,8 @@ whosonfirst.spatial.api = (function(){
 	    req.open("get", abs_url, true);
 	    req.send();	    
 	},
-
+	*/
+	
 	'abs_url': function(rel_url) {
 
 	    return location.protocol + "//" + location.host + '/api' + rel_url;	// READ ME FROM A DATA ATTRIBUTE...
