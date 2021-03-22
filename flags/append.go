@@ -13,12 +13,10 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.Bool("enable-www", false, "Enable the interactive /debug endpoint to query points and display results.")
 
-	fs.String(PATH_PING, "/health/ping", "The URL for the ping (health check) handler")
-	fs.String(PATH_API_PIP, "/api/point-in-polygon", "The URL for the point in polygon API handler")
-	fs.String(PATH_WWW_PIP, "/point-in-polygon", "The URL for the point in polygon web handler")
-	fs.String(PATH_WWW_INDEX, "/", "The URL for the root web handler")
-
 	fs.String(PATH_ROOT, "", "Prepend this prefix to all URLs when registering (HTTP) handlers")
+	fs.String(PATH_ROOT_API, "/api", "The root URL for all API handlers")
+	fs.String(PATH_PING, "/health/ping", "The URL for the ping (health check) handler")
+	fs.String(PATH_PIP, "/point-in-polygon", "The URL for the point in polygon web handler")
 
 	fs.String("nextzen-apikey", "", "A valid Nextzen API key")
 	fs.String("nextzen-style-url", "/tangram/refill-style.zip", "...")

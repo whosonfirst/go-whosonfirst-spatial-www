@@ -118,19 +118,16 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}()
 
 	path_root, _ := lookup.StringVar(fs, www_flags.PATH_ROOT)
-	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
+	path_root_api, _ := lookup.StringVar(fs, www_flags.PATH_ROOT_API)
 
-	path_api_pip, _ := lookup.StringVar(fs, www_flags.PATH_API_PIP)
-	path_www_pip, _ := lookup.StringVar(fs, www_flags.PATH_WWW_PIP)
-	path_www_index, _ := lookup.StringVar(fs, www_flags.PATH_WWW_INDEX)
+	path_pip, _ := lookup.StringVar(fs, www_flags.PATH_PIP)
+	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
 
 	if path_root != "" {
 
+		path_root_api = filepath.Join(path_root, path_root_api)
 		path_ping = filepath.Join(path_root, path_ping)
-		path_api_pip = filepath.Join(path_root, path_api_pip)
-		path_www_pip = filepath.Join(path_root, path_www_pip)
-		path_www_index = filepath.Join(path_root, path_www_index)
-
+		path_pip = filepath.Join(path_root, path_pip)
 	}
 
 	mux := gohttp.NewServeMux()
@@ -174,6 +171,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
 	}
 
+	path_api_pip := filepath.Join(path_root_api, "point-in-polygon")
+
 	logger.Info("Register %s handler", path_api_pip)
 	mux.Handle(path_api_pip, api_pip_handler)
 
@@ -193,6 +192,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 				path = filepath.Join(path_root, path)
 				return path
+			},
+
+			"APIRoot": func() string {
+				return path_root_api
 			},
 		})
 
@@ -244,8 +247,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_root)
 		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_root)
 
-		logger.Info("Register %s handler", path_www_pip)
-		mux.Handle(path_www_pip, http_pip_handler)
+		logger.Info("Register %s handler", path_pip)
+		mux.Handle(path_pip, http_pip_handler)
 
 		index_opts := &http.IndexHandlerOptions{
 			Templates: t,
@@ -259,8 +262,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_root)
 
-		logger.Info("Register %s handler", path_www_index)
-		mux.Handle(path_www_index, index_handler)
+		logger.Info("Register %s handler", path_root)
+		mux.Handle(path_root, index_handler)
 	}
 
 	s, err := server.NewServer(ctx, server_uri)
