@@ -7,22 +7,70 @@ whosonfirst.spatial.api = (function(){
 
 	'point_in_polygon': function(args, on_success, on_error) {
 
-	    var qs = self.query_string(args);
-
-	    var rel_url = "/point-in-polygon?" + qs;
-	    return self.get(rel_url, on_success, on_error);
+	    var rel_url = "/point-in-polygon";
+	    return self.post(rel_url, args, on_success, on_error);
 	},
 
 	'point_in_polygon_candidates': function(args, on_success, on_error) {
 
-	    var lat = args['latitude'];
-	    var lon = args['longitude'];
+	    return self.post(rel_url, args, on_success, on_error);
+	},
 
-	    var rel_url = "/point-in-polygon/candidates?latitude=" + lat + "&longitude=" + lon;
-	    return self.get(rel_url, on_success, on_error);
+	'post': function(rel_url, args, on_success, on_error) {
+
+	    var abs_url = self.abs_url(rel_url);
+	    
+	    var req = new XMLHttpRequest();
+
+	    /*
+	    var form_data = args;
+
+	    if (! form_data.append){
+		
+		form_data = new FormData();
+		
+		for (key in args){
+		    form_data.append(key, args[key]);
+		}
+	    }
+
+	    if (method.verb() == "GET"){
+
+		if (form_data.keys()){}
+	    }
+
+	    */
+					    
+	    req.onload = function(){
+		
+		var rsp;
+		
+		try {
+		    rsp = JSON.parse(this.responseText);
+            	}
+		
+		catch (e){
+		    console.log("ERR", abs_url, e);
+		    on_error(e);
+		    return false;
+		}
+		
+		on_success(rsp);
+       	    };
+	    
+	    req.open("POST", abs_url, true);
+
+	    req.setRequestHeader("Content-type", "application/json");
+	    req.setRequestHeader("Accept", "application/geo+json");
+	    
+	    var enc_args = JSON.stringify(args);
+	    req.send(enc_args);	    
 	},
 	
-	'get': function(rel_url, on_success, on_error) {
+	'get': function(rel_url, args, on_success, on_error) {
+
+	    var qs = self.query_string(args);
+	    rel_url = rel_url + "?" + qs;
 
 	    var abs_url = self.abs_url(rel_url);
 	    
