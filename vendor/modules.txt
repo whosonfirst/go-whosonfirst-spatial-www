@@ -13,6 +13,7 @@ github.com/aaronland/go-http-leaflet/static
 ## explicit
 github.com/aaronland/go-http-ping
 # github.com/aaronland/go-http-rewrite v0.0.6
+## explicit
 github.com/aaronland/go-http-rewrite
 # github.com/aaronland/go-http-sanitize v0.0.5
 github.com/aaronland/go-http-sanitize
@@ -110,6 +111,7 @@ github.com/whosonfirst/go-whosonfirst-iterate/iterator
 # github.com/whosonfirst/go-whosonfirst-log v0.1.0
 github.com/whosonfirst/go-whosonfirst-log
 # github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
+## explicit
 github.com/whosonfirst/go-whosonfirst-placetypes
 github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0

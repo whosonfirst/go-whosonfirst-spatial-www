@@ -15,10 +15,10 @@ import (
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
-	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
@@ -154,7 +154,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
 	}
 
-	log.Println("Register /api/point-in-polygon handler")
+	logger.Info("Register /api/point-in-polygon handler")
 	mux.Handle("/api/point-in-polygon", api_pip_handler)
 
 	/*
@@ -226,13 +226,13 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
 		http_pip_handler = tangramjs.AppendResourcesHandler(http_pip_handler, tangramjs_opts)
 
-		log.Println("Register /point-in-polygon handler")
+		logger.Info("Register /point-in-polygon handler")
 		mux.Handle("/point-in-polygon", http_pip_handler)
 
 		index_opts := &http.IndexHandlerOptions{
 			Templates: t,
 		}
-		
+
 		index_handler, err := http.IndexHandler(index_opts)
 
 		if err != nil {
@@ -241,7 +241,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
 
-		log.Println("Register / handler")
+		logger.Info("Register / handler")
 		mux.Handle("/", index_handler)
 	}
 
@@ -251,7 +251,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to create new server for '%s', %v", server_uri, err)
 	}
 
-	log.Println(s.Address())
 	logger.Info("Listening on %s", s.Address())
 
 	err = s.ListenAndServe(ctx, mux)
