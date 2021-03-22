@@ -25,16 +25,6 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	fs.Set("enable-geojson", "true")
 	fs.Set("enable-properties", "true")
 
-	properties_reader_uri, err := lookup.StringVar(fs, "properties-reader-uri")
-
-	if err != nil {
-		return err
-	}
-
-	if properties_reader_uri == "" {
-		// return errors.New("Invalid or missing -properties-reader-uri flag")
-	}
-
 	init_lat, err := lookup.Float64Var(fs, "initial-latitude")
 
 	if err != nil {
@@ -63,6 +53,23 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 
 	if init_zoom < 1 {
 		return errors.New("Invalid zoom")
+	}
+
+	path_flags := []string{
+		PATH_PREFIX,
+		PATH_PING,
+		PATH_API_PIP,
+		PATH_WWW_PIP,
+		PATH_WWW_INDEX,
+	}
+
+	for _, fl := range path_flags {
+
+		_, err := lookup.StringVar(fs, fl)
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -16,7 +16,7 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
-	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
+	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
@@ -50,7 +50,7 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 		return fmt.Errorf("Failed to append indexings flags, %v", err)
 	}
 
-	err = http_flags.AppendWWWFlags(fs)
+	err = www_flags.AppendWWWFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to append www flags, %v", err)
@@ -75,7 +75,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to validate indexing flags, %v", err)
 	}
 
-	err = http_flags.ValidateWWWFlags(fs)
+	err = www_flags.ValidateWWWFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to validate www flags, %v", err)
@@ -116,12 +116,12 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	// START OF ...
 
-	path_prefix := ""
+	path_prefix, _ := lookup.StringVar(fs, www_flags.PATH_PREFIX)
+	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
 
-	path_ping := "/health/ping"
-	path_api_pip := "/api/point-in-polygon"
-	path_www_pip := "/point-in-polygon"
-	path_www_index := "/"
+	path_api_pip, _ := lookup.StringVar(fs, www_flags.PATH_API_PIP)
+	path_www_pip, _ := lookup.StringVar(fs, www_flags.PATH_WWW_PIP)
+	path_www_index, _ := lookup.StringVar(fs, www_flags.PATH_WWW_INDEX)
 
 	if path_prefix != "" {
 
