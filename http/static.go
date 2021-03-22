@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/static"
 	"io/fs"
-	"log"
+	_ "log"
 	gohttp "net/http"
 	"path/filepath"
 	"strings"
@@ -57,7 +57,7 @@ func AppendStaticAssetHandlersWithPrefix(mux *gohttp.ServeMux, prefix string) er
 			path = fmt.Sprintf("/%s", path)
 		}
 
-		log.Println("APPEND", path)
+		// log.Println("APPEND", path)
 
 		mux.Handle(path, asset_handler)
 		return nil

@@ -1,7 +1,7 @@
 # github.com/NYTimes/gziphandler v1.1.1
 ## explicit
 github.com/NYTimes/gziphandler
-# github.com/aaronland/go-http-bootstrap v0.0.9
+# github.com/aaronland/go-http-bootstrap v0.0.10
 ## explicit
 github.com/aaronland/go-http-bootstrap
 github.com/aaronland/go-http-bootstrap/resources

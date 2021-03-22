@@ -27,6 +27,8 @@ github.com/aaronland/go-http-bootstrap v0.0.7 h1:oTNH6kSF3wT1s4jH4VUgLFpkTdy0WgJ
 github.com/aaronland/go-http-bootstrap v0.0.7/go.mod h1:mydJS+3/wI6g8ROiYsGdqG4cYFNp8KTicxMj5lWxbCo=
 github.com/aaronland/go-http-bootstrap v0.0.9 h1:Zy7KPt40c9T8Ur6P1BlLcpmGHHvN6So0ACnYJoVWhpM=
 github.com/aaronland/go-http-bootstrap v0.0.9/go.mod h1:c4TEIXKCMI9gq8VxDmQL+o960u84j0Jxn0vCd0qJhc0=
+github.com/aaronland/go-http-bootstrap v0.0.10 h1:+gIJRVGegIQlEA4qDyoxxyWrjyHF0R8x3da1NnjRRZg=
+github.com/aaronland/go-http-bootstrap v0.0.10/go.mod h1:c4TEIXKCMI9gq8VxDmQL+o960u84j0Jxn0vCd0qJhc0=
 github.com/aaronland/go-http-leaflet v0.0.3 h1:moAjSThtakdpdZ9zr6po11XeIyksYfe+BaH+tfdrnsM=
 github.com/aaronland/go-http-leaflet v0.0.3/go.mod h1:jUzEnGKezjceuNtQJIZWy2nXMhuteRSK0BPIjSSniBw=
 github.com/aaronland/go-http-leaflet v0.0.6 h1:8pLfLudvmids0v+B86Y3tL2Q3EUJjidjV/diJqrJdyg=
