@@ -25,6 +25,7 @@ import (
 	"log"
 	gohttp "net/http"
 	"path/filepath"
+	"strings"
 )
 
 type HTTPServerApplication struct {
@@ -116,19 +117,19 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		}
 	}()
 
-	path_prefix, _ := lookup.StringVar(fs, www_flags.PATH_PREFIX)
+	path_root, _ := lookup.StringVar(fs, www_flags.PATH_ROOT)
 	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
 
 	path_api_pip, _ := lookup.StringVar(fs, www_flags.PATH_API_PIP)
 	path_www_pip, _ := lookup.StringVar(fs, www_flags.PATH_WWW_PIP)
 	path_www_index, _ := lookup.StringVar(fs, www_flags.PATH_WWW_INDEX)
 
-	if path_prefix != "" {
+	if path_root != "" {
 
-		path_ping = filepath.Join(path_prefix, path_ping)
-		path_api_pip = filepath.Join(path_prefix, path_api_pip)
-		path_www_pip = filepath.Join(path_prefix, path_www_pip)
-		path_www_index = filepath.Join(path_prefix, path_www_index)
+		path_ping = filepath.Join(path_root, path_ping)
+		path_api_pip = filepath.Join(path_root, path_api_pip)
+		path_www_pip = filepath.Join(path_root, path_www_pip)
+		path_www_index = filepath.Join(path_root, path_www_index)
 
 	}
 
@@ -178,7 +179,24 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	if enable_www {
 
-		t, err := template.ParseFS(html.FS, "*.html")
+		t := template.New("spatial")
+
+		t = t.Funcs(map[string]interface{}{
+
+			"EnsureRoot": func(path string) string {
+
+				path = strings.TrimLeft(path, "/")
+
+				if path_root == "" {
+					return "/" + path
+				}
+
+				path = filepath.Join(path_root, path)
+				return path
+			},
+		})
+
+		t, err := t.ParseFS(html.FS, "*.html")
 
 		if err != nil {
 			return fmt.Errorf("Unable to parse templates, %v", err)
@@ -191,19 +209,19 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = tangramjs.AppendAssetHandlersWithPrefix(mux, path_prefix)
+		err = tangramjs.AppendAssetHandlersWithPrefix(mux, path_root)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append tangram.js assets, %v", err)
 		}
 
-		err = bootstrap.AppendAssetHandlersWithPrefix(mux, path_prefix)
+		err = bootstrap.AppendAssetHandlersWithPrefix(mux, path_root)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
+		err = http.AppendStaticAssetHandlersWithPrefix(mux, path_root)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append static assets, %v", err)
@@ -223,8 +241,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
-		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_prefix)
+		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_root)
+		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_root)
 
 		logger.Info("Register %s handler", path_www_pip)
 		mux.Handle(path_www_pip, http_pip_handler)
@@ -239,7 +257,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("Failed to create index handler, %v", err)
 		}
 
-		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
+		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_root)
 
 		logger.Info("Register %s handler", path_www_index)
 		mux.Handle(path_www_index, index_handler)

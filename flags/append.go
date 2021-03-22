@@ -18,7 +18,7 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.String(PATH_WWW_PIP, "/point-in-polygon", "The URL for the point in polygon web handler")
 	fs.String(PATH_WWW_INDEX, "/", "The URL for the root web handler")
 
-	fs.String(PATH_PREFIX, "", "Prepend this prefix to all URLs when registering (HTTP) handlers")
+	fs.String(PATH_ROOT, "", "Prepend this prefix to all URLs when registering (HTTP) handlers")
 
 	fs.String("nextzen-apikey", "", "A valid Nextzen API key")
 	fs.String("nextzen-style-url", "/tangram/refill-style.zip", "...")

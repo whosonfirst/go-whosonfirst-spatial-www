@@ -56,7 +56,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	}
 
 	path_flags := []string{
-		PATH_PREFIX,
+		PATH_ROOT,
 		PATH_PING,
 		PATH_API_PIP,
 		PATH_WWW_PIP,
