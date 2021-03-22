@@ -7,8 +7,8 @@ import (
 import (
 	"context"
 	"github.com/sfomuseum/go-flags/flagset"
-	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/server"
+	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/server"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"log"
 )
