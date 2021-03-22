@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-sqlite"
 )
 
 import (
@@ -34,9 +34,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fs.Set("spatial-database-uri", "rtree://")
-	fs.Set("properties-reader-uri", "mock://")
 
 	flagset.Parse(fs)
 

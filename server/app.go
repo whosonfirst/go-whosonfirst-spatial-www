@@ -11,11 +11,11 @@ import (
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
+	"github.com/aaronland/go-http-ping"	
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	http_flags "github.com/whosonfirst/go-whosonfirst-spatial-http/flags"
-	"github.com/whosonfirst/go-whosonfirst-spatial-http/health"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-http/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
@@ -115,7 +115,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	mux := gohttp.NewServeMux()
 
-	ping_handler, err := health.PingHandler()
+	ping_handler, err := ping.PingHandler()
 
 	if err != nil {
 		return fmt.Errorf("failed to create ping handler because %s", err)
