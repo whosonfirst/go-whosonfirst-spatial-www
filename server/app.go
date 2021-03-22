@@ -228,6 +228,21 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		log.Println("Register /point-in-polygon handler")
 		mux.Handle("/point-in-polygon", http_pip_handler)
+
+		index_opts := &http.IndexHandlerOptions{
+			Templates: t,
+		}
+		
+		index_handler, err := http.IndexHandler(index_opts)
+
+		if err != nil {
+			return fmt.Errorf("Failed to create index handler, %v", err)
+		}
+
+		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
+
+		log.Println("Register / handler")
+		mux.Handle("/", index_handler)
 	}
 
 	s, err := server.NewServer(ctx, server_uri)
