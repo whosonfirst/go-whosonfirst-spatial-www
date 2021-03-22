@@ -82,7 +82,6 @@ window.addEventListener("load", function load(event){
 	var args = {
 	    'latitude': pos['lat'],
 	    'longitude': pos['lng'],
-	    // 'format': 'geojson',
 	};
 	
 	var properties = [];
@@ -111,7 +110,7 @@ window.addEventListener("load", function load(event){
 	    }
 	    
 	    var fl = el.value;
-	    args[fl] = 1;
+	    args[fl] = [ 1 ];
 	}
 
 	var placetypes = [];
@@ -132,13 +131,14 @@ window.addEventListener("load", function load(event){
 	}
 
 	if (placetypes.length > 0){
-	    args['placetype'] = placetypes.join(",");
+	    args['placetype'] = placetypes;
 	}
 
-	// console.log("ARGS", args);
+	console.log("ARGS", args);
 	
 	var on_success = function(rsp){
 
+	    console.log("SUCCESS", rsp);
 	    layers.clearLayers();
 
 	    // FIX ME...
@@ -154,7 +154,7 @@ window.addEventListener("load", function load(event){
 
 	    //
 	    
-	    var places = rsp["places"];
+	    var places = rsp["features"];
 
 	    var table_props = whosonfirst.spatial.pip.default_properties();
 
