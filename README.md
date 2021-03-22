@@ -1,4 +1,4 @@
-# go-whosonfirst-spatial-http
+# go-whosonfirst-spatial-www
 
 ## IMPORTANT
 
