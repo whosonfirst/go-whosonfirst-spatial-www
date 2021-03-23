@@ -42,22 +42,28 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 	fs, err := spatial_flags.CommonFlags()
 
 	if err != nil {
-		return fmt.Errorf("Failed to instantiate common flags, %v", err)
+		log.Fatal(err)
 	}
 
 	err = spatial_flags.AppendIndexingFlags(fs)
 
 	if err != nil {
-		return fmt.Errorf("Failed to append indexings flags, %v", err)
+		log.Fatal(err)
 	}
 
 	err = www_flags.AppendWWWFlags(fs)
 
 	if err != nil {
-		return fmt.Errorf("Failed to append www flags, %v", err)
+		log.Fatal(err)
 	}
 
 	flagset.Parse(fs)
+
+	err = flagset.SetFlagsFromEnvVars(fs, "SPATIAL")
+
+	if err != nil {
+		log.Fatalf("Failed to set flags from environment variables, %v", err)
+	}
 
 	return server_app.RunWithFlagSet(ctx, fs)
 }
