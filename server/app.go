@@ -59,7 +59,7 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 
 	flagset.Parse(fs)
 
-	err = flagset.SetFlagsFromEnvVars(fs, "SPATIAL")
+	err = flagset.SetFlagsFromEnvVars(fs, "WHOSONFIRST")
 
 	if err != nil {
 		log.Fatalf("Failed to set flags from environment variables, %v", err)
