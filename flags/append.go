@@ -10,9 +10,6 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String(SERVER_URI, "http://localhost:8080", "A valid aaronland/go-http-server URI.")
 
-	desc_geojson := fmt.Sprintf("Allow users to request GeoJSON FeatureCollection formatted responses. This is automatically enabled if the -%s flag is set.", ENABLE_WWW)
-	fs.Bool(ENABLE_GEOJSON, false, desc_geojson)
-
 	fs.Bool(ENABLE_WWW, false, "Enable the interactive /debug endpoint to query points and display results.")
 
 	fs.String(PATH_PREFIX, "", "Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.")

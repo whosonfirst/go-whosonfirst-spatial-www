@@ -50,7 +50,7 @@ whosonfirst.spatial.api = (function(){
 	    req.open("POST", abs_url, true);
 
 	    req.setRequestHeader("Content-type", "application/json");
-	    req.setRequestHeader("Accept", "application/geo+json");
+	    // req.setRequestHeader("Accept", "application/geo+json");
 
 	    var enc_args = JSON.stringify(args);
 	    req.send(enc_args);	    

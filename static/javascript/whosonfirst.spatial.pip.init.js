@@ -160,35 +160,45 @@ window.addEventListener("load", function load(event){
 
 	    var key = id + "_date";
 	    args[key] = value;
-	}
+	};
+
+	var show_feature = function(id){
+
+	    var data_root = document.body.getAttribute("data-root");
+	    var url = data_root + id;
+
+	    var on_success = function(data){
+		
+		var l = L.geoJSON(data, {
+		    style: function(feature){
+			return whosonfirst.spatial.pip.named_style("match");
+		    },
+		});
+		
+		layers.addLayer(l);
+		l.bringToFront();
+	    };
+
+	    var on_fail= function(err){
+		console.log("SAD", id, err);
+	    }
+	    
+	    whosonfirst.net.fetch(url, on_success, on_fail);
+	};
 	
 	var on_success = function(rsp){
 
 	    layers.clearLayers();
 
-	    // FIX ME...
-	    
-	    var l = L.geoJSON(rsp, {
-		style: function(feature){
-		    return whosonfirst.spatial.pip.named_style("match");
-		},
-	    });
-	    
-	    layers.addLayer(l);
-	    l.bringToFront();
+	    var places = rsp["places"];
+	    var count = places.length;
 
-	    //
-	    
-	    var places = rsp["features"];
-
-	    var table_props = whosonfirst.spatial.pip.default_properties();
-
-	    var count_properties = properties.length;
-
-	    for (var i=0; i < count_properties; i++){
-		table_props[properties[i]] = "";
+	    for (var i=0; i < count; i++){
+		var pl = places[i];
+		show_feature(pl["wof:id"]);
 	    }
 	    
+	    var table_props = whosonfirst.spatial.pip.default_properties();
 	    var table = whosonfirst.spatial.pip.render_properties_table(places, table_props);
 	    
 	    var matches = document.getElementById("pip-matches");

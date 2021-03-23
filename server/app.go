@@ -90,7 +90,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}
 
 	enable_www, _ := lookup.BoolVar(fs, www_flags.ENABLE_WWW)
-	enable_geojson, _ := lookup.BoolVar(fs, www_flags.ENABLE_GEOJSON)
 	enable_tangram, _ := lookup.BoolVar(fs, www_flags.ENABLE_TANGRAM)
 
 	nextzen_apikey, _ := lookup.StringVar(fs, www_flags.NEXTZEN_APIKEY)
@@ -180,9 +179,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	// point-in-polygon handlers
 
-	api_pip_opts := &api.PointInPolygonHandlerOptions{
-		EnableGeoJSON: enable_geojson,
-	}
+	api_pip_opts := &api.PointInPolygonHandlerOptions{}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)
 
