@@ -47,12 +47,14 @@ slippymap.crosshairs = (function(){
 		container_el.parentNode.insertBefore(coords, container_el.nextSibling); 
 	    }
 
+	    /*
 	    coords.onclick = function(){
 		latlon = (latlon) ? false : true;
 		self.draw_coords(map);
 		return;
 	    };
-
+	    */
+	    
 	    var pos = map.getCenter();
 	    var lat = pos['lat'];
 	    var lon = pos['lng'];	  

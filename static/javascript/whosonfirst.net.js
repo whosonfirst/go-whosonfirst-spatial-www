@@ -128,6 +128,7 @@ whosonfirst.net = (function(){
 		    }
 		    
 		    req.open("get", url, true);
+		    // req.setRequestHeader("Accept", "application/jsonx");		    
 		    req.send();
 		}
 		

@@ -20,6 +20,20 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		return nil
 	}
 
+	bool_flags := []string{
+		ENABLE_CORS,
+		ENABLE_GZIP,
+	}
+
+	for _, k := range bool_flags {
+
+		_, err := lookup.BoolVar(fs, k)
+
+		if err != nil {
+			return err
+		}
+	}
+
 	init_lat, err := lookup.Float64Var(fs, INITIAL_LATITUDE)
 
 	if err != nil {

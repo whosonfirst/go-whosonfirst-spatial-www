@@ -7,6 +7,8 @@ const PATH_PIP string = "path-pip"
 const PATH_DATA string = "path-data"
 
 const ENABLE_WWW string = "enable-www"
+const ENABLE_CORS string = "enable-cors"
+const ENABLE_GZIP string = "enable-gzip"
 const ENABLE_TANGRAM string = "enable-tangram"
 
 const NEXTZEN_APIKEY string = "nextzen-apikey"

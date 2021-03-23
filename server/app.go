@@ -90,6 +90,9 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}
 
 	enable_www, _ := lookup.BoolVar(fs, www_flags.ENABLE_WWW)
+	enable_cors, _ := lookup.BoolVar(fs, www_flags.ENABLE_CORS)
+	enable_gzip, _ := lookup.BoolVar(fs, www_flags.ENABLE_GZIP)
+
 	enable_tangram, _ := lookup.BoolVar(fs, www_flags.ENABLE_TANGRAM)
 
 	nextzen_apikey, _ := lookup.StringVar(fs, www_flags.NEXTZEN_APIKEY)
@@ -139,9 +142,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	}
 
 	mux.Handle(path_ping, ping_handler)
-
-	enable_cors := true
-	enable_gzip := true
 
 	cors_origins := []string{"*"}
 
