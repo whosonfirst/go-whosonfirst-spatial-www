@@ -59,7 +59,7 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 
 	flagset.Parse(fs)
 
-	err = flagset.SetFlagsFromEnvVars(fs, "WHOSONFIRST")
+	err = flagset.SetFlagsFromEnvVarsWithFeedback(fs, "WHOSONFIRST", true)
 
 	if err != nil {
 		log.Fatalf("Failed to set flags from environment variables, %v", err)
@@ -123,18 +123,15 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		}
 	}()
 
-	path_root, _ := lookup.StringVar(fs, www_flags.PATH_ROOT)
-	path_root_api, _ := lookup.StringVar(fs, www_flags.PATH_ROOT_API)
-
+	path_api, _ := lookup.StringVar(fs, www_flags.PATH_API)
 	path_pip, _ := lookup.StringVar(fs, www_flags.PATH_PIP)
 	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
 
-	if path_root != "" {
+	path_prefix, _ := lookup.StringVar(fs, www_flags.PATH_PREFIX)
 
-		path_root_api = filepath.Join(path_root, path_root_api)
-		path_ping = filepath.Join(path_root, path_ping)
-		path_pip = filepath.Join(path_root, path_pip)
-	}
+	// path_root_api = filepath.Join(path_root, path_root_api)
+	// path_ping = filepath.Join(path_root, path_ping)
+	// path_pip = filepath.Join(path_root, path_pip)
 
 	mux := gohttp.NewServeMux()
 
@@ -177,7 +174,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		api_pip_handler = gziphandler.GzipHandler(api_pip_handler)
 	}
 
-	path_api_pip := filepath.Join(path_root_api, "point-in-polygon")
+	path_api_pip := filepath.Join(path_api, "point-in-polygon")
 
 	logger.Info("Register %s handler", path_api_pip)
 	mux.Handle(path_api_pip, api_pip_handler)
@@ -192,16 +189,23 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 				path = strings.TrimLeft(path, "/")
 
-				if path_root == "" {
+				if path_prefix == "" {
 					return "/" + path
 				}
 
-				path = filepath.Join(path_root, path)
+				path = filepath.Join(path_prefix, path)
 				return path
 			},
 
 			"APIRoot": func() string {
-				return path_root_api
+
+				path := path_api
+
+				if path_prefix != "" {
+					path = filepath.Join(path_prefix, path)
+				}
+
+				return path
 			},
 		})
 
@@ -218,19 +222,19 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = tangramjs.AppendAssetHandlersWithPrefix(mux, path_root)
+		err = tangramjs.AppendAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append tangram.js assets, %v", err)
 		}
 
-		err = bootstrap.AppendAssetHandlersWithPrefix(mux, path_root)
+		err = bootstrap.AppendAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlersWithPrefix(mux, path_root)
+		err = http.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append static assets, %v", err)
@@ -250,8 +254,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_root)
-		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_root)
+		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
+		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_prefix)
 
 		logger.Info("Register %s handler", path_pip)
 		mux.Handle(path_pip, http_pip_handler)
@@ -266,9 +270,9 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			return fmt.Errorf("Failed to create index handler, %v", err)
 		}
 
-		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_root)
+		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
 
-		path_index := path_root
+		path_index := path_prefix
 
 		if path_index == "" {
 			path_index = "/"

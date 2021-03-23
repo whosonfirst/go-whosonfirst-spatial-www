@@ -13,8 +13,9 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.Bool("enable-www", false, "Enable the interactive /debug endpoint to query points and display results.")
 
-	fs.String(PATH_ROOT, "", "Prepend this prefix to all URLs when registering (HTTP) handlers")
-	fs.String(PATH_ROOT_API, "/api", "The root URL for all API handlers")
+	fs.String(PATH_PREFIX, "", "Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.")
+
+	fs.String(PATH_API, "/api", "The root URL for all API handlers")
 	fs.String(PATH_PING, "/health/ping", "The URL for the ping (health check) handler")
 	fs.String(PATH_PIP, "/point-in-polygon", "The URL for the point in polygon web handler")
 
