@@ -222,19 +222,19 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = tangramjs.AppendAssetHandlersWithPrefix(mux, path_prefix)
+		err = tangramjs.AppendAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append tangram.js assets, %v", err)
 		}
 
-		err = bootstrap.AppendAssetHandlersWithPrefix(mux, path_prefix)
+		err = bootstrap.AppendAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
 		}
 
-		err = http.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
+		err = http.AppendStaticAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append static assets, %v", err)
