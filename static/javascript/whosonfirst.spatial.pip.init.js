@@ -2,8 +2,9 @@ window.addEventListener("load", function load(event){
 
     var api_key = document.body.getAttribute("data-nextzen-api-key");
     var style_url = document.body.getAttribute("data-nextzen-style-url");
-    var tile_url = document.body.getAttribute("data-nextzen-tile-url");    
+    var tile_url = document.body.getAttribute("data-nextzen-tile-url");
 
+    /*
     if (! api_key){
 	console.log("Missing API key");
 	return;
@@ -18,7 +19,8 @@ window.addEventListener("load", function load(event){
 	console.log("Missing tile URL");
 	return;
     }
-
+     */
+    
     var pip_wrapper = document.getElementById("point-in-polygon");
 
     if (! pip_wrapper){
@@ -53,7 +55,7 @@ window.addEventListener("load", function load(event){
 	console.log("Missing map element");	
 	return;
     }
-
+    
     var map_args = {
 	"api_key": api_key,
 	"style_url": style_url,

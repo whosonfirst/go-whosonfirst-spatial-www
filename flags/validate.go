@@ -10,7 +10,7 @@ import (
 
 func ValidateWWWFlags(fs *flag.FlagSet) error {
 
-	enable_www, err := lookup.BoolVar(fs, "enable-www")
+	enable_www, err := lookup.BoolVar(fs, ENABLE_WWW)
 
 	if err != nil {
 		return err
@@ -20,12 +20,12 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		return nil
 	}
 
-	log.Println("-enable-www flag is true causing the following flags to also be true: -enable-data -enable-candidates -enable-properties")
+	log.Printf("-%s flag is true causing the following flags to also be true: -%s\n", ENABLE_WWW, ENABLE_GEOJSON)
 
-	fs.Set("enable-geojson", "true")
-	fs.Set("enable-properties", "true")
+	fs.Set(ENABLE_GEOJSON, "true")
+	// fs.Set(ENABLE_PROPERTIES, "true")
 
-	init_lat, err := lookup.Float64Var(fs, "initial-latitude")
+	init_lat, err := lookup.Float64Var(fs, INITIAL_LATITUDE)
 
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		return errors.New("Invalid latitude")
 	}
 
-	init_lon, err := lookup.Float64Var(fs, "initial-longitude")
+	init_lon, err := lookup.Float64Var(fs, INITIAL_LONGITUDE)
 
 	if err != nil {
 		return err
@@ -45,7 +45,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		return errors.New("Invalid longitude")
 	}
 
-	init_zoom, err := lookup.IntVar(fs, "initial-zoom")
+	init_zoom, err := lookup.IntVar(fs, INITIAL_ZOOM)
 
 	if err != nil {
 		return err
@@ -58,6 +58,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	path_flags := []string{
 		PATH_PREFIX,
 		PATH_API,
+		PATH_DATA,
 		PATH_PING,
 		PATH_PIP,
 	}
@@ -68,6 +69,46 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 
 		if err != nil {
 			return err
+		}
+	}
+
+	enable_tangram, err := lookup.BoolVar(fs, ENABLE_TANGRAM)
+
+	if err != nil {
+		return err
+	}
+
+	if enable_tangram {
+
+		nz_keys := []string{
+			NEXTZEN_APIKEY,
+			NEXTZEN_STYLE_URL,
+			NEXTZEN_TILE_URL,
+		}
+
+		for _, k := range nz_keys {
+
+			v, err := lookup.StringVar(fs, k)
+
+			if err != nil {
+				return err
+			}
+
+			if v == "" {
+				log.Printf("-%s flag is empty, this will probably result in unexpected behaviour\n", k)
+			}
+		}
+
+	} else {
+
+		v, err := lookup.StringVar(fs, LEAFLET_TILE_URL)
+
+		if err != nil {
+			return err
+		}
+
+		if v == "" {
+			log.Printf("-%s flag is empty, this will probably result in unexpected behaviour\n", LEAFLET_TILE_URL)
 		}
 	}
 

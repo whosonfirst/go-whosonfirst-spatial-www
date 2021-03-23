@@ -53,31 +53,40 @@ whosonfirst.spatial.maps = (function(){
 	    if (! args){
 		args = {};
 	    }
-
-	    if (! args["api_key"]){
-		return null;
-	    }
-
-	    var api_key = args["api_key"];
 	    
 	    var map_id = map_el.getAttribute("id");
 
 	    if (! map_id){
+		console.log("SAD");
 		return;
 	    }
 	    
 	    if (maps[map_id]){
 		return maps[map_id];
 	    }
+
+	    var map = L.map("map");
 	    
-	    var tangram_opts = self.getTangramOptions(args);	   
-	    var tangramLayer = Tangram.leafletLayer(tangram_opts);
+	    var tile_url = map_el.getAttribute("data-leaflet-tile-url");
+	    tile_url = decodeURIComponent(tile_url);
+	    
+	    if (tile_url != "") {
+		
+		var layer = L.tileLayer(tile_url, {});
+		layer.addTo(map);
+		
+	    } else {
+		
+		var api_key = args["api_key"];
+		
+		var tangram_opts = self.getTangramOptions(args);	   
+		var tangramLayer = Tangram.leafletLayer(tangram_opts);
+		
+		tangramLayer.addTo(map);
 
-	    var map = L.map("map");	    
-	    tangramLayer.addTo(map);
-
-	    var attribution = self.getAttribution();
-	    map.attributionControl.addAttribution(attribution);
+		var attribution = self.getAttribution();
+		map.attributionControl.addAttribution(attribution);	    		
+	    }
 	    
 	    return map;
 	},

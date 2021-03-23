@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
+	"github.com/aaronland/go-http-leaflet"
 	"github.com/aaronland/go-http-ping"
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
@@ -88,21 +89,21 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to validate www flags, %v", err)
 	}
 
-	enable_www, _ := lookup.BoolVar(fs, "enable-www")
+	enable_www, _ := lookup.BoolVar(fs, www_flags.ENABLE_WWW)
+	enable_geojson, _ := lookup.BoolVar(fs, www_flags.ENABLE_GEOJSON)
+	enable_tangram, _ := lookup.BoolVar(fs, www_flags.ENABLE_TANGRAM)
 
-	enable_geojson, _ := lookup.BoolVar(fs, "enable-geojson")
+	nextzen_apikey, _ := lookup.StringVar(fs, www_flags.NEXTZEN_APIKEY)
+	nextzen_style_url, _ := lookup.StringVar(fs, www_flags.NEXTZEN_STYLE_URL)
+	nextzen_tile_url, _ := lookup.StringVar(fs, www_flags.NEXTZEN_TILE_URL)
 
-	nextzen_apikey, _ := lookup.StringVar(fs, "nextzen-apikey")
-	nextzen_style_url, _ := lookup.StringVar(fs, "nextzen-style-url")
-	nextzen_tile_url, _ := lookup.StringVar(fs, "nextzen-tile-url")
+	leaflet_tile_url, _ := lookup.StringVar(fs, www_flags.LEAFLET_TILE_URL)
 
-	initial_lat, _ := lookup.Float64Var(fs, "initial-latitude")
-	initial_lon, _ := lookup.Float64Var(fs, "initial-longitude")
-	initial_zoom, _ := lookup.IntVar(fs, "initial-zoom")
+	initial_lat, _ := lookup.Float64Var(fs, www_flags.INITIAL_LATITUDE)
+	initial_lon, _ := lookup.Float64Var(fs, www_flags.INITIAL_LONGITUDE)
+	initial_zoom, _ := lookup.IntVar(fs, www_flags.INITIAL_ZOOM)
 
-	server_uri, _ := lookup.StringVar(fs, "server-uri")
-
-	data_endpoint, _ := lookup.StringVar(fs, "data-endpoint")
+	server_uri, _ := lookup.StringVar(fs, www_flags.SERVER_URI)
 
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
@@ -126,12 +127,9 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	path_api, _ := lookup.StringVar(fs, www_flags.PATH_API)
 	path_pip, _ := lookup.StringVar(fs, www_flags.PATH_PIP)
 	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
+	path_data, _ := lookup.StringVar(fs, www_flags.PATH_DATA)
 
 	path_prefix, _ := lookup.StringVar(fs, www_flags.PATH_PREFIX)
-
-	// path_root_api = filepath.Join(path_root, path_root_api)
-	// path_ping = filepath.Join(path_root, path_ping)
-	// path_pip = filepath.Join(path_root, path_pip)
 
 	mux := gohttp.NewServeMux()
 
@@ -156,6 +154,32 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		})
 	}
 
+	// data (geojson) handlers
+	// SpatialDatabase implements reader.Reader
+
+	data_handler, err := http.NewDataHandler(spatial_app.SpatialDatabase)
+
+	if err != nil {
+		return fmt.Errorf("Failed to create data handler, %v", err)
+	}
+
+	if enable_cors {
+		data_handler = cors_wrapper.Handler(data_handler)
+	}
+
+	if enable_gzip {
+		data_handler = gziphandler.GzipHandler(data_handler)
+	}
+
+	if !strings.HasSuffix(path_data, "/") {
+		path_data = fmt.Sprintf("%s/", path_data)
+	}
+
+	logger.Info("Register %s handler", path_data)
+	mux.Handle(path_data, data_handler)
+
+	// point-in-polygon handlers
+
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
 		EnableGeoJSON: enable_geojson,
 	}
@@ -179,6 +203,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	logger.Info("Register %s handler", path_api_pip)
 	mux.Handle(path_api_pip, api_pip_handler)
 
+	// www handlers
+
 	if enable_www {
 
 		t := template.New("spatial")
@@ -194,6 +220,17 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 				}
 
 				path = filepath.Join(path_prefix, path)
+				return path
+			},
+
+			"DataRoot": func() string {
+
+				path := path_data
+
+				if path_prefix != "" {
+					path = filepath.Join(path_prefix, path)
+				}
+
 				return path
 			},
 
@@ -222,10 +259,23 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
 		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
 
-		err = tangramjs.AppendAssetHandlers(mux)
+		leaflet_opts := leaflet.DefaultLeafletOptions()
 
-		if err != nil {
-			return fmt.Errorf("Failed to append tangram.js assets, %v", err)
+		if enable_tangram {
+
+			err = tangramjs.AppendAssetHandlers(mux)
+
+			if err != nil {
+				return fmt.Errorf("Failed to append tangram.js assets, %v", err)
+			}
+
+		} else {
+
+			err = leaflet.AppendAssetHandlers(mux)
+
+			if err != nil {
+				return fmt.Errorf("Failed to append leaflet.js assets, %v", err)
+			}
 		}
 
 		err = bootstrap.AppendAssetHandlers(mux)
@@ -245,7 +295,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			InitialLatitude:  initial_lat,
 			InitialLongitude: initial_lon,
 			InitialZoom:      initial_zoom,
-			DataEndpoint:     data_endpoint,
+			LeafletTileURL:   leaflet_tile_url,
 		}
 
 		http_pip_handler, err := http.PointInPolygonHandler(spatial_app, http_pip_opts)
@@ -255,7 +305,12 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		}
 
 		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
-		http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_prefix)
+
+		if enable_tangram {
+			http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_prefix)
+		} else {
+			http_pip_handler = leaflet.AppendResourcesHandlerWithPrefix(http_pip_handler, leaflet_opts, path_prefix)
+		}
 
 		logger.Info("Register %s handler", path_pip)
 		mux.Handle(path_pip, http_pip_handler)
