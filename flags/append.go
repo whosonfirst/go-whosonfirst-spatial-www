@@ -27,12 +27,12 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.Bool(ENABLE_TANGRAM, false, "Use Tangram.js for rendering map tiles")
 
 	fs.String(NEXTZEN_APIKEY, "", "A valid Nextzen API key")
-	fs.String(NEXTZEN_STYLE_URL, "/tangram/refill-style.zip", "...")
-	fs.String(NEXTZEN_TILE_URL, tangramjs.NEXTZEN_MVT_ENDPOINT, "...")
+	fs.String(NEXTZEN_STYLE_URL, "/tangram/refill-style.zip", "The URL for the style bundle file to use for maps rendered with Tangram.js")
+	fs.String(NEXTZEN_TILE_URL, tangramjs.NEXTZEN_MVT_ENDPOINT, "The URL for Nextzen tiles to use for maps rendered with Tangram.js")
 
-	fs.Float64(INITIAL_LATITUDE, 37.616906, "...")
-	fs.Float64(INITIAL_LONGITUDE, -122.386665, "...")
-	fs.Int(INITIAL_ZOOM, 14, "...")
+	fs.Float64(INITIAL_LATITUDE, 37.616906, "The initial latitude for map views to use.")
+	fs.Float64(INITIAL_LONGITUDE, -122.386665, "The initial longitude for map views to use.")
+	fs.Int(INITIAL_ZOOM, 14, "The initial zoom level for map views to use.")
 
 	return nil
 }
