@@ -46,5 +46,5 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 		rsp = r
 	}
 
-	return r, nil
+	return rsp, nil
 }

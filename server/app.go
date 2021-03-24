@@ -17,11 +17,11 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-reader"
 	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
-	_ "github.com/whosonfirst/go-whosonfirst-spatial-reader"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"html/template"
 	"log"
@@ -93,7 +93,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	enable_www, _ := lookup.BoolVar(fs, www_flags.ENABLE_WWW)
 	enable_cors, _ := lookup.BoolVar(fs, www_flags.ENABLE_CORS)
 	enable_gzip, _ := lookup.BoolVar(fs, www_flags.ENABLE_GZIP)
-	enable_geojson, _ := lookup.BoolVar(fs, www_flags.ENABLE_GEOJSON)	
+	enable_geojson, _ := lookup.BoolVar(fs, www_flags.ENABLE_GEOJSON)
 
 	enable_tangram, _ := lookup.BoolVar(fs, www_flags.ENABLE_TANGRAM)
 
@@ -115,9 +115,6 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		log.Fatal(fmt.Sprintf("Failed to create new spatial application, because: %v", err))
 	}
 
-	log.Println(spatial_app.SpatialDatabase)
-	log.Println(spatial_app.PropertiesReader)	
-	
 	logger := spatial_app.Logger
 
 	paths := fs.Args()

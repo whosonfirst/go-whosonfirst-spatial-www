@@ -417,6 +417,8 @@ github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.4 h1:MjL/AbaQKy93lTBMRwPZ
 github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.4/go.mod h1:C+9TII8Zsko4/CkjvcyKfotpaxAC9TpBDElv/7ielP8=
 github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.5 h1:OiZJK2PiFmUygrYPZpsNoUHw7dBsGVCjg+4XOTF5xrw=
 github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.5/go.mod h1:oGaKAuVLyey4EfZw1WukZYmZyN2ICJAfY6UgqvnzSZM=
+github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.6 h1:ruigehAuhmS83j6Fi87zubi8542ZcBQina5r1jWi+hs=
+github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.6/go.mod h1:oGaKAuVLyey4EfZw1WukZYmZyN2ICJAfY6UgqvnzSZM=
 github.com/whosonfirst/go-whosonfirst-spatial-reader v0.0.5 h1:Cty7tgS09+8qCnrqkoVhC6letXX54xJ+d67dYzq5uno=
 github.com/whosonfirst/go-whosonfirst-spatial-reader v0.0.5/go.mod h1:cqDpredyf4xcRiJ/8IH9ReD1EudkJrFiBljczCElmI8=
 github.com/whosonfirst/go-whosonfirst-spatial-reader v0.0.8 h1:U263DgJM2eDoagyjt7O33eeYikCzaahAAJ6dXhPIZms=
