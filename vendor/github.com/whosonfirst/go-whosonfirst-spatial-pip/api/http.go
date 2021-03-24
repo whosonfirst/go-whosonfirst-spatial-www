@@ -49,7 +49,7 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-
+		
 		pip_rsp, err := pip.QueryPointInPolygon(ctx, app, pip_req)
 
 		if err != nil {
@@ -59,6 +59,9 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 
 		if opts.EnableGeoJSON && accept == GEOJSON {
 
+			//  interface conversion: *spatial.PropertiesResponseResults is not spr.StandardPlacesResults: missing method Results
+			// log.Printf("DEBUG %T %v\n", pip_rsp, pip_rsp)
+			
 			opts := &geojson.AsFeatureCollectionOptions{
 				Reader: app.SpatialDatabase,
 				Writer: rsp,
