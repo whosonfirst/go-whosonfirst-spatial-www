@@ -8,6 +8,8 @@ This is work in progress. Documentation to follow.
 
 To build binary versions of these tools run the `cli` Makefile target. For example:
 
+_If you're reading this, some of the documentation below is out of date. It too will be updated shortly._
+
 ```
 $> make cli
 go build -mod vendor -o bin/server cmd/server/main.go
