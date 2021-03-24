@@ -12,8 +12,6 @@ const ENABLE_CUSTOM_PLACETYPES string = "enable-custom-placetypes"
 
 const ENABLE_PROPERTIES string = "enable-properties"
 
-const EXCLUDE string = "exclude"
-
 const GEOMETRIES string = "geometries"
 
 const INCEPTION_DATE string = "inception-date"
@@ -45,3 +43,5 @@ const PROPERTIES_READER_URI string = "properties-reader-uri"
 const SPATIAL_DATABASE_URI string = "spatial-database-uri"
 
 const VERBOSE string = "verbose"
+
+const IS_WOF string = "is-wof"

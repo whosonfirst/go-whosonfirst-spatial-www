@@ -7,13 +7,13 @@ github.com/aaronland/go-http-bootstrap
 github.com/aaronland/go-http-bootstrap/resources
 github.com/aaronland/go-http-bootstrap/static
 # github.com/aaronland/go-http-leaflet v0.0.6
+## explicit
 github.com/aaronland/go-http-leaflet
 github.com/aaronland/go-http-leaflet/static
 # github.com/aaronland/go-http-ping v1.0.0
 ## explicit
 github.com/aaronland/go-http-ping
 # github.com/aaronland/go-http-rewrite v0.0.6
-## explicit
 github.com/aaronland/go-http-rewrite
 # github.com/aaronland/go-http-sanitize v0.0.5
 github.com/aaronland/go-http-sanitize
@@ -118,7 +118,7 @@ github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.0.46
+# github.com/whosonfirst/go-whosonfirst-spatial v0.0.47
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/app

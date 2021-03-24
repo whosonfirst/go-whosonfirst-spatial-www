@@ -18,9 +18,9 @@ func CommonFlags() (*flag.FlagSet, error) {
 	available_databases := database.Schemes()
 	desc_databases := fmt.Sprintf("Valid options are: %s", available_databases)
 
-	fs.String(SPATIAL_DATABASE_URI, "rtree://", desc_databases)
+	fs.String(SPATIAL_DATABASE_URI, "", desc_databases)
 
-	fs.Bool("is-wof", true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
+	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
 
 	// property readers
 
@@ -32,19 +32,13 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.String(PROPERTIES_READER_URI, "rtree://", desc_property_readers)
 
-	fs.Bool(ENABLE_CUSTOM_PLACETYPES, false, "...")
-	fs.String(CUSTOM_PLACETYPES_SOURCE, "", "...")
-	fs.String(CUSTOM_PLACETYPES, "", "...")
+	fs.Bool(ENABLE_CUSTOM_PLACETYPES, false, "Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.")
 
-	// this is invoked/used in app/indexer.go but for the life of me I can't
-	// figure out how to make the code in flags/exclude.go implement the
-	// correct inferface wah wah so that flag.Lookup("exclude").Value returns
-	// something we can loop over... so instead we just strings.Split() on
-	// flag.Lookup("exclude").String() which is dumb but works...
-	// (20180301/thisisaaronland)
+	// Pending changes in the app/placetypes.go package to support
+	// alternate sources (20210324/thisisaaronland)
+	// fs.String(CUSTOM_PLACETYPES_SOURCE, "", "...")
 
-	var exclude Exclude
-	fs.Var(&exclude, EXCLUDE, "Exclude (WOF) records based on their existential flags. Valid options are: ceased, deprecated, not-current, superseded.")
+	fs.String(CUSTOM_PLACETYPES, "", "A JSON-encoded string containing custom placetypes defined using the syntax described in the whosonfirst/go-whosonfirst-placetypes repository.")
 
 	fs.Bool(VERBOSE, false, "Be chatty.")
 

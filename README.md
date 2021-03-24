@@ -1,5 +1,7 @@
 # go-whosonfirst-spatial-www
 
+An opionated web application for `go-whosonfirst-spatial` packages.
+
 ## IMPORTANT
 
 This is work in progress. Documentation to follow.
@@ -7,8 +9,6 @@ This is work in progress. Documentation to follow.
 ## Tools
 
 To build binary versions of these tools run the `cli` Makefile target. For example:
-
-_If you're reading this, some of the documentation below is out of date. It too will be updated shortly._
 
 ```
 $> make cli
@@ -18,55 +18,59 @@ go build -mod vendor -o bin/server cmd/server/main.go
 ### server
 
 ```
-> ./bin/server -h
+$> ./bin/server -h
   -custom-placetypes string
-    	...
-  -custom-placetypes-source string
-    	...
-  -enable-candidates
-    	Enable the /candidates endpoint to return candidate bounding boxes (as GeoJSON) for requests.
+    	A JSON-encoded string containing custom placetypes defined using the syntax described in the whosonfirst/go-whosonfirst-placetypes repository.
+  -enable-cors
+    	Enable CORS headers for data-related and API handlers.
   -enable-custom-placetypes
-    	...
-  -enable-geojson
-    	Allow users to request GeoJSON FeatureCollection formatted responses.
+    	Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.
+  -enable-gzip
+    	Enable gzip-encoding for data-related and API handlers.
   -enable-properties
     	Enable support for 'properties' parameters in queries.
+  -enable-tangram
+    	Use Tangram.js for rendering map tiles
   -enable-www
     	Enable the interactive /debug endpoint to query points and display results.
-  -exclude value
-    	Exclude (WOF) records based on their existential flags. Valid options are: ceased, deprecated, not-current, superseded.
+  -index-properties
+    	Index properties reader.
   -initial-latitude float
-    	... (default 37.616906)
+    	The initial latitude for map views to use. (default 37.616906)
   -initial-longitude float
-    	... (default -122.386665)
+    	The initial longitude for map views to use. (default -122.386665)
   -initial-zoom int
-    	... (default 13)
+    	The initial zoom level for map views to use. (default 14)
   -is-wof
     	Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents. (default true)
-  -mode string
-    	Valid modes are: directory, featurecollection, file, filelist, geojsonl, repo. (default "repo://")
+  -iterator-uri string
+    	A valid whosonfirst/go-whosonfirst-iterate/emitter URI. Supported schemes are: directory://, featurecollection://, file://, filelist://, geojsonl://, repo://. (default "repo://")
+  -leaflet-tile-url string
+    	A valid Leaflet (slippy map) tile template URL to use for rendering maps (if -enable-tangram is false)
   -nextzen-apikey string
     	A valid Nextzen API key
   -nextzen-style-url string
-    	... (default "/tangram/refill-style.zip")
+    	The URL for the style bundle file to use for maps rendered with Tangram.js (default "/tangram/refill-style.zip")
   -nextzen-tile-url string
-    	... (default "https://{s}.tile.nextzen.org/tilezen/vector/v1/512/all/{z}/{x}/{y}.mvt")
+    	The URL for Nextzen tiles to use for maps rendered with Tangram.js (default "https://{s}.tile.nextzen.org/tilezen/vector/v1/512/all/{z}/{x}/{y}.mvt")
+  -path-data string
+    	The URL for data (GeoJSON) handler (default "/data")
+  -path-ping string
+    	The URL for the ping (health check) handler (default "/health/ping")
+  -path-pip string
+    	The URL for the point in polygon web handler (default "/point-in-polygon")
+  -path-prefix string
+    	Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.
+  -path-root-api string
+    	The root URL for all API handlers (default "/api")
   -properties-reader-uri string
-    	Valid options are: [whosonfirst://]
+    	Valid options are: [rtree://] (default "rtree://")
   -server-uri string
     	A valid aaronland/go-http-server URI. (default "http://localhost:8080")
-  -setenv
-    	Set flags from environment variables.
   -spatial-database-uri string
-    	Valid options are: [rtree://] (default "rtree://")
-  -static-prefix string
-    	Prepend this prefix to URLs for static assets.
-  -templates string
-    	An optional string for local templates. This is anything that can be read by the 'templates.ParseGlob' method.
+    	Valid options are: [rtree://]
   -verbose
     	Be chatty.
-  -www-path string
-    	The URL path for the interactive debug endpoint. (default "/debug")
 ```
 
 For example:
@@ -77,11 +81,10 @@ $> bin/server \
 	-enable-properties \
 	-spatial-database-uri 'rtree:///?strict=false' \
 	-properties-reader-uri 'whosonfirst://?reader=fs:////usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' \
+	-enable-tangram \
 	-nextzen-apikey {NEXTZEN_APIKEY} \
-	-mode repo:// \
 	/usr/local/data/sfomuseum-data-architecture
 	
-2020/12/10 11:44:31 -enable-www flag is true causing the following flags to also be true: -enable-geojson -enable-candidates -enable-properties
 11:44:31.902988 [main][index] ERROR 1159157931 failed indexing, (rtreego: improper distance). Strict mode is disabled, so skipping.
 11:44:32.073804 [main] STATUS finished indexing in 744.717822ms
 ```
@@ -98,14 +101,13 @@ $> bin/server \
 	-enable-properties \
 	-spatial-database-uri 'rtree:///?strict=false' \
 	-properties-reader-uri 'whosonfirst://?reader=fs:////usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' \
-	-mode repo:// \
 	/usr/local/data/sfomuseum-data-architecture
 ```
 
 And then to query the point-in-polygon API you would do something like this:
 
 ```
-$> curl 'http://localhost:8080/api/point-in-polygon?latitude=37.61701894316063&longitude=-122.3866653442383'
+$> curl -XPOST http://localhost:8080/api/point-in-polygon -d '{"latitude": 37.61701894316063, "longitude": -122.3866653442383}'
 
 {
   "places": [
@@ -143,7 +145,7 @@ By default, results are returned as a list of ["standard places response"](https
 
 
 ```
-$> curl 'http://localhost:8080/api/point-in-polygon?latitude=37.61701894316063&longitude=-122.3866653442383&format=geojson'
+$> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point-in-polygon -d '{"latitude": 37.61701894316063, "longitude": -122.3866653442383}'
 
 {
   "type": "FeatureCollection",
@@ -189,7 +191,7 @@ $> curl 'http://localhost:8080/api/point-in-polygon?latitude=37.61701894316063&l
 If you are returning results as a GeoJSON `FeatureCollection` you may also request additional properties be appended by specifying them as a comma-separated list in the `?properties=` parameter. For example:
 
 ```
-$> http://localhost:8080/api/point-in-polygon?latitude=37.61701894316063&longitude=-122.3866653442383&format=geojson&properties=sfomuseum:*
+$> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point-in-polygon -d '{"latitude": 37.61701894316063, "longitude": -122.3866653442383, "properties": ["sfomuseum:*" ]}'
 {
   "type": "FeatureCollection",
   "features": [
@@ -245,14 +247,14 @@ For example, here's how we could index and serve a GeoJSON FeatureCollection of 
 ```
 $> bin/server
 	-spatial-database-uri 'rtree:///?strict=false' \
-	-mode featurecollection:// \
+	-iterator-uri featurecollection:// \
 	/usr/local/data/footprint.geojson
 ```
 
 And then:
 
 ```
-$> curl -s 'http://localhost:8080/api/point-in-polygon?latitude=37.61686957521345&longitude=-122.3903158758416' \
+$> curl -s -XPOST 'http://localhost:8080/api/point-in-polygon '{"latitude": 37.61686957521345, "longitude": -122.3903158758416}' \
 
 | jq '.["places"][]["spr:id"]'
 
@@ -268,4 +270,4 @@ Support for returning results in the `properties` or `geojson` format is not ava
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial
 * https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
-* https://github.com/whosonfirst/go-whosonfirst-spatial-reader
+* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
