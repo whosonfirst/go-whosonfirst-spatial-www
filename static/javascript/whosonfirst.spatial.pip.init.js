@@ -165,6 +165,11 @@ window.addEventListener("load", function load(event){
 	var show_feature = function(id){
 
 	    var data_root = document.body.getAttribute("data-root");
+
+	    if (!data_root.endsWith("/")){
+		data_root = data_root + "/";
+	    }
+	    
 	    var url = data_root + id;
 
 	    var on_success = function(data){
