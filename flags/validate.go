@@ -23,6 +23,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 	bool_flags := []string{
 		ENABLE_CORS,
 		ENABLE_GZIP,
+		ENABLE_GEOJSON,
 	}
 
 	for _, k := range bool_flags {

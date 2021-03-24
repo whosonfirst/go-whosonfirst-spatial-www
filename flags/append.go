@@ -11,6 +11,9 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.String(SERVER_URI, "http://localhost:8080", "A valid aaronland/go-http-server URI.")
 
 	fs.Bool(ENABLE_WWW, false, "Enable the interactive /debug endpoint to query points and display results.")
+
+	fs.Bool(ENABLE_GEOJSON, false, "Enable GeoJSON output for point-in-polygon API calls.")
+	
 	fs.Bool(ENABLE_CORS, false, "Enable CORS headers for data-related and API handlers.")
 	fs.Bool(ENABLE_GZIP, false, "Enable gzip-encoding for data-related and API handlers.")
 

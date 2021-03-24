@@ -1,6 +1,6 @@
 # go-whosonfirst-spatial-www
 
-An opionated web application for `go-whosonfirst-spatial` packages.
+Opionated web application for the `go-whosonfirst-spatial` packages.
 
 ## IMPORTANT
 
@@ -78,7 +78,6 @@ For example:
 ```
 $> bin/server \
 	-enable-www \
-	-enable-properties \
 	-spatial-database-uri 'rtree:///?strict=false' \
 	-properties-reader-uri 'whosonfirst://?reader=fs:////usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' \
 	-enable-tangram \
@@ -98,7 +97,6 @@ If you don't need, or want, to expose a user-facing interface simply remove the 
 ```
 $> bin/server \
 	-enable-geojson \
-	-enable-properties \
 	-spatial-database-uri 'rtree:///?strict=false' \
 	-properties-reader-uri 'whosonfirst://?reader=fs:////usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' \
 	/usr/local/data/sfomuseum-data-architecture
