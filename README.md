@@ -25,16 +25,14 @@ $> ./bin/server -h
     	Enable CORS headers for data-related and API handlers.
   -enable-custom-placetypes
     	Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.
+  -enable-geojson
+    	Enable GeoJSON output for point-in-polygon API calls.
   -enable-gzip
     	Enable gzip-encoding for data-related and API handlers.
-  -enable-properties
-    	Enable support for 'properties' parameters in queries.
   -enable-tangram
     	Use Tangram.js for rendering map tiles
   -enable-www
     	Enable the interactive /debug endpoint to query points and display results.
-  -index-properties
-    	Index properties reader.
   -initial-latitude float
     	The initial latitude for map views to use. (default 37.616906)
   -initial-longitude float
@@ -63,8 +61,6 @@ $> ./bin/server -h
     	Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.
   -path-root-api string
     	The root URL for all API handlers (default "/api")
-  -properties-reader-uri string
-    	Valid options are: [rtree://] (default "rtree://")
   -server-uri string
     	A valid aaronland/go-http-server URI. (default "http://localhost:8080")
   -spatial-database-uri string
@@ -77,9 +73,8 @@ For example:
 
 ```
 $> bin/server \
-	-enable-www \
 	-spatial-database-uri 'rtree:///?strict=false' \
-	-properties-reader-uri 'whosonfirst://?reader=fs:////usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' \
+	-enable-www \	
 	-enable-tangram \
 	-nextzen-apikey {NEXTZEN_APIKEY} \
 	/usr/local/data/sfomuseum-data-architecture
@@ -98,7 +93,6 @@ If you don't need, or want, to expose a user-facing interface simply remove the 
 $> bin/server \
 	-enable-geojson \
 	-spatial-database-uri 'rtree:///?strict=false' \
-	-properties-reader-uri 'whosonfirst://?reader=fs:////usr/local/data/sfomuseum-data-architecture/data&cache=gocache://' \
 	/usr/local/data/sfomuseum-data-architecture
 ```
 
@@ -185,56 +179,6 @@ $> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point
   ]
 }  
 ```
-
-If you are returning results as a GeoJSON `FeatureCollection` you may also request additional properties be appended by specifying them as a comma-separated list in the `?properties=` parameter. For example:
-
-```
-$> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point-in-polygon -d '{"latitude": 37.61701894316063, "longitude": -122.3866653442383, "properties": ["sfomuseum:*" ]}'
-{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [ ... ]
-      },
-      "properties": {
-        "mz:is_ceased": 1,
-        "mz:is_current": 0,
-        "mz:is_deprecated": 0,
-        "mz:is_superseded": 1,
-        "mz:is_superseding": 1,
-        "mz:latitude": 37.617037,
-        "mz:longitude": -122.385975,
-        "mz:max_latitude": 37.62120978585632,
-        "mz:max_longitude": -122.38125166743595,
-        "mz:min_latitude": 37.61220882045874,
-        "mz:min_longitude": -122.39033463643914,
-        "mz:uri": "https://data.whosonfirst.org/115/939/632/7/1159396327.geojson",
-        "sfomuseum:building_id": "SFO",
-        "sfomuseum:is_sfo": 1,
-        "sfomuseum:placetype": "building",
-        "wof:country": "US",
-        "wof:id": 1159396327,
-        "wof:lastmodified": 1547232162,
-        "wof:name": "SFO Terminal Complex",
-        "wof:parent_id": 102527513,
-        "wof:path": "115/939/632/7/1159396327.geojson",
-        "wof:placetype": "building",
-        "wof:repo": "sfomuseum-data-architecture",
-        "wof:superseded_by": [
-          1159554801
-        ],
-        "wof:supersedes": [
-          1159396331
-        ]
-      }
-    }... and so on
-  ]
-}
-```
-
 
 ### Indexing "plain old" GeoJSON
 
