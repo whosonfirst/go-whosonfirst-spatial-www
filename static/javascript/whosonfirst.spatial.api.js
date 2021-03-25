@@ -49,8 +49,16 @@ whosonfirst.spatial.api = (function(){
 	    
 	    req.open("POST", abs_url, true);
 
-	    // req.setRequestHeader("Accept", "application/geo+json");
-
+	    // See this? This is not great. I am still trying to figure things out. See also:
+	    // https://github.com/whosonfirst/go-whosonfirst-spatial-pip/blob/main/api/http.go
+	    // (20210325/thisisaaronland)
+	    
+	    if (args["properties"]){
+		str_props = args["properties"].join(",");
+		req.setRequestHeader("X-Properties", str_props);
+		delete(args["properties"]);
+	    }
+	    
 	    var enc_args = JSON.stringify(args);
 	    req.send(enc_args);	    
 	},
