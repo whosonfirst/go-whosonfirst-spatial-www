@@ -36,6 +36,8 @@ const PROPERTIES string = "property"
 
 const SPATIAL_DATABASE_URI string = "spatial-database-uri"
 
+const PROPERTIES_READER_URI string = "properties-reader-uri"
+
 const VERBOSE string = "verbose"
 
 const IS_WOF string = "is-wof"

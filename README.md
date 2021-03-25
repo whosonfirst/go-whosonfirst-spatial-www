@@ -61,10 +61,12 @@ $> ./bin/server -h
     	Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.
   -path-root-api string
     	The root URL for all API handlers (default "/api")
+  -properties-reader-uri string
+    	A valid whosonfirst/go-reader.Reader URI. Available options are: [file:// fs:// null://]
   -server-uri string
     	A valid aaronland/go-http-server URI. (default "http://localhost:8080")
   -spatial-database-uri string
-    	Valid options are: [rtree://]
+    	A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: [rtree://]
   -verbose
     	Be chatty.
 ```

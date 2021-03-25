@@ -50,20 +50,16 @@ $> make cli
 $> ./bin/query -h
   -alternate-geometry value
     	One or more alternate geometry labels (wof:alt_label) values to filter results by.
+  -cessation-date string
+    	A valid EDTF date string.
   -custom-placetypes string
-    	...
-  -custom-placetypes-source string
-    	...
+    	A JSON-encoded string containing custom placetypes defined using the syntax described in the whosonfirst/go-whosonfirst-placetypes repository.
   -enable-custom-placetypes
-    	...
-  -enable-properties
-    	Enable support for 'properties' parameters in queries.
-  -exclude value
-    	Exclude (WOF) records based on their existential flags. Valid options are: ceased, deprecated, not-current, superseded.
+    	Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.
   -geometries string
     	Valid options are: all, alt, default. (default "all")
-  -index-properties
-    	Index properties reader.
+  -inception-date string
+    	A valid EDTF date string.
   -is-ceased value
     	One or more existential flags (-1, 0, 1) to filter results by.
   -is-current value
@@ -84,14 +80,12 @@ $> ./bin/query -h
     	A valid longitude.
   -placetype value
     	One or more place types to filter results by.
-  -properties value
-    	One or more Who's On First properties to append to each result.
   -properties-reader-uri string
-    	Valid options are: []
-  -setenv
-    	Set flags from environment variables.
+    	A valid whosonfirst/go-reader.Reader URI. Available options are: [file:// fs:// null://]
+  -property value
+    	One or more Who's On First properties to append to each result.
   -spatial-database-uri string
-    	Valid options are: [rtree://] (default "rtree://")
+    	A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: [rtree://]
   -verbose
     	Be chatty.
 ```

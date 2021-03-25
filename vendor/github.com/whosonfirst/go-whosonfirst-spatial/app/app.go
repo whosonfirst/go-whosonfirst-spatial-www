@@ -34,7 +34,15 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		return nil, fmt.Errorf("Failed instantiate spatial database, %v", err)
 	}
 
-	properties_r := spatial_db
+	properties_r, err := NewPropertiesReaderWithFlagsSet(ctx, fl)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to create properties reader, %v", err)
+	}
+
+	if properties_r == nil {
+		properties_r = spatial_db
+	}
 
 	iter, err := NewIteratorWithFlagSet(ctx, fl, spatial_db)
 

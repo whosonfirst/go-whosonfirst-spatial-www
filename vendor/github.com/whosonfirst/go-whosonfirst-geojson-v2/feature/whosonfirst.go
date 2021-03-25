@@ -37,6 +37,7 @@ type WOFStandardPlacesResult struct {
 	WOFPath                  string  `json:"wof:path"`
 	WOFSupersededBy          []int64 `json:"wof:superseded_by"`
 	WOFSupersedes            []int64 `json:"wof:supersedes"`
+	WOFBelongsTo             []int64 `json:"wof:belongsto"`
 	MZURI                    string  `json:"mz:uri"`
 	MZLatitude               float64 `json:"mz:latitude"`
 	MZLongitude              float64 `json:"mz:longitude"`
@@ -295,6 +296,7 @@ func (f *WOFFeature) SPR() (spr.StandardPlacesResult, error) {
 
 	superseded_by := whosonfirst.SupersededBy(f)
 	supersedes := whosonfirst.Supersedes(f)
+	belongsto := whosonfirst.BelongsTo(f)
 
 	lastmod := whosonfirst.LastModified(f)
 
@@ -308,6 +310,7 @@ func (f *WOFFeature) SPR() (spr.StandardPlacesResult, error) {
 		WOFPath:         path,
 		WOFSupersedes:   supersedes,
 		WOFSupersededBy: superseded_by,
+		WOFBelongsTo:    belongsto,
 		EDTFInception:   inception,
 		EDTFCessation:   cessation,
 		MZURI:           uri,
@@ -429,6 +432,10 @@ func (spr *WOFStandardPlacesResult) SupersededBy() []int64 {
 
 func (spr *WOFStandardPlacesResult) Supersedes() []int64 {
 	return spr.WOFSupersedes
+}
+
+func (spr *WOFStandardPlacesResult) BelongsTo() []int64 {
+	return spr.WOFBelongsTo
 }
 
 func (spr *WOFStandardPlacesResult) LastModified() int64 {
