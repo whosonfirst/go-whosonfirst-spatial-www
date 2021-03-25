@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
 	"github.com/whosonfirst/go-whosonfirst-log"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 	"runtime/debug"
 	"time"
 )
@@ -15,7 +15,7 @@ import (
 type SpatialApplication struct {
 	mode             string
 	SpatialDatabase  database.SpatialDatabase
-	PropertiesReader properties.PropertiesReader
+	PropertiesReader reader.Reader
 	Iterator         *iterator.Iterator
 	Logger           *log.WOFLogger
 }
@@ -34,13 +34,9 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		return nil, fmt.Errorf("Failed instantiate spatial database, %v", err)
 	}
 
-	properties_r, err := NewPropertiesReaderWithFlagSet(ctx, fl)
+	properties_r := spatial_db
 
-	if err != nil {
-		return nil, fmt.Errorf("Failed to instantiate properties reader, %v", err)
-	}
-
-	iter, err := NewIteratorWithFlagSet(ctx, fl, spatial_db, properties_r)
+	iter, err := NewIteratorWithFlagSet(ctx, fl, spatial_db)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to instantiate iterator, %v", err)
@@ -65,10 +61,6 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 func (p *SpatialApplication) Close(ctx context.Context) error {
 
 	p.SpatialDatabase.Disconnect(ctx)
-
-	if p.PropertiesReader != nil {
-		p.PropertiesReader.Close(ctx)
-	}
 
 	return nil
 }

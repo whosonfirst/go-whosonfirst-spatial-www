@@ -28,7 +28,7 @@ type PointInPolygonCandidate struct {
 type PropertiesResponse map[string]interface{}
 
 type PropertiesResponseResults struct {
-	Properties []*PropertiesResponse `json:"properties"`
+	Properties []*PropertiesResponse `json:"places"`	// match spr response
 }
 
 type Filter interface {

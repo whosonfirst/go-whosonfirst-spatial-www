@@ -17,7 +17,6 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
-	_ "github.com/whosonfirst/go-whosonfirst-spatial-reader"
 	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"

@@ -6,33 +6,20 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"github.com/whosonfirst/go-whosonfirst-spatial/properties"
 	"github.com/whosonfirst/warning"
 	"io"
 	"log"
-	"sync"
 )
 
-func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase, properties_r properties.PropertiesReader) (*iterator.Iterator, error) {
+func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db database.SpatialDatabase) (*iterator.Iterator, error) {
 
 	emitter_uri, _ := lookup.StringVar(fl, flags.ITERATOR_URI)
-
 	is_wof, _ := lookup.BoolVar(fl, flags.IS_WOF)
-	index_properties, _ := lookup.BoolVar(fl, flags.INDEX_PROPERTIES)
-
-	var wg *sync.WaitGroup
-	var mu *sync.Mutex
-
-	if index_properties {
-		wg = new(sync.WaitGroup)
-		mu = new(sync.Mutex)
-	}
 
 	emitter_cb := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
 
@@ -79,37 +66,9 @@ func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db da
 			return errors.New(msg)
 		}
 
-		if index_properties {
-
-			wg.Add(1)
-
-			go func(f geojson.Feature, wg *sync.WaitGroup) error {
-
-				defer wg.Done()
-
-				mu.Lock()
-
-				err = properties_r.IndexFeature(ctx, f)
-
-				mu.Unlock()
-
-				if err != nil {
-					// log.Println("FAILED TO INDEX", err) // something
-				}
-
-				return err
-
-			}(f, wg)
-		}
-
 		return nil
 	}
 
 	iter, err := iterator.NewIterator(ctx, emitter_uri, emitter_cb)
-
-	if index_properties {
-		wg.Wait()
-	}
-
 	return iter, err
 }

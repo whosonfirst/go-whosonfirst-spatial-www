@@ -8,7 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 )
 
-func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplication, req *PointInPolygonRequest) (interface{}, error) {
+func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplication, req *PointInPolygonRequest) (spr.StandardPlacesResults, error) {
 
 	c, err := geo.NewCoordinate(req.Longitude, req.Latitude)
 
@@ -23,28 +23,5 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 	}
 
 	db := app.SpatialDatabase
-	pr := app.PropertiesReader
-
-	var rsp interface{}
-
-	r, err := db.PointInPolygon(ctx, c, f)
-
-	if err != nil {
-		return nil, fmt.Errorf("Failed to query database with coord %v, %v", c, err)
-	}
-
-	rsp = r
-
-	if pr != nil && len(req.Properties) > 0 {
-
-		r, err := pr.PropertiesResponseResultsWithStandardPlacesResults(ctx, rsp.(spr.StandardPlacesResults), req.Properties)
-
-		if err != nil {
-			return nil, fmt.Errorf("Failed to generate properties response, %v", err)
-		}
-
-		rsp = r
-	}
-
-	return rsp, nil
+	return db.PointInPolygon(ctx, c, f)
 }
