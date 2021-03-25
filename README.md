@@ -33,16 +33,18 @@ $> ./bin/server -h
     	Use Tangram.js for rendering map tiles
   -enable-www
     	Enable the interactive /debug endpoint to query points and display results.
-  -initial-latitude float
-    	The initial latitude for map views to use. (default 37.616906)
-  -initial-longitude float
-    	The initial longitude for map views to use. (default -122.386665)
-  -initial-zoom int
-    	The initial zoom level for map views to use. (default 14)
   -is-wof
     	Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents. (default true)
   -iterator-uri string
     	A valid whosonfirst/go-whosonfirst-iterate/emitter URI. Supported schemes are: directory://, featurecollection://, file://, filelist://, geojsonl://, repo://. (default "repo://")
+  -leaflet-initial-latitude float
+    	The initial latitude for map views to use. (default 37.616906)
+  -leaflet-initial-longitude float
+    	The initial longitude for map views to use. (default -122.386665)
+  -leaflet-initial-zoom int
+    	The initial zoom level for map views to use. (default 14)
+  -leaflet-max-bounds string
+    	An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.
   -leaflet-tile-url string
     	A valid Leaflet (slippy map) tile template URL to use for rendering maps (if -enable-tangram is false)
   -nextzen-apikey string
