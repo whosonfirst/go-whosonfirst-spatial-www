@@ -105,6 +105,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	initial_lat, _ := lookup.Float64Var(fs, www_flags.INITIAL_LATITUDE)
 	initial_lon, _ := lookup.Float64Var(fs, www_flags.INITIAL_LONGITUDE)
 	initial_zoom, _ := lookup.IntVar(fs, www_flags.INITIAL_ZOOM)
+	max_bounds, _ := lookup.StringVar(fs, www_flags.MAX_BOUNDS)
 
 	server_uri, _ := lookup.StringVar(fs, www_flags.SERVER_URI)
 
@@ -295,6 +296,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			InitialLatitude:  initial_lat,
 			InitialLongitude: initial_lon,
 			InitialZoom:      initial_zoom,
+			MaxBounds:        max_bounds,
 			LeafletTileURL:   leaflet_tile_url,
 		}
 

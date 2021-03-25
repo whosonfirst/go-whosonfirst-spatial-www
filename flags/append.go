@@ -36,6 +36,7 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.Float64(INITIAL_LATITUDE, 37.616906, "The initial latitude for map views to use.")
 	fs.Float64(INITIAL_LONGITUDE, -122.386665, "The initial longitude for map views to use.")
 	fs.Int(INITIAL_ZOOM, 14, "The initial zoom level for map views to use.")
+	fs.String(MAX_BOUNDS, "", "An optional comma-separated bounding box ({MINY},{MINX},{MAXY},{MAXX}) to set the boundary for map views.")
 
 	return nil
 }

@@ -3,9 +3,12 @@ package flags
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"log"
+	"strconv"
+	"strings"
 )
 
 func ValidateWWWFlags(fs *flag.FlagSet) error {
@@ -63,6 +66,57 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 
 	if init_zoom < 1 {
 		return errors.New("Invalid zoom")
+	}
+
+	max_bounds, err := lookup.StringVar(fs, MAX_BOUNDS)
+
+	if max_bounds != "" {
+
+		bounds := strings.Split(max_bounds, ",")
+
+		if len(bounds) != 4 {
+			return errors.New("Invalid max bounds")
+		}
+
+		miny, err := strconv.ParseFloat(bounds[0], 64)
+
+		if err != nil {
+			return fmt.Errorf("Invalid miny, %v", err)
+		}
+
+		if !geo.IsValidLatitude(miny) {
+			return errors.New("Invalid latitude, miny")
+		}
+
+		minx, err := strconv.ParseFloat(bounds[1], 64)
+
+		if err != nil {
+			return fmt.Errorf("Invalid minx, %v", err)
+		}
+
+		if !geo.IsValidLongitude(minx) {
+			return errors.New("Invalid longitude, minx")
+		}
+
+		maxy, err := strconv.ParseFloat(bounds[2], 64)
+
+		if err != nil {
+			return fmt.Errorf("Invalid maxy, %v", err)
+		}
+
+		if !geo.IsValidLatitude(maxy) {
+			return errors.New("Invalid latitude, maxy")
+		}
+
+		maxx, err := strconv.ParseFloat(bounds[3], 64)
+
+		if err != nil {
+			return fmt.Errorf("Invalid maxx, %v", err)
+		}
+
+		if !geo.IsValidLongitude(maxx) {
+			return errors.New("Invalid longitude, maxx")
+		}
 	}
 
 	path_flags := []string{

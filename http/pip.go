@@ -14,6 +14,7 @@ type PointInPolygonHandlerOptions struct {
 	InitialLatitude  float64
 	InitialLongitude float64
 	InitialZoom      int
+	MaxBounds        string
 	DataEndpoint     string
 	LeafletTileURL   string
 }
@@ -22,6 +23,7 @@ type PointInPolygonHandlerTemplateVars struct {
 	InitialLatitude  float64
 	InitialLongitude float64
 	InitialZoom      int
+	MaxBounds        string
 	DataEndpoint     string
 	LeafletTileURL   string
 	Placetypes       []*placetypes.WOFPlacetype

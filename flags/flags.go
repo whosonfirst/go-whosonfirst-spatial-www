@@ -19,8 +19,9 @@ const NEXTZEN_TILE_URL string = "nextzen-tile-url"
 
 const LEAFLET_TILE_URL string = "leaflet-tile-url"
 
-const INITIAL_LATITUDE string = "initial-latitude"
-const INITIAL_LONGITUDE string = "initial-longitude"
-const INITIAL_ZOOM string = "initial-zoom"
+const INITIAL_LATITUDE string = "leaflet-initial-latitude"
+const INITIAL_LONGITUDE string = "leaflet-initial-longitude"
+const INITIAL_ZOOM string = "leaflet-initial-zoom"
+const MAX_BOUNDS string = "leaflet-max-bounds"
 
 const SERVER_URI string = "server-uri"
