@@ -232,8 +232,7 @@ window.addEventListener("load", function load(event){
 
 		    var first = places[0];
 		    
-		    var count_extras = extras.length;
-		    
+		    var count_extras = extras.length;		    
 		    var extra_props = [];
 		    
 		    for (var i=0; i < count_extras; i++){
@@ -249,6 +248,7 @@ window.addEventListener("load", function load(event){
 				    extra_props.push(k);
 				}
 			    }
+			    
 			} else {
 
 			    if (first[ex]) {
