@@ -65,20 +65,18 @@ _The examples shown here assume applications that have been built with the [whos
 $> ./bin/query -h
   -alternate-geometry value
     	One or more alternate geometry labels (wof:alt_label) values to filter results by.
+  -cessation-date string
+    	A valid EDTF date string.
   -custom-placetypes string
-    	...
-  -custom-placetypes-source string
-    	...
+    	A JSON-encoded string containing custom placetypes defined using the syntax described in the whosonfirst/go-whosonfirst-placetypes repository.
   -enable-custom-placetypes
+    	Enable wof:placetype values that are not explicitly defined in the whosonfirst/go-whosonfirst-placetypes repository.
+  -enable-geojson
     	...
-  -enable-properties
-    	Enable support for 'properties' parameters in queries.
-  -exclude value
-    	Exclude (WOF) records based on their existential flags. Valid options are: ceased, deprecated, not-current, superseded.
   -geometries string
     	Valid options are: all, alt, default. (default "all")
-  -index-properties
-    	Index properties reader.
+  -inception-date string
+    	A valid EDTF date string.
   -is-ceased value
     	One or more existential flags (-1, 0, 1) to filter results by.
   -is-current value
@@ -91,6 +89,8 @@ $> ./bin/query -h
     	One or more existential flags (-1, 0, 1) to filter results by.
   -is-wof
     	Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents. (default true)
+  -iterator-uri string
+    	A valid whosonfirst/go-whosonfirst-iterate/emitter URI. Supported schemes are: directory://, featurecollection://, file://, filelist://, geojsonl://, repo://. (default "repo://")
   -latitude float
     	A valid latitude.
   -longitude float
@@ -99,14 +99,14 @@ $> ./bin/query -h
     	... (default "cli")
   -placetype value
     	One or more place types to filter results by.
-  -properties value
-    	One or more Who's On First properties to append to each result.
   -properties-reader-uri string
-    	Valid options are: [sqlite://]
+    	A valid whosonfirst/go-reader.Reader URI. Available options are: [file:// fs:// null://]
+  -property value
+    	One or more Who's On First properties to append to each result.
   -server-uri string
     	... (default "http://localhost:8080")
   -spatial-database-uri string
-    	Valid options are: [sqlite://] (default "rtree://")
+    	A valid whosonfirst/go-whosonfirst-spatial/data.SpatialDatabase URI. options are: [rtree://]
   -verbose
     	Be chatty.
 ```

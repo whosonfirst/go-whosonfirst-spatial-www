@@ -7,7 +7,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip"
 	spatial_app "github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
-	"log"
+	_ "log"
 	"net/http"
 	"strings"
 )
@@ -95,9 +95,8 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 		
 		if len(props) > 0 {
 
-			log.Println("WHAY", len(props))
 			props_opts := &spatial.PropertiesResponseOptions{
-				Reader:       app.SpatialDatabase,
+				Reader:       app.PropertiesReader,
 				Keys:         props,
 				SourcePrefix: "properties",
 			}

@@ -127,7 +127,7 @@ github.com/whosonfirst/go-whosonfirst-spatial/filter
 github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo
 github.com/whosonfirst/go-whosonfirst-spatial/timer
-# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.9
+# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.10
 ## explicit
 github.com/whosonfirst/go-whosonfirst-spatial-pip
 github.com/whosonfirst/go-whosonfirst-spatial-pip/api
