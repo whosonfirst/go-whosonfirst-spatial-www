@@ -45,9 +45,6 @@ whosonfirst.spatial.pip = (function(){
 	    
 	    for (var i=0; i < count; i++){
 
-		// var f = features[i];
-		// var props = f["properties"];
-
 		var props = features[i];
 		
 		// draw table header

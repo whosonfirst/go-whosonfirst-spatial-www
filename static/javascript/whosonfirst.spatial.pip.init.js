@@ -201,21 +201,82 @@ window.addEventListener("load", function load(event){
 	    var places = rsp["places"];
 	    var count = places.length;
 
+	    var matches = document.getElementById("pip-matches");
+	    matches.innerHTML = "";
+	    
+	    if (! count){
+		return;
+	    }
+	    
 	    for (var i=0; i < count; i++){
 		var pl = places[i];
 		show_feature(pl["wof:id"]);
 	    }
 	    
 	    var table_props = whosonfirst.spatial.pip.default_properties();
-	    var table = whosonfirst.spatial.pip.render_properties_table(places, table_props);
+
+	    // START OF something something something
 	    
-	    var matches = document.getElementById("pip-matches");
-	    matches.innerHTML = "";
+	    var extras_el = document.getElementById("extras");
+
+	    if (extras_el){
+		
+		var str_extras = extras_el.value;
+		var extras = null;
+		
+		if (str_extras){
+		    extras = str_extras.split(",");  		    
+		}
+
+		if (extras){
+
+		    var first = places[0];
+		    
+		    var count_extras = extras.length;
+		    
+		    var extra_props = [];
+		    
+		    for (var i=0; i < count_extras; i++){
+
+			var ex = extras[i];
+			
+			if ((ex.endsWith(":")) || (ex.endsWith(":*"))){
+			    
+			    var prefix = ex.replace("*", "");
+			    
+			    for (k in first){
+				if (k.startsWith(prefix)){
+				    extra_props.push(k);
+				}
+			    }
+			} else {
+
+			    if (first[ex]) {
+				extra_props.push(ex);
+			    }
+			}
+		    }
+
+		    for (idx in extra_props){
+			var ex = extra_props[idx];
+			table_props[ex] = "";
+		    }
+		}
+
+	    }
+
+	    // END OF something something something
+	    
+	    var table = whosonfirst.spatial.pip.render_properties_table(places, table_props);
 	    matches.appendChild(table);
 	    
 	};
 
 	var on_error = function(err){
+
+	    var matches = document.getElementById("pip-matches");
+	    matches.innerHTML = "";
+	    
 	    map.removeControl(spinner);	    
 	    console.log("SAD", err);
 	}
