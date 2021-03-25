@@ -78,7 +78,17 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 			return errors.New("Invalid max bounds")
 		}
 
-		miny, err := strconv.ParseFloat(bounds[0], 64)
+		minx, err := strconv.ParseFloat(bounds[0], 64)
+
+		if err != nil {
+			return fmt.Errorf("Invalid minx, %v", err)
+		}
+
+		if !geo.IsValidLongitude(minx) {
+			return errors.New("Invalid longitude, minx")
+		}
+		
+		miny, err := strconv.ParseFloat(bounds[1], 64)
 
 		if err != nil {
 			return fmt.Errorf("Invalid miny, %v", err)
@@ -88,27 +98,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 			return errors.New("Invalid latitude, miny")
 		}
 
-		minx, err := strconv.ParseFloat(bounds[1], 64)
-
-		if err != nil {
-			return fmt.Errorf("Invalid minx, %v", err)
-		}
-
-		if !geo.IsValidLongitude(minx) {
-			return errors.New("Invalid longitude, minx")
-		}
-
-		maxy, err := strconv.ParseFloat(bounds[2], 64)
-
-		if err != nil {
-			return fmt.Errorf("Invalid maxy, %v", err)
-		}
-
-		if !geo.IsValidLatitude(maxy) {
-			return errors.New("Invalid latitude, maxy")
-		}
-
-		maxx, err := strconv.ParseFloat(bounds[3], 64)
+		maxx, err := strconv.ParseFloat(bounds[2], 64)
 
 		if err != nil {
 			return fmt.Errorf("Invalid maxx, %v", err)
@@ -116,6 +106,16 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 
 		if !geo.IsValidLongitude(maxx) {
 			return errors.New("Invalid longitude, maxx")
+		}
+		
+		maxy, err := strconv.ParseFloat(bounds[3], 64)
+
+		if err != nil {
+			return fmt.Errorf("Invalid maxy, %v", err)
+		}
+
+		if !geo.IsValidLatitude(maxy) {
+			return errors.New("Invalid latitude, maxy")
 		}
 	}
 

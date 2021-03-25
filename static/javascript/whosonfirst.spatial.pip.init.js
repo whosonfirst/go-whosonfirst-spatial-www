@@ -48,6 +48,8 @@ window.addEventListener("load", function load(event){
 	console.log("Missing initial zoom");
 	return;
     }
+
+    var max_bounds = pip_wrapper.getAttribute("data-max-bounds");
     
     var map_el = document.getElementById("map");
 
@@ -320,5 +322,33 @@ window.addEventListener("load", function load(event){
     
     map.setView([init_lat, init_lon], init_zoom);    
 
+    if (max_bounds) {
+
+	var bounds = max_bounds.split(",");
+
+	var miny;
+	var minx;
+	var maxy;
+	var maxx;
+	
+	if (bounds.length == 4){
+	    minx = parseFloat(bounds[0]);
+	    miny = parseFloat(bounds[1]);	    
+	    maxx = parseFloat(bounds[2]);
+	    maxy = parseFloat(bounds[3]);	    
+	}
+
+	if ((miny) && (minx) && (maxy) && (maxx)){
+
+	    var max_bounds = [
+		[ miny, minx ],
+		[ maxy, maxx ]
+	    ];
+
+	    // console.log("BOUNDS", bounds, max_bounds);
+	    map.setMaxBounds(max_bounds);
+	}
+    }
+    
     slippymap.crosshairs.init(map);    
 });
