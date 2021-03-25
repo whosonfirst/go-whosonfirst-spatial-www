@@ -77,6 +77,9 @@ window.addEventListener("load", function load(event){
     var layers = L.layerGroup();
     layers.addTo(map);
 
+    var spinner = new L.Control.Spinner();
+    // map.addControl(spinner);
+    
     var update_map = function(e){
 
 	var pos = map.getCenter();	
@@ -173,7 +176,7 @@ window.addEventListener("load", function load(event){
 	    var url = data_root + id;
 
 	    var on_success = function(data){
-		
+
 		var l = L.geoJSON(data, {
 		    style: function(feature){
 			return whosonfirst.spatial.pip.named_style("match");
@@ -193,8 +196,8 @@ window.addEventListener("load", function load(event){
 	
 	var on_success = function(rsp){
 
-	    layers.clearLayers();
-
+	    map.removeControl(spinner);
+	    
 	    var places = rsp["places"];
 	    var count = places.length;
 
@@ -213,10 +216,14 @@ window.addEventListener("load", function load(event){
 	};
 
 	var on_error = function(err){
+	    map.removeControl(spinner);	    
 	    console.log("SAD", err);
 	}
 
 	whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
+
+	map.addControl(spinner);	
+	layers.clearLayers();	
     };
     
     map.on("moveend", update_map);

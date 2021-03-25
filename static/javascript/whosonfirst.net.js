@@ -44,7 +44,7 @@ whosonfirst.net = (function(){
 		
 		var on_hit = function(data){
 		    		    
-		    self.log("debug", "[cached] fetch " + url);
+		    // self.log("debug", "[cached] fetch " + url);
 		    
 		    if (on_success){
 			on_success(data);
@@ -220,7 +220,7 @@ whosonfirst.net = (function(){
 	    },
 	    
 	    'log': function(level, message){
-		
+
 		if (typeof(whosonfirst.log) != 'object'){
 		    console.log(level, message);
 		    return;

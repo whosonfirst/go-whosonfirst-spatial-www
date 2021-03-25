@@ -1,6 +1,6 @@
 # go-whosonfirst-spatial-www
 
-Opionated web application for the `go-whosonfirst-spatial` packages.
+Opinionated web application for the `go-whosonfirst-spatial` packages.
 
 ## IMPORTANT
 
