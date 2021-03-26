@@ -87,7 +87,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		if !geo.IsValidLongitude(minx) {
 			return errors.New("Invalid longitude, minx")
 		}
-		
+
 		miny, err := strconv.ParseFloat(bounds[1], 64)
 
 		if err != nil {
@@ -107,7 +107,7 @@ func ValidateWWWFlags(fs *flag.FlagSet) error {
 		if !geo.IsValidLongitude(maxx) {
 			return errors.New("Invalid longitude, maxx")
 		}
-		
+
 		maxy, err := strconv.ParseFloat(bounds[3], 64)
 
 		if err != nil {

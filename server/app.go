@@ -317,6 +317,11 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		logger.Info("Register %s handler", path_pip)
 		mux.Handle(path_pip, http_pip_handler)
 
+		if !strings.HasSuffix(path_pip, "/") {
+			path_pip_slash := fmt.Sprintf("%s/", path_pip)
+			mux.Handle(path_pip_slash, http_pip_handler)
+		}
+
 		index_opts := &http.IndexHandlerOptions{
 			Templates: t,
 		}
@@ -329,11 +334,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
 
-		path_index := path_prefix
-
-		if path_index == "" {
-			path_index = "/"
-		}
+		path_index := "/"
 
 		logger.Info("Register %s handler", path_index)
 		mux.Handle(path_index, index_handler)
