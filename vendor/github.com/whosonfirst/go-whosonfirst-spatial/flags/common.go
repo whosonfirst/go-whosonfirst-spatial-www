@@ -5,13 +5,24 @@ import (
 	"fmt"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
-	"github.com/whosonfirst/go-reader"	
 )
 
 func CommonFlags() (*flag.FlagSet, error) {
 
 	fs := flagset.NewFlagSet("common")
+
+	err := AppendCommonFlags(fs)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fs, nil
+}
+
+func AppendCommonFlags(fs *flag.FlagSet) error {
 
 	// spatial databases
 
@@ -22,7 +33,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	available_readers := reader.Schemes()
 	desc_readers := fmt.Sprintf("A valid whosonfirst/go-reader.Reader URI. Available options are: %s", available_readers)
-	
+
 	fs.String(PROPERTIES_READER_URI, "", desc_readers)
 
 	fs.Bool(IS_WOF, true, "Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents.")
@@ -37,7 +48,7 @@ func CommonFlags() (*flag.FlagSet, error) {
 
 	fs.Bool(VERBOSE, false, "Be chatty.")
 
-	return fs, nil
+	return nil
 }
 
 func ValidateCommonFlags(fs *flag.FlagSet) error {

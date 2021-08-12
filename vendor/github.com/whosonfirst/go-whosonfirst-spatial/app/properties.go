@@ -5,7 +5,7 @@ import (
 	"flag"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-spatial/flags"	
+	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
 func NewPropertiesReaderWithFlagsSet(ctx context.Context, fs *flag.FlagSet) (reader.Reader, error) {

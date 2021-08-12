@@ -256,9 +256,9 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
 
 		tangramjs_opts := tangramjs.DefaultTangramJSOptions()
-		tangramjs_opts.Nextzen.APIKey = nextzen_apikey
-		tangramjs_opts.Nextzen.StyleURL = nextzen_style_url
-		tangramjs_opts.Nextzen.TileURL = nextzen_tile_url
+		tangramjs_opts.NextzenOptions.APIKey = nextzen_apikey
+		tangramjs_opts.NextzenOptions.StyleURL = nextzen_style_url
+		tangramjs_opts.NextzenOptions.TileURL = nextzen_tile_url
 
 		leaflet_opts := leaflet.DefaultLeafletOptions()
 

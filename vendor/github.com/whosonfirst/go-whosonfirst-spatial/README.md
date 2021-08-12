@@ -10,6 +10,8 @@ _Once complete this package will supersede the [go-whosonfirst-pip-v2](https://g
 
 The following is adapted from [an answer I gave when asked about the differences](https://github.com/whosonfirst/go-whosonfirst-pip-v2/issues/34) between this package and the [go-whosonfirst-pip-v2](https://github.com/whosonfirst/go-whosonfirst-pip-v2) package from which it is derived:
 
+_March 2021: What follows is still true conceptually but some of the specific details have changed and will be updated shortly._
+
 ---
 
 It is an attempt to de-couple the various components that make up `go-whosonfirst-pip-v2` – indexing, storage, querying and serving – in to separate packages in order to allow for more flexibility.
@@ -145,21 +147,10 @@ type SpatialDatabase interface {
 }
 ```
 
-### PropertiesReader
-
-```
-type PropertiesReader interface {
-	IndexFeature(context.Context, wof_geojson.Feature) error
-	PropertiesResponseResultsWithStandardPlacesResults(context.Context, spr.StandardPlacesResults, []string) (*spatial.PropertiesResponseResults, error)
-	Close(context.Context) error
-}
-```
-
 ## See also
 
 * https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
 * https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
-* https://github.com/whosonfirst/go-whosonfirst-spatial-http
-* https://github.com/whosonfirst/go-whosonfirst-spatial-http-sqlite
+* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
+* https://github.com/whosonfirst/go-whosonfirst-spatial-www
 * https://github.com/whosonfirst/go-whosonfirst-spatial-grpc
-* https://github.com/whosonfirst/go-whosonfirst-geojson-v2

@@ -95,7 +95,7 @@ func (idx *FeatureCollectionEmitter) WalkURI(ctx context.Context, index_cb Emitt
 			}
 
 			if !ok {
-				return nil
+				continue
 			}
 
 			_, err = fh.Seek(0, 0)

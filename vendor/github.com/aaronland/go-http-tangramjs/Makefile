@@ -1,5 +1,5 @@
-debug:
-	go run -mod vendor examples/map/main.go -api-key $(APIKEY)
+example:
+	go run -mod vendor cmd/example/main.go -api-key $(APIKEY)
 
 tangram: 
 	curl -s -o static/javascript/tangram.debug.js https://raw.githubusercontent.com/tangrams/tangram/master/dist/tangram.debug.js
