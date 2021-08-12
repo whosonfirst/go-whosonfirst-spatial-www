@@ -260,7 +260,10 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		tangramjs_opts.NextzenOptions.StyleURL = nextzen_style_url
 		tangramjs_opts.NextzenOptions.TileURL = nextzen_tile_url
 
+		tangramjs_opts.LeafletOptions.EnableHash()
+
 		leaflet_opts := leaflet.DefaultLeafletOptions()
+		leaflet_opts.EnableHash()
 
 		if enable_tangram {
 
