@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// StdoutWriter is a struct that implements the `Writer` interface for writing documents to STDOUT.
 type StdoutWriter struct {
 	Writer
 }
@@ -20,20 +21,29 @@ func init() {
 	}
 }
 
+// NewStdoutWriter returns a new `CwdWriter` instance for writing documents to STDOUT configured by
+// 'uri' in the form of:
+//
+//	stdout://
+//
+// Technically 'uri' can also be an empty string.
 func NewStdoutWriter(ctx context.Context, uri string) (Writer, error) {
 
 	wr := &StdoutWriter{}
 	return wr, nil
 }
 
-func (wr *StdoutWriter) Write(ctx context.Context, uri string, fh io.ReadSeeker) (int64, error) {
+// Write copies the content of 'fh' to 'path' using an `os.Stdout` writer.
+func (wr *StdoutWriter) Write(ctx context.Context, path string, fh io.ReadSeeker) (int64, error) {
 	return io.Copy(os.Stdout, fh)
 }
 
-func (wr *StdoutWriter) WriterURI(ctx context.Context, uri string) string {
-	return uri
+// WriterURI returns the value of 'path'
+func (wr *StdoutWriter) WriterURI(ctx context.Context, path string) string {
+	return path
 }
 
+// Close is a no-op to conform to the `Writer` instance and returns nil.
 func (wr *StdoutWriter) Close(ctx context.Context) error {
 	return nil
 }

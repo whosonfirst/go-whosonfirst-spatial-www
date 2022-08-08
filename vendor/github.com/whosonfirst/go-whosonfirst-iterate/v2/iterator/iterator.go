@@ -1,7 +1,11 @@
+// Package iterator provides methods and utilities for iterating over a collection of records
+// (presumed but not required to be Who's On First records) from a variety of sources and dispatching
+// processing to user-defined callback functions.
 package iterator
 
 import (
 	"context"
+	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
 	"io"
 	"log"
@@ -13,28 +17,45 @@ import (
 	"time"
 )
 
+// type Iterator provides a struct that can be used for iterating over a collection of records
+// (presumed but not required to be Who's On First records) from a variety of sources and dispatching
+// processing to user-defined callback functions.
 type Iterator struct {
-	Emitter             emitter.Emitter
+	// Emitter is a `emitter.Emitter` instance used to crawl and emit records.
+	Emitter emitter.Emitter
+	// EmitterCallbackFunc is a `emitter.EmitterCallbackFunc` callback function to be applied to each record emitted by `Emitter`.
 	EmitterCallbackFunc emitter.EmitterCallbackFunc
-	Logger              *log.Logger
-	Seen                int64
-	count               int64
-	max_procs           int
-	exclude_paths       *regexp.Regexp
+	// Logger is a `log.Logger` instance used to provide feedback.
+	Logger *log.Logger
+	// Seen is the count of documents that have been seen (or emitted).
+	Seen int64
+	// count is the current number of documents being processed used to signal where an `Iterator` instance is still indexing (processing) documents.
+	count int64
+	// max_procs is the number maximum (CPU) processes to used to process documents simultaneously.
+	max_procs int
+	// exclude_paths is a `regexp.Regexp` instance used to test and exclude (if matching) the paths of documents as they are iterated through.
+	exclude_paths *regexp.Regexp
 }
 
+// NewIterator() returns a new `Iterator` instance derived from 'emitter_uri' and 'emitter_cb'. The former is expected
+// to be a valid `whosonfirst/go-whosonfirst-iterate/v2/emitter.Emitter` URI whose semantics are defined by the underlying
+// implementation of the `emitter.Emitter` interface. The following iterator-specific query parameters are also accepted:
+// * `?_max_procs=` Explicitly set the number maximum processes to use for iterating documents simultaneously. (Default is the value of `runtime.NumCPU()`.)
+// * `?_exclude=` A valid regular expresion used to test and exclude (if matching) the paths of documents as they are iterated through.
 func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.EmitterCallbackFunc) (*Iterator, error) {
 
 	idx, err := emitter.NewEmitter(ctx, emitter_uri)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to create new emitter, %w", err)
 	}
+
+	// Technically a no-op since we'll have parse 'emitter_uri' in NewEmitter but best not to assume
 
 	u, err := url.Parse(emitter_uri)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to parse URI, %w", err)
 	}
 
 	q := u.Query()
@@ -46,7 +67,7 @@ func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.Emi
 		max, err := strconv.ParseInt(q.Get("_max_procs"), 10, 64)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse '_max_procs' parameter, %w", err)
 		}
 
 		max_procs = int(max)
@@ -68,7 +89,7 @@ func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.Emi
 		re_exclude, err := regexp.Compile(q.Get("_exclude"))
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to parse '_exclude' parameter, %w", err)
 		}
 
 		i.exclude_paths = re_exclude
@@ -77,6 +98,8 @@ func NewIterator(ctx context.Context, emitter_uri string, emitter_cb emitter.Emi
 	return &i, nil
 }
 
+// IterateURIs processes 'uris' concurrent dispatching each URI to the iterator's underlying `Emitter.WalkURI`
+// method and `EmitterCallbackFunc` callback function.
 func (idx *Iterator) IterateURIs(ctx context.Context, uris ...string) error {
 
 	t1 := time.Now()
@@ -139,7 +162,7 @@ func (idx *Iterator) IterateURIs(ctx context.Context, uris ...string) error {
 			err := idx.Emitter.WalkURI(ctx, local_callback, uri)
 
 			if err != nil {
-				err_ch <- err
+				err_ch <- fmt.Errorf("Failed to walk '%s', %w", uri, err)
 			}
 		}(uri)
 	}
@@ -158,6 +181,7 @@ func (idx *Iterator) IterateURIs(ctx context.Context, uris ...string) error {
 	return nil
 }
 
+// IsIndexing() returns a boolean value indicating whether 'idx' is still processing documents.
 func (idx *Iterator) IsIndexing() bool {
 
 	if atomic.LoadInt64(&idx.count) > 0 {
@@ -167,10 +191,12 @@ func (idx *Iterator) IsIndexing() bool {
 	return false
 }
 
+// increment() increments the count of documents being processed.
 func (idx *Iterator) increment() {
 	atomic.AddInt64(&idx.count, 1)
 }
 
+// decrement() decrements the count of documents being processed.
 func (idx *Iterator) decrement() {
 	atomic.AddInt64(&idx.count, -1)
 }

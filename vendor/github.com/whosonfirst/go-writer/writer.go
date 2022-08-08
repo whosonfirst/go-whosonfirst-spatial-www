@@ -12,40 +12,23 @@ import (
 
 var writer_roster roster.Roster
 
+// WriterInitializationFunc is a function defined by individual writer package and used to create
+// an instance of that writer
 type WriterInitializationFunc func(ctx context.Context, uri string) (Writer, error)
 
+// Writer is an interface for writing data to multiple sources or targets.
 type Writer interface {
+	// Writer copies the contents of an `io.ReadSeeker` instance to a relative path.
+	// The absolute path for the file is determined by the instance implementing the `Writer` interface.
 	Write(context.Context, string, io.ReadSeeker) (int64, error)
+	// WriterURI returns the absolute URI for an instance implementing the `Writer` interface.
 	WriterURI(context.Context, string) string
+	// Close closes any underlying writing mechnisms for an instance implementing the `Writer` interface.
 	Close(context.Context) error
 }
 
-func NewService(ctx context.Context, uri string) (Writer, error) {
-
-	err := ensureWriterRoster()
-
-	if err != nil {
-		return nil, err
-	}
-
-	parsed, err := url.Parse(uri)
-
-	if err != nil {
-		return nil, err
-	}
-
-	scheme := parsed.Scheme
-
-	i, err := writer_roster.Driver(ctx, scheme)
-
-	if err != nil {
-		return nil, err
-	}
-
-	init_func := i.(WriterInitializationFunc)
-	return init_func(ctx, uri)
-}
-
+// RegisterWriter registers 'scheme' as a key pointing to 'init_func' in an internal lookup table
+// used to create new `Writer` instances by the `NewWriter` method.
 func RegisterWriter(ctx context.Context, scheme string, init_func WriterInitializationFunc) error {
 
 	err := ensureWriterRoster()
@@ -73,6 +56,10 @@ func ensureWriterRoster() error {
 	return nil
 }
 
+// NewWriter returns a new `Writer` instance configured by 'uri'. The value of 'uri' is parsed
+// as a `url.URL` and its scheme is used as the key for a corresponding `WriterInitializationFunc`
+// function used to instantiate the new `Writer`. It is assumed that the scheme (and initialization
+// function) have been registered by the `RegisterWriter` method.
 func NewWriter(ctx context.Context, uri string) (Writer, error) {
 
 	u, err := url.Parse(uri)
@@ -93,11 +80,7 @@ func NewWriter(ctx context.Context, uri string) (Writer, error) {
 	return init_func(ctx, uri)
 }
 
-func Writers() []string {
-	ctx := context.Background()
-	return writer_roster.Drivers(ctx)
-}
-
+// Schemes returns the list of schemes that have been registered.
 func Schemes() []string {
 
 	ctx := context.Background()

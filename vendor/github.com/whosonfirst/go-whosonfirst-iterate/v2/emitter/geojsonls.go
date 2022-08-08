@@ -15,17 +15,28 @@ func init() {
 	RegisterEmitter(ctx, "geojsonl", NewGeoJSONLEmitter)
 }
 
+// GeojsonLEmitter implements the `Emitter` interface for crawling features in a line-separated GeoJSON record.
 type GeojsonLEmitter struct {
 	Emitter
+	// filters is a `filters.Filters` instance used to include or exclude specific records from being crawled.
 	filters filters.Filters
 }
 
+// NewGeojsonLEmitter() returns a new `GeojsonLEmitter` instance configured by 'uri' in the form of:
+//
+//	geojsonl://?{PARAMETERS}
+//
+// Where {PARAMETERS} may be:
+// * `?include=` Zero or more `aaronland/go-json-query` query strings containing rules that must match for a document to be considered for further processing.
+// * `?exclude=` Zero or more `aaronland/go-json-query`	query strings containing rules that if matched will prevent a document from being considered for further processing.
+// * `?include_mode=` A valid `aaronland/go-json-query` query mode string for testing inclusion rules.
+// * `?exclude_mode=` A valid `aaronland/go-json-query` query mode string for testing exclusion rules.
 func NewGeoJSONLEmitter(ctx context.Context, uri string) (Emitter, error) {
 
 	f, err := filters.NewQueryFiltersFromURI(ctx, uri)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to create filters from query, %w", err)
 	}
 
 	idx := &GeojsonLEmitter{
@@ -35,12 +46,14 @@ func NewGeoJSONLEmitter(ctx context.Context, uri string) (Emitter, error) {
 	return idx, nil
 }
 
+// WalkURI() walks (crawls) each GeoJSON feature found in the file identified by 'uri' and for
+// each file (not excluded by any filters specified when `idx` was created) invokes 'index_cb'.
 func (idx *GeojsonLEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbackFunc, uri string) error {
 
 	fh, err := ReaderWithPath(ctx, uri)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to create reader for '%s', %w", uri, err)
 	}
 
 	defer fh.Close()
@@ -74,7 +87,7 @@ func (idx *GeojsonLEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbac
 		}
 
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to read line at '%s', %w", path, err)
 		}
 
 		raw.Write(fragment)
@@ -87,7 +100,7 @@ func (idx *GeojsonLEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbac
 		fh, err := ioutil.NewReadSeekCloser(br)
 
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to create new ReadSeekCloser for '%s', %w", path, err)
 		}
 
 		defer fh.Close()
@@ -97,7 +110,7 @@ func (idx *GeojsonLEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbac
 			ok, err := idx.filters.Apply(ctx, fh)
 
 			if err != nil {
-				return err
+				return fmt.Errorf("Failed to apply filters for '%s', %w", path, err)
 			}
 
 			if !ok {
@@ -107,14 +120,14 @@ func (idx *GeojsonLEmitter) WalkURI(ctx context.Context, index_cb EmitterCallbac
 			_, err = fh.Seek(0, 0)
 
 			if err != nil {
-				return err
+				return fmt.Errorf("Failed to reset file handle for '%s', %w", path, err)
 			}
 		}
 
 		err = index_cb(ctx, path, fh)
 
 		if err != nil {
-			return err
+			return fmt.Errorf("Index callback failed for '%s', %w", path, err)
 		}
 
 		raw.Reset()

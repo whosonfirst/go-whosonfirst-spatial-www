@@ -13,7 +13,7 @@ require (
 	github.com/sfomuseum/go-flags v0.8.3
 	github.com/whosonfirst/go-reader v1.0.1
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
-	github.com/whosonfirst/go-whosonfirst-spatial v0.3.4
+	github.com/whosonfirst/go-whosonfirst-spatial v0.3.5
 	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.10
 	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.0
 	github.com/whosonfirst/go-whosonfirst-uri v1.2.0
