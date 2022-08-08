@@ -2,8 +2,6 @@
 
 There are many interfaces for reading files. This one is ours. It returns `io.ReadSeekCloser` instances.
 
-_This package supersedes the [go-whosonfirst-readwrite](https://github.com/whosonfirst/go-whosonfirst-readwrite) package._
-
 ## Documentation
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/whosonfirst/go-reader.svg)](https://pkg.go.dev/github.com/whosonfirst/go-reader)
@@ -26,14 +24,12 @@ import (
 
 func main() {
 	ctx := context.Background()
-	r, _ := reader.NewReader(ctx, "fs:///usr/local/data")
+	r, _ := reader.NewReader(ctx, "file:///usr/local/data")
 	fh, _ := r.Read(ctx, "example.txt")
 	defer fh.Close()
 	io.Copy(os.Stdout, fh)
 }
 ```
-
-Note the use of the `fs://` scheme rather than the more conventional `file://`. This is deliberate so as not to overlap with the [Go Cloud](https://gocloud.dev/howto/blob/) `Blob` package's file handler.
 
 There is also a handy "null" reader in case you need a "pretend" reader that doesn't actually do anything:
 
@@ -229,7 +225,7 @@ func main() {
 	r, _ := reader.NewReader(ctx, "github://{GITHUB_OWNER}/{GITHUB_REPO}")
 
 	// to specify a specific branch you would do this:
-	// r, _ := reader.NewReader(ctx, "github://{GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_BRANCH}")
+	// r, _ := reader.NewReader(ctx, "github://{GITHUB_OWNER}/{GITHUB_REPO}?branch={GITHUB_BRANCH}")
 }
 ```
 
@@ -292,6 +288,12 @@ func main() {
 }
 ```
 
+If you are importing the `go-reader-blob` package and using the GoCloud's [fileblob](https://gocloud.dev/howto/blob/#local) driver then instantiating the `file://` scheme will fail since it will have already been registered. You can work around this by using the `fs://` scheme. For example:
+
+```
+r, _ := reader.NewReader(ctx, "fs://{PATH_TO_DIRECTORY}")
+```
+
 * https://github.com/whosonfirst/go-reader
 
 ### null://
@@ -309,3 +311,50 @@ func main() {
 	r, _ := reader.NewReader(ctx, "null://")
 }
 ```
+
+### repo://
+
+This is a convenience scheme for working with Who's On First data repositories.
+
+It will update a URI by appending a `data` directory to its path and changing its scheme to `fs://` before invoking `reader.NewReader` with the updated URI.
+
+```
+import (
+	"context"
+	"github.com/whosonfirst/go-reader"
+)
+
+func main() {
+	ctx := context.Background()
+	r, _ := reader.NewReader(ctx, "repo:///usr/local/data/whosonfirst-data-admin-ca")
+}
+```
+
+### stdin://
+
+Read "files" from `STDIN`
+
+```
+import (
+	"context"
+	"github.com/whosonfirst/go-reader"
+)
+
+func main() {
+	ctx := context.Background()
+	r, _ := reader.NewReader(ctx, "stdin://")
+}
+```
+
+And then to use, something like:
+
+```
+> cat README.md | ./bin/read -reader-uri stdin:// - | wc -l
+     339
+```
+
+Note the use of `-` for a URI. This is the convention (when reading from STDIN) but it can be whatever you want it to be.
+
+## See also
+
+* https://github.com/whosonfirst/go-writer

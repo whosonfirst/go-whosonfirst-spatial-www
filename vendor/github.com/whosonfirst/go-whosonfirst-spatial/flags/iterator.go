@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/whosonfirst/go-whosonfirst-iterate/emitter"
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
 	"sort"
 	"strings"
 )
@@ -15,7 +15,7 @@ func AppendIndexingFlags(fs *flag.FlagSet) error {
 	sort.Strings(modes)
 
 	valid_modes := strings.Join(modes, ", ")
-	desc_modes := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-iterate/emitter URI. Supported schemes are: %s.", valid_modes)
+	desc_modes := fmt.Sprintf("A valid whosonfirst/go-whosonfirst-iterate/v2 URI. Supported schemes are: %s.", valid_modes)
 
 	fs.String(ITERATOR_URI, "repo://", desc_modes)
 

@@ -2,10 +2,10 @@ package geo
 
 import (
 	"errors"
-	"github.com/skelterjohn/geom"
+	"github.com/paulmach/orb"
 )
 
-func NewCoordinate(x float64, y float64) (*geom.Coord, error) {
+func NewCoordinate(x float64, y float64) (*orb.Point, error) {
 
 	if !IsValidLatitude(y) {
 		return nil, errors.New("Invalid latitude")
@@ -15,10 +15,6 @@ func NewCoordinate(x float64, y float64) (*geom.Coord, error) {
 		return nil, errors.New("Invalid longitude")
 	}
 
-	coord := &geom.Coord{
-		X: x,
-		Y: y,
-	}
-
+	coord := &orb.Point{x, y}
 	return coord, nil
 }

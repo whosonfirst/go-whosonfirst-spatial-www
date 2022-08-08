@@ -2,10 +2,10 @@ package geo
 
 import (
 	"errors"
-	"github.com/skelterjohn/geom"
+	"github.com/paulmach/orb"
 )
 
-func NewBoundingBox(minx float64, miny float64, maxx float64, maxy float64) (*geom.Rect, error) {
+func NewBoundingBox(minx float64, miny float64, maxx float64, maxy float64) (*orb.Bound, error) {
 
 	if !IsValidLongitude(minx) {
 		return nil, errors.New("Invalid min longitude")
@@ -43,7 +43,7 @@ func NewBoundingBox(minx float64, miny float64, maxx float64, maxy float64) (*ge
 		return nil, err
 	}
 
-	rect := &geom.Rect{
+	rect := &orb.Bound{
 		Min: *min_coord,
 		Max: *max_coord,
 	}

@@ -1,8 +1,8 @@
 package spr
 
 import (
+	"github.com/sfomuseum/go-edtf"
 	"github.com/whosonfirst/go-whosonfirst-flags"
-	"github.com/sfomuseum/go-edtf"	
 )
 
 type StandardPlacesResult interface {
@@ -15,7 +15,7 @@ type StandardPlacesResult interface {
 	Path() string
 	URI() string
 	Inception() *edtf.EDTFDate
-	Cessation() *edtf.EDTFDate	
+	Cessation() *edtf.EDTFDate
 	Latitude() float64
 	Longitude() float64
 	MinLatitude() float64

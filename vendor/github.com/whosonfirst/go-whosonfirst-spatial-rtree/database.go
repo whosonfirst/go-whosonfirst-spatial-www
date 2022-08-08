@@ -4,27 +4,29 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/dhconnelly/rtreego"
 	gocache "github.com/patrickmn/go-cache"
-	pm_geojson "github.com/paulmach/go.geojson"
-	"github.com/skelterjohn/geom"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
+	"github.com/paulmach/orb/planar"
 	"github.com/whosonfirst/go-ioutil"
-	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
-	"github.com/whosonfirst/go-whosonfirst-log"
+	"github.com/whosonfirst/go-whosonfirst-feature/alt"
+	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
+	"github.com/whosonfirst/go-whosonfirst-feature/properties"
+	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2" // deprecated
+	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"     // deprecated
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spatial/timer"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
+	"log"
 	"net/url"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -35,7 +37,7 @@ func init() {
 }
 
 type RTreeCache struct {
-	Geometry *pm_geojson.Geometry     `json:"geometry"`
+	Geometry *geojson.Geometry        `json:"geometry"`
 	SPR      spr.StandardPlacesResult `json:"properties"`
 }
 
@@ -43,7 +45,7 @@ type RTreeCache struct {
 
 type RTreeSpatialDatabase struct {
 	database.SpatialDatabase
-	Logger          *log.WOFLogger
+	Logger          *log.Logger
 	Timer           *timer.Timer
 	index_alt_files bool
 	rtree           *rtreego.Rtree
@@ -134,7 +136,7 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 	gc := gocache.New(expires, cleanup)
 
-	logger := log.SimpleWOFLogger("index")
+	logger := log.Default()
 
 	rtree := rtreego.NewTree(2, 25, 50)
 
@@ -159,23 +161,29 @@ func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
 	return nil
 }
 
-func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.Feature) error {
+func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) error {
 
-	err := r.setCache(ctx, f)
+	f, err := feature.LoadFeature(body)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to load feature, %w", err)
 	}
 
-	is_alt := whosonfirst.IsAlt(f)
-	alt_label := whosonfirst.AltLabel(f)
+	err = r.setCache(ctx, f)
+
+	if err != nil {
+		return fmt.Errorf("Failed to cache feature, %w", err)
+	}
+
+	is_alt := alt.IsAlt(body)
+	alt_label, _ := properties.AltLabel(body)
 
 	if is_alt && !r.index_alt_files {
 		return nil
 	}
 
 	if is_alt && alt_label == "" {
-		return errors.New("Invalid alt label")
+		return fmt.Errorf("Invalid alt label")
 	}
 
 	feature_id := f.Id()
@@ -186,12 +194,14 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 		return err
 	}
 
-	for i, bbox := range bboxes.Bounds() {
+	bounds := bboxes.Bounds()
 
-		sp_id, err := spatial.SpatialIdWithFeature(f, i)
+	for i, bbox := range bounds {
+
+		sp_id, err := spatial.SpatialIdWithFeature(body, i)
 
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to derive spatial ID, %v", err)
 		}
 
 		sw := bbox.Min
@@ -206,16 +216,16 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 		if err != nil {
 
 			if r.strict {
-				return err
+				return fmt.Errorf("Failed to derive rtree bounds, %w", err)
 			}
 
-			r.Logger.Error("%s failed indexing, (%v). Strict mode is disabled, so skipping.", sp_id, err)
+			r.Logger.Printf("%s failed indexing, (%v). Strict mode is disabled, so skipping.", sp_id, err)
 			return nil
 		}
 
-		r.Logger.Status("index %s %v", sp_id, rect)
+		r.Logger.Printf("index %s %v", sp_id, rect)
 
-		sp := RTreeSpatialIndex{
+		sp := &RTreeSpatialIndex{
 			Rect:      rect,
 			Id:        sp_id,
 			FeatureId: feature_id,
@@ -224,14 +234,62 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, f wof_geojson.F
 		}
 
 		r.mu.Lock()
-		r.rtree.Insert(&sp)
+		r.rtree.Insert(sp)
+
 		r.mu.Unlock()
 	}
 
 	return nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *geom.Coord, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
+/*
+
+TO DO: figure out suitable comparitor
+
+/ DeleteWithComparator removes an object from the tree using a custom
+// comparator for evaluating equalness. This is useful when you want to remove
+// an object from a tree but don't have a pointer to the original object
+// anymore.
+func (tree *Rtree) DeleteWithComparator(obj Spatial, cmp Comparator) bool {
+	n := tree.findLeaf(tree.root, obj, cmp)
+
+// Comparator compares two spatials and returns whether they are equal.
+type Comparator func(obj1, obj2 Spatial) (equal bool)
+
+func defaultComparator(obj1, obj2 Spatial) bool {
+	return obj1 == obj2
+}
+
+*/
+
+func (r *RTreeSpatialDatabase) RemoveFeature(ctx context.Context, id string) error {
+
+	obj := &RTreeSpatialIndex{
+		Rect: nil,
+		Id:   id,
+	}
+
+	comparator := func(obj1, obj2 rtreego.Spatial) bool {
+
+		// 2021/10/12 11:17:11 COMPARE 1: '101737491#:0' 2: '101737491'
+		// log.Printf("COMPARE 1: '%v' 2: '%v'\n", obj1.(*RTreeSpatialIndex).Id, obj2.(*RTreeSpatialIndex).Id)
+
+		obj1_id := obj1.(*RTreeSpatialIndex).Id
+		obj2_id := obj2.(*RTreeSpatialIndex).Id
+
+		return strings.HasPrefix(obj1_id, obj2_id)
+	}
+
+	ok := r.rtree.DeleteWithComparator(obj, comparator)
+
+	if !ok {
+		return fmt.Errorf("Failed to remove %s from rtree", id)
+	}
+
+	return nil
+}
+
+func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *orb.Point, filters ...spatial.Filter) (spr.StandardPlacesResults, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -271,7 +329,7 @@ func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *geom.C
 	return spr_results, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...spatial.Filter) {
+func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, done_ch chan bool, coord *orb.Point, filters ...spatial.Filter) {
 
 	defer func() {
 		done_ch <- true
@@ -288,7 +346,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonWithChannels(ctx context.Context, r
 	return
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *geom.Coord, filters ...spatial.Filter) ([]*spatial.PointInPolygonCandidate, error) {
+func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coord *orb.Point, filters ...spatial.Filter) ([]*spatial.PointInPolygonCandidate, error) {
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -324,7 +382,7 @@ func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coo
 	return candidates, nil
 }
 
-func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, rsp_ch chan *spatial.PointInPolygonCandidate, err_ch chan error, done_ch chan bool, coord *geom.Coord, filters ...spatial.Filter) {
+func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.Context, rsp_ch chan *spatial.PointInPolygonCandidate, err_ch chan error, done_ch chan bool, coord *orb.Point, filters ...spatial.Filter) {
 
 	defer func() {
 		done_ch <- true
@@ -357,16 +415,16 @@ func (r *RTreeSpatialDatabase) PointInPolygonCandidatesWithChannels(ctx context.
 	return
 }
 
-func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *geom.Coord) ([]rtreego.Spatial, error) {
+func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego.Spatial, error) {
 
-	lat := coord.Y
-	lon := coord.X
+	lat := coord.Y()
+	lon := coord.X()
 
 	pt := rtreego.Point{lon, lat}
 	rect, err := rtreego.NewRect(pt, []float64{0.0001, 0.0001}) // how small can I make this?
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to derive rtree bounds, %w", err)
 	}
 
 	return r.getIntersectsByRect(rect)
@@ -381,7 +439,7 @@ func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreeg
 	return results, nil
 }
 
-func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, possible []rtreego.Spatial, c *geom.Coord, filters ...spatial.Filter) {
+func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, rsp_ch chan spr.StandardPlacesResult, err_ch chan error, possible []rtreego.Spatial, c *orb.Point, filters ...spatial.Filter) {
 
 	seen := make(map[string]bool)
 
@@ -432,7 +490,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 			r.Timer.Add(ctx, sp_id, "time to retrieve cache", time.Since(t2))
 
 			if err != nil {
-				r.Logger.Error("Failed to retrieve cache for %s, %v", sp_id, err)
+				r.Logger.Printf("Failed to retrieve cache for %s, %v", sp_id, err)
 				return
 			}
 
@@ -445,7 +503,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 				err = filter.FilterSPR(f, s)
 
 				if err != nil {
-					r.Logger.Debug("SKIP %s because filter error %s", sp_id, err)
+					// r.Logger.Debug("SKIP %s because filter error %s", sp_id, err)
 					return
 				}
 			}
@@ -456,21 +514,24 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 
 			geom := cache_item.Geometry
 
+			orb_geom := geom.Geometry()
+			geom_type := orb_geom.GeoJSONType()
+
 			contains := false
 
-			switch geom.Type {
+			switch geom_type {
 			case "Polygon":
-				contains = geo.PolygonContainsCoord(geom.Polygon, c)
+				contains = planar.PolygonContains(orb_geom.(orb.Polygon), *c)
 			case "MultiPolygon":
-				contains = geo.MultiPolygonContainsCoord(geom.MultiPolygon, c)
+				contains = planar.MultiPolygonContains(orb_geom.(orb.MultiPolygon), *c)
 			default:
-				r.Logger.Warning("Geometry has unsupported geometry type '%s'", geom.Type)
+				r.Logger.Printf("Geometry has unsupported geometry type '%s'", geom.Type)
 			}
 
 			r.Timer.Add(ctx, sp_id, "time to test geometry", time.Since(t4))
 
 			if !contains {
-				r.Logger.Debug("SKIP %s because does not contain coord (%v)", sp_id, c)
+				// r.Logger.Debug("SKIP %s because does not contain coord (%v)", sp_id, c)
 				return
 			}
 
@@ -489,13 +550,13 @@ func (r *RTreeSpatialDatabase) setCache(ctx context.Context, f wof_geojson.Featu
 		return err
 	}
 
-	geom, err := geometry.GeometryForFeature(f)
+	geom, err := geometry.Geometry(f.Bytes())
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to derive geometry for feature, %w", err)
 	}
 
-	alt_label := whosonfirst.AltLabel(f)
+	alt_label, _ := properties.AltLabel(f.Bytes())
 
 	feature_id := f.Id()
 
@@ -517,7 +578,7 @@ func (r *RTreeSpatialDatabase) retrieveCache(ctx context.Context, sp *RTreeSpati
 	cache_item, ok := r.gocache.Get(cache_key)
 
 	if !ok {
-		return nil, errors.New("Invalid cache ID")
+		return nil, fmt.Errorf("Invalid cache ID '%s'", cache_key)
 	}
 
 	return cache_item.(*RTreeCache), nil
@@ -530,7 +591,7 @@ func (r *RTreeSpatialDatabase) Read(ctx context.Context, str_uri string) (io.Rea
 	id, _, err := uri.ParseURI(str_uri)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to parse URI %s, %w", str_uri, err)
 	}
 
 	// TO DO : ALT STUFF HERE
@@ -545,7 +606,7 @@ func (r *RTreeSpatialDatabase) Read(ctx context.Context, str_uri string) (io.Rea
 	cache_item, err := r.retrieveCache(ctx, sp)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to retrieve cache, %w", err)
 	}
 
 	// START OF this is dumb
@@ -553,7 +614,7 @@ func (r *RTreeSpatialDatabase) Read(ctx context.Context, str_uri string) (io.Rea
 	enc_spr, err := json.Marshal(cache_item.SPR)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to marchal cache record, %w", err)
 	}
 
 	var props map[string]interface{}
@@ -566,7 +627,8 @@ func (r *RTreeSpatialDatabase) Read(ctx context.Context, str_uri string) (io.Rea
 
 	// END OF this is dumb
 
-	f := pm_geojson.NewFeature(cache_item.Geometry)
+	orb_geom := cache_item.Geometry.Geometry()
+	f := geojson.NewFeature(orb_geom)
 
 	if err != nil {
 		return nil, err

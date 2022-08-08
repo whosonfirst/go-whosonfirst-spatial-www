@@ -3,26 +3,21 @@ package app
 import (
 	"context"
 	"flag"
-	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/whosonfirst/go-whosonfirst-log"
-	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
+	_ "github.com/sfomuseum/go-flags/lookup"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"io"
+	"log"
 	"os"
 )
 
-func NewApplicationLoggerWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*log.WOFLogger, error) {
+func NewApplicationLoggerWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*log.Logger, error) {
 
-	verbose, _ := lookup.BoolVar(fl, flags.VERBOSE)
-
-	logger := log.SimpleWOFLogger()
-	level := "status"
-
-	if verbose {
-		level = "debug"
+	writers := []io.Writer{
+		os.Stdout,
 	}
 
-	stdout := io.Writer(os.Stdout)
-	logger.AddLogger(stdout, level)
+	mw := io.MultiWriter(writers...)
 
+	logger := log.New(mw, "[spatial] ", log.Lshortfile)
 	return logger, nil
 }

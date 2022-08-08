@@ -26,21 +26,25 @@ type ReadSeekCloser struct {
 // Create a new NewReadSeekCloser instance conforming to the Go 1.16 `io.ReadSeekCloser` interface. This method accepts the following types: io.ReadSeekCloser, io.Reader, io.ReadCloser and io.ReadSeeker.
 func NewReadSeekCloser(fh interface{}) (io.ReadSeekCloser, error) {
 
-	reader := true
+	reader := false
 	seeker := false
 	closer := false
 
 	switch fh.(type) {
 	case io.ReadSeekCloser:
 		return fh.(io.ReadSeekCloser), nil
-	case io.Reader:
-		// pass
+	case io.Closer:
+		closer = true
 	case io.ReadCloser:
+		reader = true
 		closer = true
 	case io.ReadSeeker:
+		reader = true
 		seeker = true
+	case io.Reader:
+		reader = true
 	default:
-		return nil, fmt.Errorf("Invalid or unsupported type")
+		return nil, fmt.Errorf("Invalid or unsupported type: %T", fh)
 	}
 
 	mu := new(sync.RWMutex)

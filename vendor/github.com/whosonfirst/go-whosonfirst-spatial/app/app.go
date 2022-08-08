@@ -5,9 +5,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
-	"github.com/whosonfirst/go-whosonfirst-log"
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"log"
 	"runtime/debug"
 	"time"
 )
@@ -17,7 +17,7 @@ type SpatialApplication struct {
 	SpatialDatabase  database.SpatialDatabase
 	PropertiesReader reader.Reader
 	Iterator         *iterator.Iterator
-	Logger           *log.WOFLogger
+	Logger           *log.Logger
 }
 
 func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
@@ -85,12 +85,12 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 		err := p.Iterator.IterateURIs(ctx, paths...)
 
 		if err != nil {
-			p.Logger.Fatal("failed to index paths because %s", err)
+			p.Logger.Fatalf("failed to index paths because %s", err)
 		}
 
 		t2 := time.Since(t1)
 
-		p.Logger.Status("finished indexing in %v", t2)
+		p.Logger.Printf("finished indexing in %v", t2)
 		debug.FreeOSMemory()
 	}()
 
@@ -106,7 +106,7 @@ func (p *SpatialApplication) IndexPaths(ctx context.Context, paths ...string) er
 				continue
 			}
 
-			p.Logger.Status("indexing %d records indexed", p.Iterator.Seen)
+			p.Logger.Printf("indexing %d records indexed", p.Iterator.Seen)
 		}
 	}()
 

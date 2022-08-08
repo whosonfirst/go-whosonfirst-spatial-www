@@ -2,13 +2,11 @@ package app
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
-	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
+	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/flags"
 	"github.com/whosonfirst/warning"
@@ -21,12 +19,12 @@ func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db da
 	emitter_uri, _ := lookup.StringVar(fl, flags.ITERATOR_URI)
 	is_wof, _ := lookup.BoolVar(fl, flags.IS_WOF)
 
-	emitter_cb := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
+	emitter_cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
 
-		f, err := feature.LoadFeatureFromReader(fh)
+		body, err := io.ReadAll(fh)
 
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to read '%s', %w", path, err)
 		}
 
 		if is_wof {
@@ -44,17 +42,21 @@ func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db da
 					return err
 				}
 
-				log.Printf("Feature ID %s triggered the following warning: %s\n", f.Id(), err)
+				log.Printf("Feature '%s' triggered the following warning: %s\n", path, err)
 			}
 		}
 
-		geom_type := geometry.Type(f)
+		geom_type, err := geometry.Type(body)
+
+		if err != nil {
+			return fmt.Errorf("Failed to derive geometry type for %s, %w", path, err)
+		}
 
 		if geom_type == "Point" {
 			return nil
 		}
 
-		err = spatial_db.IndexFeature(ctx, f)
+		err = spatial_db.IndexFeature(ctx, body)
 
 		if err != nil {
 
@@ -62,8 +64,7 @@ func NewIteratorWithFlagSet(ctx context.Context, fl *flag.FlagSet, spatial_db da
 			// something something something waiting to see if the GOPROXY is
 			// disabled by default in Go > 1.13 (20190919/thisisaaronland)
 
-			msg := fmt.Sprintf("Failed to index %s (%s), %s", f.Id(), f.Name(), err)
-			return errors.New(msg)
+			return fmt.Errorf("Failed to index %s %d", path, err)
 		}
 
 		return nil

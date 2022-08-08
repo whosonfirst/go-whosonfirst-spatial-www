@@ -2,16 +2,20 @@ package spatial
 
 import (
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst"
+	"github.com/whosonfirst/go-whosonfirst-feature/properties"
 )
 
-func SpatialIdWithFeature(f geojson.Feature, extra ...interface{}) (string, error) {
+func SpatialIdWithFeature(body []byte, extra ...interface{}) (string, error) {
 
-	feature_id := f.Id()
-	alt_label := whosonfirst.AltLabel(f)
+	id, err := properties.Id(body)
 
-	sp_id := fmt.Sprintf("%s#%s", feature_id, alt_label)
+	if err != nil {
+		return "", fmt.Errorf("Failed to derive ID for feature, %w", err)
+	}
+
+	alt_label, _ := properties.AltLabel(body)
+
+	sp_id := fmt.Sprintf("%d#%s", id, alt_label)
 
 	if len(extra) > 0 {
 
