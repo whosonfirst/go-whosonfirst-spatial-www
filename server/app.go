@@ -176,7 +176,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		path_data = fmt.Sprintf("%s/", path_data)
 	}
 
-	logger.Info("Register %s handler", path_data)
+	logger.Printf("Register %s handler\n", path_data)
 	mux.Handle(path_data, data_handler)
 
 	// point-in-polygon handlers
@@ -201,7 +201,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	path_api_pip := filepath.Join(path_api, "point-in-polygon")
 
-	logger.Info("Register %s handler", path_api_pip)
+	logger.Printf("Register %s handler\n", path_api_pip)
 	mux.Handle(path_api_pip, api_pip_handler)
 
 	// www handlers
@@ -317,7 +317,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 			http_pip_handler = leaflet.AppendResourcesHandlerWithPrefix(http_pip_handler, leaflet_opts, path_prefix)
 		}
 
-		logger.Info("Register %s handler", path_pip)
+		logger.Printf("Register %s handler\n", path_pip)
 		mux.Handle(path_pip, http_pip_handler)
 
 		if !strings.HasSuffix(path_pip, "/") {
@@ -339,7 +339,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 		path_index := "/"
 
-		logger.Info("Register %s handler", path_index)
+		logger.Printf("Register %s handler\n", path_index)
 		mux.Handle(path_index, index_handler)
 	}
 
@@ -349,7 +349,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 		return fmt.Errorf("Failed to create new server for '%s', %v", server_uri, err)
 	}
 
-	logger.Info("Listening on %s", s.Address())
+	logger.Printf("Listening on %s\n", s.Address())
 
 	err = s.ListenAndServe(ctx, mux)
 

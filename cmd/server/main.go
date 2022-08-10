@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
+	_ "github.com/whosonfirst/go-reader-cachereader"	
 )
 
 import (
