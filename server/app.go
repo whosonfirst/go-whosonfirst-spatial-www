@@ -10,7 +10,7 @@ import (
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-leaflet"
-	"github.com/aaronland/go-http-ping"
+	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
@@ -137,7 +137,7 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	mux := gohttp.NewServeMux()
 
-	ping_handler, err := ping.PingHandler()
+	ping_handler, err := ping.PingPongHandler()
 
 	if err != nil {
 		return fmt.Errorf("failed to create ping handler because %s", err)

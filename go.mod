@@ -6,7 +6,7 @@ require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/aaronland/go-http-bootstrap v0.1.0
 	github.com/aaronland/go-http-leaflet v0.1.0
-	github.com/aaronland/go-http-ping v1.0.0
+	github.com/aaronland/go-http-ping/v2 v2.0.0
 	github.com/aaronland/go-http-server v1.0.0
 	github.com/aaronland/go-http-tangramjs v0.1.2
 	github.com/rs/cors v1.8.2
