@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aaronland/go-roster"
 	"io"
+	"log"
 	"net/url"
 	"sort"
 	"strings"
@@ -16,6 +17,9 @@ var writer_roster roster.Roster
 // an instance of that writer
 type WriterInitializationFunc func(ctx context.Context, uri string) (Writer, error)
 
+// Clone returns a new `Writer` instance derived from existing any new parameters.
+// Clone(context.Context, string) (Writer, error)
+
 // Writer is an interface for writing data to multiple sources or targets.
 type Writer interface {
 	// Writer copies the contents of an `io.ReadSeeker` instance to a relative path.
@@ -23,8 +27,12 @@ type Writer interface {
 	Write(context.Context, string, io.ReadSeeker) (int64, error)
 	// WriterURI returns the absolute URI for an instance implementing the `Writer` interface.
 	WriterURI(context.Context, string) string
+	// Flush publishes any outstanding data. The details of if, how or where data is "published" is determined by individual implementations.
+	Flush(context.Context) error
 	// Close closes any underlying writing mechnisms for an instance implementing the `Writer` interface.
 	Close(context.Context) error
+	// SetLogger assigns a custom logger to a `Writer` instance
+	SetLogger(context.Context, *log.Logger) error
 }
 
 // RegisterWriter registers 'scheme' as a key pointing to 'init_func' in an internal lookup table

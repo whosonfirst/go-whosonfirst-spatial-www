@@ -6,7 +6,7 @@ import (
 	"github.com/aaronland/go-roster"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
-	"github.com/whosonfirst/go-writer"
+	"github.com/whosonfirst/go-writer/v2"
 	"net/url"
 	"sort"
 	"strings"

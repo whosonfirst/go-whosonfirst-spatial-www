@@ -5,6 +5,7 @@ import (
 	"fmt"
 	chain "github.com/g8rswimmer/error-chain"
 	"io"
+	"log"
 )
 
 // Type MultiWriter implements the `Writer` interface for writing documents to multiple `Writer` instances.
@@ -67,6 +68,32 @@ func (mw *MultiWriter) WriterURI(ctx context.Context, key string) string {
 	return ""
 }
 
+// Flushes publishes any outstanding data for each of the underlying `Writer` instances (in the order they were specified
+// to the 'mw' instance).
+func (mw *MultiWriter) Flush(ctx context.Context) error {
+
+	errors := make([]error, 0)
+
+	for _, wr := range mw.writers {
+
+		err := wr.Flush(ctx)
+
+		if err != nil {
+			errors = append(errors, err)
+		}
+	}
+
+	if len(errors) > 0 {
+
+		err := fmt.Errorf("One or more Flush operations failed")
+		err = errorChain(err, errors...)
+
+		return err
+	}
+
+	return nil
+}
+
 // Closes closes each of the underlying `Writer` instances (in the order they were specified
 // to the 'mw' instance).
 func (mw *MultiWriter) Close(ctx context.Context) error {
@@ -85,6 +112,32 @@ func (mw *MultiWriter) Close(ctx context.Context) error {
 	if len(errors) > 0 {
 
 		err := fmt.Errorf("One or more Close operations failed")
+		err = errorChain(err, errors...)
+
+		return err
+	}
+
+	return nil
+}
+
+// SetLogger assign 'logger' to each of the underlying `Writer` instances (in the order they were specified
+// to the 'mw' instance).
+func (mw *MultiWriter) SetLogger(ctx context.Context, logger *log.Logger) error {
+
+	errors := make([]error, 0)
+
+	for _, wr := range mw.writers {
+
+		err := wr.SetLogger(ctx, logger)
+
+		if err != nil {
+			errors = append(errors, err)
+		}
+	}
+
+	if len(errors) > 0 {
+
+		err := fmt.Errorf("One or more SetLogger operations failed")
 		err = errorChain(err, errors...)
 
 		return err

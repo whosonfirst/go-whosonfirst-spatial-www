@@ -659,3 +659,13 @@ func (r *RTreeSpatialDatabase) Write(ctx context.Context, key string, fh io.Read
 func (r *RTreeSpatialDatabase) WriterURI(ctx context.Context, str_uri string) string {
 	return str_uri
 }
+
+func (r *RTreeSpatialDatabase) Flush(ctx context.Context) error {
+	return nil
+}
+
+// Close defined above
+
+func (r *RTreeSpatialDatabase) SetLogger(ctx context.Context, logger *log.Logger) error {
+	return nil
+}

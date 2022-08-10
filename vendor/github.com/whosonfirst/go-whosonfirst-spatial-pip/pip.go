@@ -13,7 +13,6 @@ import (
 type PointInPolygonRequest struct {
 	Latitude            float64  `json:"latitude"`
 	Longitude           float64  `json:"longitude"`
-	Date                string   `json:"date"`
 	Placetypes          []string `json:"placetypes,omitempty"`
 	Geometries          string   `json:"geometries,omitempty"`
 	AlternateGeometries []string `json:"alternate_geometries,omitempty"`

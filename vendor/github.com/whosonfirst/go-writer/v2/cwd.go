@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"os"
 )
 
@@ -11,6 +12,7 @@ import (
 type CwdWriter struct {
 	Writer
 	writer Writer
+	logger *log.Logger
 }
 
 func init() {
@@ -52,8 +54,11 @@ func NewCwdWriter(ctx context.Context, uri string) (Writer, error) {
 		return nil, fmt.Errorf("Failed to create new FS writer, %w", err)
 	}
 
+	logger := DefaultLogger()
+
 	wr := &CwdWriter{
 		writer: fs_wr,
+		logger: logger,
 	}
 
 	return wr, nil
@@ -61,7 +66,6 @@ func NewCwdWriter(ctx context.Context, uri string) (Writer, error) {
 
 // Write copies the content of 'fh' to 'path'.
 func (wr *CwdWriter) Write(ctx context.Context, path string, fh io.ReadSeeker) (int64, error) {
-
 	return wr.writer.Write(ctx, path, fh)
 }
 
@@ -70,7 +74,18 @@ func (wr *CwdWriter) WriterURI(ctx context.Context, path string) string {
 	return wr.writer.WriterURI(ctx, path)
 }
 
+// Flush() invokes the Flush() method for the underlying writer mechanism.
+func (wr *CwdWriter) Flush(ctx context.Context) error {
+	return wr.writer.Flush(ctx)
+}
+
 // Close closes the underlying writer mechanism.
 func (wr *CwdWriter) Close(ctx context.Context) error {
 	return wr.writer.Close(ctx)
+}
+
+// SetLogger assigns 'logger' to 'wr'.
+func (wr *CwdWriter) SetLogger(ctx context.Context, logger *log.Logger) error {
+	wr.logger = logger
+	return nil
 }

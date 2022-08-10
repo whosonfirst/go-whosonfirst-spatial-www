@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/natefinch/atomic"
 	"io"
+	"log"
 	"math/rand"
 	"net/url"
 	"os"
@@ -140,7 +141,17 @@ func (wr *FileWriter) WriterURI(ctx context.Context, path string) string {
 	return filepath.Join(wr.root, path)
 }
 
+// Flush is a no-op and returns nil.
+func (wr *FileWriter) Flush(ctx context.Context) error {
+	return nil
+}
+
 // Close closes the underlying writer mechanism.
 func (wr *FileWriter) Close(ctx context.Context) error {
+	return nil
+}
+
+// SetLogger assigns 'logger' to 'wr'.
+func (wr *FileWriter) SetLogger(ctx context.Context, logger *log.Logger) error {
 	return nil
 }

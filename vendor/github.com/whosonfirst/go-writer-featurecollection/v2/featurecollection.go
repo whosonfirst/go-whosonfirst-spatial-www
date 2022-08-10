@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/paulmach/orb/geojson"
-	"github.com/whosonfirst/go-writer"
+	"github.com/whosonfirst/go-writer/v2"
 	"io"
+	"log"
 	"net/url"
 	"strings"
 	"sync"
@@ -101,6 +102,10 @@ func (fc *FeatureCollectionWriter) WriterURI(ctx context.Context, str_uri string
 	return str_uri
 }
 
+func (fc *FeatureCollectionWriter) Flush(ctx context.Context) error {
+	return nil
+}
+
 func (fc *FeatureCollectionWriter) Close(ctx context.Context) error {
 
 	body := `]}`
@@ -116,5 +121,9 @@ func (fc *FeatureCollectionWriter) Close(ctx context.Context) error {
 		return err
 	}
 
+	return nil
+}
+
+func (fc *FeatureCollectionWriter) SetLogger(ctx context.Context, logger *log.Logger) error {
 	return nil
 }

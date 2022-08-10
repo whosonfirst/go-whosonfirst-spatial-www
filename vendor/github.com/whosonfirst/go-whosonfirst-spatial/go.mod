@@ -15,6 +15,6 @@ require (
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.2.1
-	github.com/whosonfirst/go-writer v1.0.1
+	github.com/whosonfirst/go-writer/v2 v2.0.0
 	github.com/whosonfirst/warning v0.1.1
 )
