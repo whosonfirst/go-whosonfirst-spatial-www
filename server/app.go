@@ -119,14 +119,11 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 
 	paths := fs.Args()
 
-	go func() {
+	err = spatial_app.IndexPaths(ctx, paths...)
 
-		err = spatial_app.IndexPaths(ctx, paths...)
-
-		if err != nil {
-			log.Printf("Failed to index paths, because %s", err)
-		}
-	}()
+	if err != nil {
+		log.Printf("Failed to index paths, because %s", err)
+	}
 
 	path_api, _ := lookup.StringVar(fs, www_flags.PATH_API)
 	path_pip, _ := lookup.StringVar(fs, www_flags.PATH_PIP)
@@ -163,6 +160,8 @@ func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs 
 	if err != nil {
 		return fmt.Errorf("Failed to create data handler, %v", err)
 	}
+
+	data_handler = http.CheckIndexingHandler(spatial_app, data_handler)
 
 	if enable_cors {
 		data_handler = cors_wrapper.Handler(data_handler)
