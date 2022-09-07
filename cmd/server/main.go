@@ -7,23 +7,18 @@ import (
 
 import (
 	"context"
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/server"
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/application/server"
 	"log"
 )
 
 func main() {
 
 	ctx := context.Background()
+	logger := log.Default()
 
-	app, err := server.NewHTTPServerApplication(ctx)
-
+	err := server.Run(ctx, logger)
+	
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = app.Run(ctx)
-
-	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 }

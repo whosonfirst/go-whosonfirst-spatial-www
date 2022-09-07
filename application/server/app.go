@@ -17,7 +17,6 @@ import (
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
-	www_flags "github.com/whosonfirst/go-whosonfirst-spatial-www/flags"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
@@ -29,16 +28,8 @@ import (
 	"strings"
 )
 
-type HTTPServerApplication struct {
-}
-
-func NewHTTPServerApplication(ctx context.Context) (*HTTPServerApplication, error) {
-
-	server_app := &HTTPServerApplication{}
-	return server_app, nil
-}
-
-func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
+func DefaultFlagSet() *flag.FlagSet {
+	
 
 	fs, err := spatial_flags.CommonFlags()
 
@@ -58,20 +49,26 @@ func (server_app *HTTPServerApplication) Run(ctx context.Context) error {
 		log.Fatal(err)
 	}
 
-	flagset.Parse(fs)
-
-	err = flagset.SetFlagsFromEnvVarsWithFeedback(fs, "WHOSONFIRST", true)
-
-	if err != nil {
-		log.Fatalf("Failed to set flags from environment variables, %v", err)
-	}
-
-	return server_app.RunWithFlagSet(ctx, fs)
+	return fs
 }
 
-func (server_app *HTTPServerApplication) RunWithFlagSet(ctx context.Context, fs *flag.FlagSet) error {
+func Run(ctx context.Context, logger *log.Logger) error {
 
-	err := spatial_flags.ValidateCommonFlags(fs)
+	fs := DefaultFlagSet()
+	return RunWithFlagSet(ctx, fs, logger)
+}
+
+func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) error {
+	
+	flagset.Parse(fs)
+	
+	err := flagset.SetFlagsFromEnvVarsWithFeedback(fs, "WHOSONFIRST", true)
+
+	if err != nil {
+		return fmt.Errorf("Failed to set flags from environment variables, %v", err)
+	}
+
+	err = spatial_flags.ValidateCommonFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to validate common flags, %v", err)

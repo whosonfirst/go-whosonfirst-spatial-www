@@ -1,6 +1,0 @@
-github.com/aaronland/go-roster v1.0.0 h1:FRDGrTqsYySKjWnAhbBGXyeGlI/o5/t9FZYCbUmyQtI=
-github.com/aaronland/go-roster v1.0.0/go.mod h1:KIsYZgrJlAsyb9LsXSCvlqvbcCBVjCSqcQiZx42i9ro=
-github.com/g8rswimmer/error-chain v1.0.0 h1:WnwnunlvqtGPHVHmBfbmUyAgrtag8Y6nNpwLWmtSYOQ=
-github.com/g8rswimmer/error-chain v1.0.0/go.mod h1:XPJ/brUsL7yzc5VRlIxtf9GvoUqnOKVI9fg2MB5DWx8=
-github.com/natefinch/atomic v1.0.1 h1:ZPYKxkqQOx3KZ+RsbnP/YsgvxWQPGxjC0oBt2AhwV0A=
-github.com/natefinch/atomic v1.0.1/go.mod h1:N/D/ELrljoqDyT3rZrsUmtsuzvHkeB/wWjHV22AZRbM=
