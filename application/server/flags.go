@@ -1,4 +1,4 @@
-package flags
+package server
 
 const PATH_PREFIX string = "path-prefix"
 const PATH_API = "path-root-api"
