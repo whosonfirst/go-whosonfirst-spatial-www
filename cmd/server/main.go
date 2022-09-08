@@ -1,8 +1,8 @@
 package main
 
 import (
+	_ "github.com/whosonfirst/go-reader-cachereader"
 	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
-	_ "github.com/whosonfirst/go-reader-cachereader"	
 )
 
 import (
@@ -17,7 +17,7 @@ func main() {
 	logger := log.Default()
 
 	err := server.Run(ctx, logger)
-	
+
 	if err != nil {
 		logger.Fatal(err)
 	}

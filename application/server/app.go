@@ -28,40 +28,44 @@ import (
 	"strings"
 )
 
-func DefaultFlagSet() *flag.FlagSet {
-	
+func DefaultFlagSet() (*flag.FlagSet, error) {
 
 	fs, err := spatial_flags.CommonFlags()
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("Failed to derive common spatial flags, %w", err)
 	}
 
 	err = spatial_flags.AppendIndexingFlags(fs)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("Failed to append spatial indexing flags, %w", err)
 	}
 
-	err = www_flags.AppendWWWFlags(fs)
+	err = AppendWWWFlags(fs)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("Failed to append www flags, %w", err)
 	}
 
-	return fs
+	return fs, nil
 }
 
 func Run(ctx context.Context, logger *log.Logger) error {
 
-	fs := DefaultFlagSet()
+	fs, err := DefaultFlagSet()
+
+	if err != nil {
+		return fmt.Errorf("Failed to derive default flag set, %w", err)
+	}
+
 	return RunWithFlagSet(ctx, fs, logger)
 }
 
 func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) error {
-	
+
 	flagset.Parse(fs)
-	
+
 	err := flagset.SetFlagsFromEnvVarsWithFeedback(fs, "WHOSONFIRST", true)
 
 	if err != nil {
@@ -80,31 +84,31 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		return fmt.Errorf("Failed to validate indexing flags, %v", err)
 	}
 
-	err = www_flags.ValidateWWWFlags(fs)
+	err = ValidateWWWFlags(fs)
 
 	if err != nil {
 		return fmt.Errorf("Failed to validate www flags, %v", err)
 	}
 
-	enable_www, _ := lookup.BoolVar(fs, www_flags.ENABLE_WWW)
-	enable_cors, _ := lookup.BoolVar(fs, www_flags.ENABLE_CORS)
-	enable_gzip, _ := lookup.BoolVar(fs, www_flags.ENABLE_GZIP)
-	enable_geojson, _ := lookup.BoolVar(fs, www_flags.ENABLE_GEOJSON)
+	enable_www, _ := lookup.BoolVar(fs, ENABLE_WWW)
+	enable_cors, _ := lookup.BoolVar(fs, ENABLE_CORS)
+	enable_gzip, _ := lookup.BoolVar(fs, ENABLE_GZIP)
+	enable_geojson, _ := lookup.BoolVar(fs, ENABLE_GEOJSON)
 
-	enable_tangram, _ := lookup.BoolVar(fs, www_flags.ENABLE_TANGRAM)
+	enable_tangram, _ := lookup.BoolVar(fs, ENABLE_TANGRAM)
 
-	nextzen_apikey, _ := lookup.StringVar(fs, www_flags.NEXTZEN_APIKEY)
-	nextzen_style_url, _ := lookup.StringVar(fs, www_flags.NEXTZEN_STYLE_URL)
-	nextzen_tile_url, _ := lookup.StringVar(fs, www_flags.NEXTZEN_TILE_URL)
+	nextzen_apikey, _ := lookup.StringVar(fs, NEXTZEN_APIKEY)
+	nextzen_style_url, _ := lookup.StringVar(fs, NEXTZEN_STYLE_URL)
+	nextzen_tile_url, _ := lookup.StringVar(fs, NEXTZEN_TILE_URL)
 
-	leaflet_tile_url, _ := lookup.StringVar(fs, www_flags.LEAFLET_TILE_URL)
+	leaflet_tile_url, _ := lookup.StringVar(fs, LEAFLET_TILE_URL)
 
-	initial_lat, _ := lookup.Float64Var(fs, www_flags.INITIAL_LATITUDE)
-	initial_lon, _ := lookup.Float64Var(fs, www_flags.INITIAL_LONGITUDE)
-	initial_zoom, _ := lookup.IntVar(fs, www_flags.INITIAL_ZOOM)
-	max_bounds, _ := lookup.StringVar(fs, www_flags.MAX_BOUNDS)
+	initial_lat, _ := lookup.Float64Var(fs, INITIAL_LATITUDE)
+	initial_lon, _ := lookup.Float64Var(fs, INITIAL_LONGITUDE)
+	initial_zoom, _ := lookup.IntVar(fs, INITIAL_ZOOM)
+	max_bounds, _ := lookup.StringVar(fs, MAX_BOUNDS)
 
-	server_uri, _ := lookup.StringVar(fs, www_flags.SERVER_URI)
+	server_uri, _ := lookup.StringVar(fs, SERVER_URI)
 
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
@@ -112,7 +116,7 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		log.Fatal(fmt.Sprintf("Failed to create new spatial application, because: %v", err))
 	}
 
-	logger := spatial_app.Logger
+	spatial_app.Logger = logger
 
 	paths := fs.Args()
 
@@ -125,12 +129,12 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		}
 	}()
 
-	path_api, _ := lookup.StringVar(fs, www_flags.PATH_API)
-	path_pip, _ := lookup.StringVar(fs, www_flags.PATH_PIP)
-	path_ping, _ := lookup.StringVar(fs, www_flags.PATH_PING)
-	path_data, _ := lookup.StringVar(fs, www_flags.PATH_DATA)
+	path_api, _ := lookup.StringVar(fs, PATH_API)
+	path_pip, _ := lookup.StringVar(fs, PATH_PIP)
+	path_ping, _ := lookup.StringVar(fs, PATH_PING)
+	path_data, _ := lookup.StringVar(fs, PATH_DATA)
 
-	path_prefix, _ := lookup.StringVar(fs, www_flags.PATH_PREFIX)
+	path_prefix, _ := lookup.StringVar(fs, PATH_PREFIX)
 
 	mux := gohttp.NewServeMux()
 
