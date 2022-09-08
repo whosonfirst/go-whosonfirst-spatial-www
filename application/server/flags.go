@@ -36,11 +36,14 @@ const INITIAL_ZOOM string = "leaflet-initial-zoom"
 const MAX_BOUNDS string = "leaflet-max-bounds"
 
 const SERVER_URI string = "server-uri"
+const AUTHENTICATOR_URI string = "authenticator-uri"
 
 func AppendWWWFlags(fs *flag.FlagSet) error {
 
 	fs.String(SERVER_URI, "http://localhost:8080", "A valid aaronland/go-http-server URI.")
 
+	fs.String(AUTHENTICATOR_URI, "null://", "A valid sfomuseum/go-http-auth URI.")
+	
 	fs.Bool(ENABLE_WWW, false, "Enable the interactive /debug endpoint to query points and display results.")
 
 	fs.Bool(ENABLE_GEOJSON, false, "Enable GeoJSON output for point-in-polygon API calls.")

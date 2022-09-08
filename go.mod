@@ -11,6 +11,7 @@ require (
 	github.com/aaronland/go-http-tangramjs v0.1.3
 	github.com/rs/cors v1.8.2
 	github.com/sfomuseum/go-flags v0.8.3
+	github.com/sfomuseum/go-http-auth v0.0.4
 	github.com/whosonfirst/go-reader v1.0.1
 	github.com/whosonfirst/go-reader-cachereader v0.2.3
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0

@@ -90,6 +90,9 @@ github.com/sfomuseum/go-edtf/tests
 github.com/sfomuseum/go-flags/flagset
 github.com/sfomuseum/go-flags/lookup
 github.com/sfomuseum/go-flags/multi
+# github.com/sfomuseum/go-http-auth v0.0.4
+## explicit; go 1.19
+github.com/sfomuseum/go-http-auth
 # github.com/skelterjohn/geom v0.0.0-20180103142417-96f3e8a219c5
 ## explicit
 github.com/skelterjohn/geom

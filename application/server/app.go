@@ -16,6 +16,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/lookup"
+	"github.com/sfomuseum/go-http-auth"	
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
@@ -109,7 +110,8 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	max_bounds, _ := lookup.StringVar(fs, MAX_BOUNDS)
 
 	server_uri, _ := lookup.StringVar(fs, SERVER_URI)
-
+	authenticator_uri, _ := lookup.StringVar(fs, AUTHENTICATOR_URI)
+	
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
@@ -118,6 +120,12 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 
 	spatial_app.Logger = logger
 
+	authenticator, err := auth.NewAuthenticator(ctx, authenticator_uri)
+
+	if err != nil {
+		return fmt.Errorf("Failed to create authenticator, %w", err)
+	}
+	
 	paths := fs.Args()
 
 	go func() {
@@ -165,6 +173,8 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		return fmt.Errorf("Failed to create data handler, %v", err)
 	}
 
+	data_handler = authenticator.WrapHandler(data_handler)
+	
 	if enable_cors {
 		data_handler = cors_wrapper.Handler(data_handler)
 	}
@@ -192,6 +202,8 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		return fmt.Errorf("failed to create point-in-polygon handler because %s", err)
 	}
 
+	api_pip_handler = authenticator.WrapHandler(api_pip_handler)
+	
 	if enable_cors {
 		api_pip_handler = cors_wrapper.Handler(api_pip_handler)
 	}
@@ -318,6 +330,8 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 			http_pip_handler = leaflet.AppendResourcesHandlerWithPrefix(http_pip_handler, leaflet_opts, path_prefix)
 		}
 
+		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
+		
 		logger.Printf("Register %s handler\n", path_pip)
 		mux.Handle(path_pip, http_pip_handler)
 
@@ -338,6 +352,8 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 
 		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
 
+		index_handler = authenticator.WrapHandler(index_handler)
+		
 		path_index := "/"
 
 		logger.Printf("Register %s handler\n", path_index)
