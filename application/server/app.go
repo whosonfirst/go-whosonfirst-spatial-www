@@ -128,14 +128,11 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	
 	paths := fs.Args()
 
-	go func() {
+	err = spatial_app.IndexPaths(ctx, paths...)
 
-		err = spatial_app.IndexPaths(ctx, paths...)
-
-		if err != nil {
-			log.Printf("Failed to index paths, because %s", err)
-		}
-	}()
+	if err != nil {
+		log.Printf("Failed to index paths, because %s", err)
+	}
 
 	path_api, _ := lookup.StringVar(fs, PATH_API)
 	path_pip, _ := lookup.StringVar(fs, PATH_PIP)
@@ -172,6 +169,8 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	if err != nil {
 		return fmt.Errorf("Failed to create data handler, %v", err)
 	}
+
+	data_handler = http.CheckIndexingHandler(spatial_app, data_handler)
 
 	data_handler = authenticator.WrapHandler(data_handler)
 	
