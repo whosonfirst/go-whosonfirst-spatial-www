@@ -14,8 +14,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-feature/alt"
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
 	"github.com/whosonfirst/go-whosonfirst-feature/properties"
-	wof_geojson "github.com/whosonfirst/go-whosonfirst-geojson-v2" // deprecated
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"     // deprecated
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
@@ -163,13 +161,7 @@ func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
 
 func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) error {
 
-	f, err := feature.LoadFeature(body)
-
-	if err != nil {
-		return fmt.Errorf("Failed to load feature, %w", err)
-	}
-
-	err = r.setCache(ctx, f)
+	err := r.setCache(ctx, body)
 
 	if err != nil {
 		return fmt.Errorf("Failed to cache feature, %w", err)
@@ -186,15 +178,47 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 		return fmt.Errorf("Invalid alt label")
 	}
 
-	feature_id := f.Id()
-
-	bboxes, err := f.BoundingBoxes()
+	feature_id, err := properties.Id(body)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to derive ID, %w", err)
 	}
 
-	bounds := bboxes.Bounds()
+	str_id := strconv.FormatInt(feature_id, 10)
+
+	// START OF put me in go-whosonfirst-feature/geometry
+
+	geojson_geom, err := geometry.Geometry(body)
+
+	if err != nil {
+		return fmt.Errorf("Failed to derive geometry, %w", err)
+	}
+
+	orb_geom := geojson_geom.Geometry()
+
+	bounds := make([]orb.Bound, 0)
+
+	switch orb_geom.GeoJSONType() {
+
+	case "MultiPolygon":
+
+		for _, poly := range orb_geom.(orb.MultiPolygon) {
+
+			for _, ring := range poly {
+				bounds = append(bounds, ring.Bound())
+			}
+		}
+
+	case "Polygon":
+
+		for _, ring := range orb_geom.(orb.Polygon) {
+			bounds = append(bounds, ring.Bound())
+		}
+	default:
+		bounds = append(bounds, orb_geom.Bound())
+	}
+
+	// END OF put me in go-whosonfirst-feature/geometry
 
 	for i, bbox := range bounds {
 
@@ -204,13 +228,19 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 			return fmt.Errorf("Failed to derive spatial ID, %v", err)
 		}
 
-		sw := bbox.Min
-		ne := bbox.Max
+		min := bbox.Min
+		max := bbox.Max
 
-		llat := ne.Y - sw.Y
-		llon := ne.X - sw.X
+		min_x := min[0]
+		min_y := min[1]
 
-		pt := rtreego.Point{sw.X, sw.Y}
+		max_x := max[0]
+		max_y := max[1]
+
+		llat := max_y - min_y
+		llon := max_x - min_x
+
+		pt := rtreego.Point{min_x, min_y}
 		rect, err := rtreego.NewRect(pt, []float64{llon, llat})
 
 		if err != nil {
@@ -228,7 +258,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 		sp := &RTreeSpatialIndex{
 			Rect:      rect,
 			Id:        sp_id,
-			FeatureId: feature_id,
+			FeatureId: str_id,
 			IsAlt:     is_alt,
 			AltLabel:  alt_label,
 		}
@@ -542,25 +572,33 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 	wg.Wait()
 }
 
-func (r *RTreeSpatialDatabase) setCache(ctx context.Context, f wof_geojson.Feature) error {
+func (r *RTreeSpatialDatabase) setCache(ctx context.Context, body []byte) error {
 
-	s, err := f.SPR()
+	s, err := spr.WhosOnFirstSPR(body)
 
 	if err != nil {
 		return err
 	}
 
-	geom, err := geometry.Geometry(f.Bytes())
+	geom, err := geometry.Geometry(body)
 
 	if err != nil {
 		return fmt.Errorf("Failed to derive geometry for feature, %w", err)
 	}
 
-	alt_label, _ := properties.AltLabel(f.Bytes())
+	alt_label, err := properties.AltLabel(body)
 
-	feature_id := f.Id()
+	if err != nil {
+		return fmt.Errorf("Failed to derive alt label, %w", err)
+	}
 
-	cache_key := fmt.Sprintf("%s:%s", feature_id, alt_label)
+	feature_id, err := properties.Id(body)
+
+	if err != nil {
+		return fmt.Errorf("Failed to derive feature ID, %w", err)
+	}
+
+	cache_key := fmt.Sprintf("%d:%s", feature_id, alt_label)
 
 	cache_item := &RTreeCache{
 		Geometry: geom,
