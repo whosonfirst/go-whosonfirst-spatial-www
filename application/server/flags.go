@@ -6,71 +6,83 @@ import (
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/sfomuseum/go-flags/lookup"
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
+	"github.com/sfomuseum/go-flags/multi"
 	"log"
 	"strconv"
 	"strings"
 )
 
-const PATH_PREFIX string = "path-prefix"
-const PATH_API = "path-root-api"
-const PATH_PING string = "path-ping"
-const PATH_PIP string = "path-pip"
-const PATH_DATA string = "path-data"
+var path_prefix string
 
-const ENABLE_WWW string = "enable-www"
-const ENABLE_GEOJSON string = "enable-geojson"
+var path_api string
+var path_ping string
+var path_pip string
+var path_data string
 
-const ENABLE_CORS string = "enable-cors"
-const ENABLE_GZIP string = "enable-gzip"
-const ENABLE_TANGRAM string = "enable-tangram"
+var enable_www bool
+var enable_geojson bool
 
-const NEXTZEN_APIKEY string = "nextzen-apikey"
-const NEXTZEN_STYLE_URL string = "nextzen-style-url"
-const NEXTZEN_TILE_URL string = "nextzen-tile-url"
+var enable_cors bool
+var enable_cors_credentials bool
 
-const LEAFLET_TILE_URL string = "leaflet-tile-url"
+var cors_origins multi.MultiCSVString
 
-const INITIAL_LATITUDE string = "leaflet-initial-latitude"
-const INITIAL_LONGITUDE string = "leaflet-initial-longitude"
-const INITIAL_ZOOM string = "leaflet-initial-zoom"
-const MAX_BOUNDS string = "leaflet-max-bounds"
+var enable_gzip bool
 
-const SERVER_URI string = "server-uri"
-const AUTHENTICATOR_URI string = "authenticator-uri"
+var enable_tangram bool
+
+var nextzen_apikey string
+var nextzen_style_url string
+var nextzen_tile_url string
+
+var leaflet_tile_url string
+
+var leaflet_initial_latitude float6
+var leaflet_initial_longitude float64
+var leaflet_initial_zoom int
+
+var max_bounds string
+
+var server_uri string
+var authenticator_uri string
 
 func AppendWWWFlags(fs *flag.FlagSet) error {
 
-	fs.String(SERVER_URI, "http://localhost:8080", "A valid aaronland/go-http-server URI.")
+	fs.StringVar(&server_uri, "server-uri", "http://localhost:8080", "A valid aaronland/go-http-server URI.")
 
-	fs.String(AUTHENTICATOR_URI, "null://", "A valid sfomuseum/go-http-auth URI.")
+	fs.StringVar(&authenticator_uri, "authenticator-uri", "null://", "A valid sfomuseum/go-http-auth URI.")
 	
-	fs.Bool(ENABLE_WWW, false, "Enable the interactive /debug endpoint to query points and display results.")
+	fs.BoolVar(&enable_www, "enable-www", false, "Enable the interactive /debug endpoint to query points and display results.")
 
-	fs.Bool(ENABLE_GEOJSON, false, "Enable GeoJSON output for point-in-polygon API calls.")
+	fs.BoolVar(&enable_geojson, "enable-geojson", false, "Enable GeoJSON output for point-in-polygon API calls.")
 
-	fs.Bool(ENABLE_CORS, false, "Enable CORS headers for data-related and API handlers.")
-	fs.Bool(ENABLE_GZIP, false, "Enable gzip-encoding for data-related and API handlers.")
+	fs.BoolVar(&enable_cors, "enable-cors", false, "Enable CORS headers for data-related and API handlers.")
+	fs.BoolVar(&enable_cors_credentials, "enable-cors-credentials", false, "...")	
 
-	fs.String(PATH_PREFIX, "", "Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.")
+	fs.Var(&cors_origins, "cors-origin", "...")
+	
+	fs.BoolVar(&enable_gzip, "enable-gzip", false, "Enable gzip-encoding for data-related and API handlers.")
 
-	fs.String(PATH_API, "/api", "The root URL for all API handlers")
-	fs.String(PATH_PING, "/health/ping", "The URL for the ping (health check) handler")
-	fs.String(PATH_PIP, "/point-in-polygon", "The URL for the point in polygon web handler")
-	fs.String(PATH_DATA, "/data", "The URL for data (GeoJSON) handler")
+	fs.StringVar(&path_prefix, "path-prefix", "", "Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.")
+
+	fs.StringVar(&path_api, "path-api", "/api", "The root URL for all API handlers")
+	fs.StringVar(&path_ping, "path-ping", "/health/ping", "The URL for the ping (health check) handler")
+	fs.StringVar(&path_pip, "path-pip", "/point-in-polygon", "The URL for the point in polygon web handler")
+	fs.StringVar(PATH_DATA, "/data", "The URL for data (GeoJSON) handler")
 
 	leaflet_desc := fmt.Sprintf("A valid Leaflet (slippy map) tile template URL to use for rendering maps (if -%s is false)", ENABLE_TANGRAM)
-	fs.String(LEAFLET_TILE_URL, "", leaflet_desc)
+	fs.StringVar(LEAFLET_TILE_URL, "", leaflet_desc)
 
-	fs.Bool(ENABLE_TANGRAM, false, "Use Tangram.js for rendering map tiles")
+	fs.BoolVar(ENABLE_TANGRAM, false, "Use Tangram.js for rendering map tiles")
 
-	fs.String(NEXTZEN_APIKEY, "", "A valid Nextzen API key")
-	fs.String(NEXTZEN_STYLE_URL, "/tangram/refill-style.zip", "The URL for the style bundle file to use for maps rendered with Tangram.js")
-	fs.String(NEXTZEN_TILE_URL, tangramjs.NEXTZEN_MVT_ENDPOINT, "The URL for Nextzen tiles to use for maps rendered with Tangram.js")
+	fs.StringVar(NEXTZEN_APIKEY, "", "A valid Nextzen API key")
+	fs.StringVar(NEXTZEN_STYLE_URL, "/tangram/refill-style.zip", "The URL for the style bundle file to use for maps rendered with Tangram.js")
+	fs.StringVar(NEXTZEN_TILE_URL, tangramjs.NEXTZEN_MVT_ENDPOINT, "The URL for Nextzen tiles to use for maps rendered with Tangram.js")
 
-	fs.Float64(INITIAL_LATITUDE, 37.616906, "The initial latitude for map views to use.")
-	fs.Float64(INITIAL_LONGITUDE, -122.386665, "The initial longitude for map views to use.")
+	fs.FloatVar(INITIAL_LATITUDE, 37.616906, "The initial latitude for map views to use.")
+	fs.FloatVar(INITIAL_LONGITUDE, -122.386665, "The initial longitude for map views to use.")
 	fs.Int(INITIAL_ZOOM, 14, "The initial zoom level for map views to use.")
-	fs.String(MAX_BOUNDS, "", "An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.")
+	fs.StringVar(MAX_BOUNDS, "", "An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.")
 
 	return nil
 }
