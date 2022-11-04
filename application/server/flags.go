@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/sfomuseum/go-flags/multi"
+	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
 var path_prefix string
@@ -40,6 +41,29 @@ var leaflet_max_bounds string
 
 var server_uri string
 var authenticator_uri string
+
+func DefaultFlagSet() (*flag.FlagSet, error) {
+
+	fs, err := spatial_flags.CommonFlags()
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to derive common spatial flags, %w", err)
+	}
+
+	err = spatial_flags.AppendIndexingFlags(fs)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to append spatial indexing flags, %w", err)
+	}
+
+	err = AppendWWWFlags(fs)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to append www flags, %w", err)
+	}
+
+	return fs, nil
+}
 
 func AppendWWWFlags(fs *flag.FlagSet) error {
 

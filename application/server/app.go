@@ -28,27 +28,10 @@ import (
 	"strings"
 )
 
-func DefaultFlagSet() (*flag.FlagSet, error) {
-
-	fs, err := spatial_flags.CommonFlags()
-
-	if err != nil {
-		return nil, fmt.Errorf("Failed to derive common spatial flags, %w", err)
-	}
-
-	err = spatial_flags.AppendIndexingFlags(fs)
-
-	if err != nil {
-		return nil, fmt.Errorf("Failed to append spatial indexing flags, %w", err)
-	}
-
-	err = AppendWWWFlags(fs)
-
-	if err != nil {
-		return nil, fmt.Errorf("Failed to append www flags, %w", err)
-	}
-
-	return fs, nil
+type RunOptions struct {
+	Logger        *log.Logger
+	FlagSet       *flag.FlagSet
+	EnvFlagPrefix string
 }
 
 func Run(ctx context.Context, logger *log.Logger) error {
@@ -64,9 +47,23 @@ func Run(ctx context.Context, logger *log.Logger) error {
 
 func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) error {
 
+	opts := &RunOptions{
+		Logger:        logger,
+		FlagSet:       fs,
+		EnvFlagPrefix: "WHOSONFIRST",
+	}
+
+	return RunWithOptions(ctx, opts)
+}
+
+func RunWithOptions(ctx context.Context, opts *RunOptions) error {
+
+	fs := opts.FlagSet
+	logger := opts.Logger
+
 	flagset.Parse(fs)
 
-	err := flagset.SetFlagsFromEnvVarsWithFeedback(fs, "WHOSONFIRST", true)
+	err := flagset.SetFlagsFromEnvVarsWithFeedback(fs, opts.EnvFlagPrefix, true)
 
 	if err != nil {
 		return fmt.Errorf("Failed to set flags from environment variables, %v", err)
