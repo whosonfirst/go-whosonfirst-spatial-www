@@ -15,8 +15,7 @@ import (
 	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
-	"github.com/sfomuseum/go-flags/lookup"
-	"github.com/sfomuseum/go-http-auth"	
+	"github.com/sfomuseum/go-http-auth"
 	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
@@ -85,33 +84,6 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		return fmt.Errorf("Failed to validate indexing flags, %v", err)
 	}
 
-	err = ValidateWWWFlags(fs)
-
-	if err != nil {
-		return fmt.Errorf("Failed to validate www flags, %v", err)
-	}
-
-	enable_www, _ := lookup.BoolVar(fs, ENABLE_WWW)
-	enable_cors, _ := lookup.BoolVar(fs, ENABLE_CORS)
-	enable_gzip, _ := lookup.BoolVar(fs, ENABLE_GZIP)
-	enable_geojson, _ := lookup.BoolVar(fs, ENABLE_GEOJSON)
-
-	enable_tangram, _ := lookup.BoolVar(fs, ENABLE_TANGRAM)
-
-	nextzen_apikey, _ := lookup.StringVar(fs, NEXTZEN_APIKEY)
-	nextzen_style_url, _ := lookup.StringVar(fs, NEXTZEN_STYLE_URL)
-	nextzen_tile_url, _ := lookup.StringVar(fs, NEXTZEN_TILE_URL)
-
-	leaflet_tile_url, _ := lookup.StringVar(fs, LEAFLET_TILE_URL)
-
-	initial_lat, _ := lookup.Float64Var(fs, INITIAL_LATITUDE)
-	initial_lon, _ := lookup.Float64Var(fs, INITIAL_LONGITUDE)
-	initial_zoom, _ := lookup.IntVar(fs, INITIAL_ZOOM)
-	max_bounds, _ := lookup.StringVar(fs, MAX_BOUNDS)
-
-	server_uri, _ := lookup.StringVar(fs, SERVER_URI)
-	authenticator_uri, _ := lookup.StringVar(fs, AUTHENTICATOR_URI)
-	
 	spatial_app, err := app.NewSpatialApplicationWithFlagSet(ctx, fs)
 
 	if err != nil {
@@ -125,7 +97,7 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	if err != nil {
 		return fmt.Errorf("Failed to create authenticator, %w", err)
 	}
-	
+
 	paths := fs.Args()
 
 	err = spatial_app.IndexPaths(ctx, paths...)
@@ -133,13 +105,6 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	if err != nil {
 		log.Printf("Failed to index paths, because %s", err)
 	}
-
-	path_api, _ := lookup.StringVar(fs, PATH_API)
-	path_pip, _ := lookup.StringVar(fs, PATH_PIP)
-	path_ping, _ := lookup.StringVar(fs, PATH_PING)
-	path_data, _ := lookup.StringVar(fs, PATH_DATA)
-
-	path_prefix, _ := lookup.StringVar(fs, PATH_PREFIX)
 
 	mux := gohttp.NewServeMux()
 
@@ -151,13 +116,12 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 
 	mux.Handle(path_ping, ping_handler)
 
-	cors_origins := []string{"*"}
-
 	var cors_wrapper *cors.Cors
 
 	if enable_cors {
 		cors_wrapper = cors.New(cors.Options{
-			AllowedOrigins: cors_origins,
+			AllowedOrigins:   cors_origins,
+			AllowCredentials: cors_allow_credentials,
 		})
 	}
 
@@ -173,7 +137,7 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	data_handler = http.CheckIndexingHandler(spatial_app, data_handler)
 
 	data_handler = authenticator.WrapHandler(data_handler)
-	
+
 	if enable_cors {
 		data_handler = cors_wrapper.Handler(data_handler)
 	}
@@ -202,7 +166,7 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 	}
 
 	api_pip_handler = authenticator.WrapHandler(api_pip_handler)
-	
+
 	if enable_cors {
 		api_pip_handler = cors_wrapper.Handler(api_pip_handler)
 	}
@@ -308,10 +272,10 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 
 		http_pip_opts := &http.PointInPolygonHandlerOptions{
 			Templates:        t,
-			InitialLatitude:  initial_lat,
-			InitialLongitude: initial_lon,
-			InitialZoom:      initial_zoom,
-			MaxBounds:        max_bounds,
+			InitialLatitude:  leaflet_initial_latitude,
+			InitialLongitude: leaflet_initial_longitude,
+			InitialZoom:      leaflet_initial_zoom,
+			MaxBounds:        leaflet_max_bounds,
 			LeafletTileURL:   leaflet_tile_url,
 		}
 
@@ -330,7 +294,7 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		}
 
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
-		
+
 		logger.Printf("Register %s handler\n", path_pip)
 		mux.Handle(path_pip, http_pip_handler)
 
@@ -352,7 +316,7 @@ func RunWithFlagSet(ctx context.Context, fs *flag.FlagSet, logger *log.Logger) e
 		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
 
 		index_handler = authenticator.WrapHandler(index_handler)
-		
+
 		path_index := "/"
 
 		logger.Printf("Register %s handler\n", path_index)
