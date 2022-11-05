@@ -16,7 +16,7 @@ require (
 	github.com/whosonfirst/go-reader-cachereader v0.2.3
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
 	github.com/whosonfirst/go-whosonfirst-spatial v0.4.0
-	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.12
+	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.13
 	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.3
 	github.com/whosonfirst/go-whosonfirst-uri v1.2.0
 )
@@ -49,10 +49,9 @@ require (
 	github.com/whosonfirst/go-whosonfirst-flags v0.4.4 // indirect
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
-	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.7 // indirect
+	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8 // indirect
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.2.1 // indirect
-	github.com/whosonfirst/go-writer-featurecollection/v2 v2.0.0 // indirect
-	github.com/whosonfirst/go-writer/v2 v2.0.0 // indirect
+	github.com/whosonfirst/go-writer-featurecollection/v3 v3.0.0-20220916180959-42588e308a3e // indirect
 	github.com/whosonfirst/go-writer/v3 v3.0.0 // indirect
 	github.com/whosonfirst/walk v0.0.1 // indirect
 	github.com/whosonfirst/warning v0.1.1 // indirect
