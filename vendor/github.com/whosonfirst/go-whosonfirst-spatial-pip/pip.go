@@ -23,6 +23,7 @@ type PointInPolygonRequest struct {
 	IsSuperseding       []int64  `json:"is_superseding,omitempty"`
 	InceptionDate       string   `json:"inception_date,omitempty"`
 	CessationDate       string   `json:"cessation_date,omitempty"`
+	Properties          []string `json:"properties,omitempty"`
 }
 
 func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonRequest, error) {

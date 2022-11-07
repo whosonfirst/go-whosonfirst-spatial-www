@@ -16,7 +16,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-http-auth"
-	"github.com/whosonfirst/go-whosonfirst-spatial-pip/api"
+	"github.com/whosonfirst/go-whosonfirst-spatial-pip/http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"

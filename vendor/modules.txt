@@ -154,10 +154,10 @@ github.com/whosonfirst/go-whosonfirst-spatial/filter
 github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo
 github.com/whosonfirst/go-whosonfirst-spatial/timer
-# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.0.13
+# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.1.0
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial-pip
-github.com/whosonfirst/go-whosonfirst-spatial-pip/api
+github.com/whosonfirst/go-whosonfirst-spatial-pip/http/api
 # github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.3
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial-rtree

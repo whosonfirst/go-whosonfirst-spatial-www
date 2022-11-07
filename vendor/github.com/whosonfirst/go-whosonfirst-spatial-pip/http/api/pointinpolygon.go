@@ -9,7 +9,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
 	_ "log"
 	"net/http"
-	"strings"
 )
 
 const GEOJSON string = "application/geo+json"
@@ -56,13 +55,6 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			return
 		}
 
-		str_props, err := sanitize.HeaderString(req, "X-Properties")
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
-			return
-		}
-				
 		pip_rsp, err := pip.QueryPointInPolygon(ctx, app, pip_req)
 
 		if err != nil {
@@ -85,19 +77,11 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			}
 		}
 
-		var props []string
-
-		str_props = strings.Trim(str_props, " ")
-		
-		if str_props != "" {
-			props = strings.Split(str_props, ",")
-		}
-		
-		if len(props) > 0 {
+		if len(pip_req.Properties) > 0 {
 
 			props_opts := &spatial.PropertiesResponseOptions{
 				Reader:       app.PropertiesReader,
-				Keys:         props,
+				Keys:         pip_req.Properties,
 				SourcePrefix: "properties",
 			}
 
