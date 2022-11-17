@@ -161,12 +161,6 @@ func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
 
 func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) error {
 
-	err := r.setCache(ctx, body)
-
-	if err != nil {
-		return fmt.Errorf("Failed to cache feature, %w", err)
-	}
-
 	is_alt := alt.IsAlt(body)
 	alt_label, _ := properties.AltLabel(body)
 
@@ -178,6 +172,12 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 		return fmt.Errorf("Invalid alt label")
 	}
 
+	err := r.setCache(ctx, body)
+
+	if err != nil {
+		return fmt.Errorf("Failed to cache feature, %w", err)
+	}
+	
 	feature_id, err := properties.Id(body)
 
 	if err != nil {

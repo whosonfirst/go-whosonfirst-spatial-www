@@ -34,7 +34,7 @@ github.com/aaronland/go-roster
 # github.com/akrylysov/algnhsa v0.12.1
 ## explicit; go 1.12
 github.com/akrylysov/algnhsa
-# github.com/aws/aws-lambda-go v1.34.1
+# github.com/aws/aws-lambda-go v1.35.0
 ## explicit; go 1.18
 github.com/aws/aws-lambda-go/events
 github.com/aws/aws-lambda-go/lambda
@@ -47,11 +47,11 @@ github.com/dhconnelly/rtreego
 # github.com/g8rswimmer/error-chain v1.0.0
 ## explicit
 github.com/g8rswimmer/error-chain
-# github.com/hashicorp/errwrap v0.0.0-20141028054710-7554cd9344ce
+# github.com/hashicorp/errwrap v1.0.0
 ## explicit
 github.com/hashicorp/errwrap
-# github.com/hashicorp/go-multierror v0.0.0-20171204182908-b7773ae21874
-## explicit
+# github.com/hashicorp/go-multierror v1.1.1
+## explicit; go 1.13
 github.com/hashicorp/go-multierror
 # github.com/natefinch/atomic v1.0.1
 ## explicit; go 1.12
@@ -87,7 +87,7 @@ github.com/sfomuseum/go-edtf/tests
 github.com/sfomuseum/go-flags/flagset
 github.com/sfomuseum/go-flags/lookup
 github.com/sfomuseum/go-flags/multi
-# github.com/sfomuseum/go-http-auth v0.0.5
+# github.com/sfomuseum/go-http-auth v0.0.6
 ## explicit; go 1.19
 github.com/sfomuseum/go-http-auth
 # github.com/tidwall/gjson v1.14.3
@@ -102,17 +102,17 @@ github.com/tidwall/pretty
 # github.com/tidwall/sjson v1.2.5
 ## explicit; go 1.14
 github.com/tidwall/sjson
-# github.com/whosonfirst/go-cache v0.5.0
-## explicit; go 1.16
+# github.com/whosonfirst/go-cache v0.5.2
+## explicit; go 1.18
 github.com/whosonfirst/go-cache
 # github.com/whosonfirst/go-ioutil v1.0.2
 ## explicit; go 1.16
 github.com/whosonfirst/go-ioutil
-# github.com/whosonfirst/go-reader v1.0.1
-## explicit; go 1.16
+# github.com/whosonfirst/go-reader v1.0.2
+## explicit; go 1.18
 github.com/whosonfirst/go-reader
-# github.com/whosonfirst/go-reader-cachereader v0.2.3
-## explicit; go 1.16
+# github.com/whosonfirst/go-reader-cachereader v0.2.5
+## explicit; go 1.18
 github.com/whosonfirst/go-reader-cachereader
 # github.com/whosonfirst/go-sanitize v0.1.0
 ## explicit; go 1.12
@@ -137,10 +137,9 @@ github.com/whosonfirst/go-whosonfirst-flags/placetypes
 github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
 github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator
-# github.com/whosonfirst/go-whosonfirst-placetypes v0.3.0
-## explicit; go 1.12
+# github.com/whosonfirst/go-whosonfirst-placetypes v0.4.0
+## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-placetypes
-github.com/whosonfirst/go-whosonfirst-placetypes/placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 ## explicit; go 1.12
 github.com/whosonfirst/go-whosonfirst-sources
@@ -154,19 +153,20 @@ github.com/whosonfirst/go-whosonfirst-spatial/filter
 github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo
 github.com/whosonfirst/go-whosonfirst-spatial/timer
-# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.1.0
+# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.2.0
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial-pip
 github.com/whosonfirst/go-whosonfirst-spatial-pip/http/api
-# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.3
+# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.4
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial-rtree
 # github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spr-geojson
-# github.com/whosonfirst/go-whosonfirst-spr/v2 v2.2.1
-## explicit; go 1.16
+# github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.1
+## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spr/v2
+github.com/whosonfirst/go-whosonfirst-spr/v2/sort
 # github.com/whosonfirst/go-whosonfirst-uri v1.2.0
 ## explicit; go 1.13
 github.com/whosonfirst/go-whosonfirst-uri

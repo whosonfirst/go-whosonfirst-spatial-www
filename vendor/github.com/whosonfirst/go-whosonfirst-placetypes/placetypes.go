@@ -1,13 +1,16 @@
 package placetypes
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 )
 
 type WOFPlacetypeName struct {
+	// Lang is the RFC 5646 (BCP-47) language tag for the placetype name
 	Lang string `json:"language"`
 	Kind string `json:"kind"`
+	// Name is the name of the placetype (in the language defined by `Lang`)
 	Name string `json:"name"`
 }
 
@@ -25,14 +28,13 @@ var specification *WOFPlacetypeSpecification
 
 func init() {
 
-	var err error
-
-	specification, err = DefaultWOFPlacetypeSpecification()
+	s, err := DefaultWOFPlacetypeSpecification()
 
 	if err != nil {
-		log.Fatal("Failed to parse specification", err)
+		log.Fatal("Failed to load default WOF specification", err)
 	}
 
+	specification = s
 }
 
 func GetPlacetypeByName(name string) (*WOFPlacetype, error) {
@@ -51,6 +53,7 @@ func AppendPlacetypeSpecification(spec *WOFPlacetypeSpecification) error {
 	return specification.AppendPlacetypeSpecification(spec)
 }
 
+// Placetypes returns all the known placetypes for the 'common', 'optional' and 'common_optional' roles.
 func Placetypes() ([]*WOFPlacetype, error) {
 
 	roles := []string{
@@ -67,7 +70,7 @@ func PlacetypesForRoles(roles []string) ([]*WOFPlacetype, error) {
 	pl, err := GetPlacetypeByName("planet")
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to load 'planet' placetype, %w", err)
 	}
 
 	pt_list := DescendantsForRoles(pl, roles)
@@ -76,6 +79,7 @@ func PlacetypesForRoles(roles []string) ([]*WOFPlacetype, error) {
 	return pt_list, nil
 }
 
+// IsValidPlacetypeId returns a boolean value indicating whether 'name' is a known and valid placetype name.
 func IsValidPlacetype(name string) bool {
 
 	for _, pt := range specification.Catalog() {
@@ -88,6 +92,7 @@ func IsValidPlacetype(name string) bool {
 	return false
 }
 
+// IsValidPlacetypeId returns a boolean value indicating whether 'id' is a known and valid placetype ID.
 func IsValidPlacetypeId(id int64) bool {
 
 	for str_id, _ := range specification.Catalog() {
@@ -108,6 +113,51 @@ func IsValidPlacetypeId(id int64) bool {
 	return false
 }
 
+// Returns true is 'b' is an ancestor of 'a'.
+func IsAncestor(a *WOFPlacetype, b *WOFPlacetype) bool {
+
+	roles := []string{
+		"common",
+		"optional",
+		"common_optional",
+	}
+
+	is_ancestor := false
+
+	for _, ancestor := range AncestorsForRoles(a, roles) {
+
+		if ancestor.Name == b.Name {
+			is_ancestor = true
+			break
+		}
+	}
+
+	return is_ancestor
+}
+
+// Returns true is 'b' is a descendant of 'a'.
+func IsDescendant(a *WOFPlacetype, b *WOFPlacetype) bool {
+
+	roles := []string{
+		"common",
+		"optional",
+		"common_optional",
+	}
+
+	is_descendant := false
+
+	for _, descendant := range DescendantsForRoles(a, roles) {
+
+		if descendant.Name == b.Name {
+			is_descendant = true
+			break
+		}
+	}
+
+	return is_descendant
+}
+
+// Children returns the immediate child placetype of 'pt'.
 func Children(pt *WOFPlacetype) []*WOFPlacetype {
 
 	children := make([]*WOFPlacetype, 0)
@@ -168,10 +218,12 @@ func sortChildren(pt *WOFPlacetype, all []*WOFPlacetype) []*WOFPlacetype {
 	return kids
 }
 
+// Descendants returns the descendants of role "common" for 'pt'.
 func Descendants(pt *WOFPlacetype) []*WOFPlacetype {
 	return DescendantsForRoles(pt, []string{"common"})
 }
 
+// DescendantsForRoles returns the descendants matching any role in 'roles' for 'pt'.
 func DescendantsForRoles(pt *WOFPlacetype, roles []string) []*WOFPlacetype {
 
 	descendants := make([]*WOFPlacetype, 0)
@@ -235,10 +287,12 @@ func appendPlacetype(pt *WOFPlacetype, roles []string, others []*WOFPlacetype) [
 	return others
 }
 
+// Ancestors returns the ancestors of role "common" for 'pt'.
 func Ancestors(pt *WOFPlacetype) []*WOFPlacetype {
 	return AncestorsForRoles(pt, []string{"common"})
 }
 
+// AncestorsForRoles returns the ancestors matching any role in 'roles' for 'pt'.
 func AncestorsForRoles(pt *WOFPlacetype, roles []string) []*WOFPlacetype {
 
 	ancestors := make([]*WOFPlacetype, 0)

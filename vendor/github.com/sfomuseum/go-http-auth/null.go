@@ -60,12 +60,3 @@ func (a *NullAuthenticator) SignupHandler() http.Handler {
 func (a *NullAuthenticator) SetLogger(logger *log.Logger) {
 	// no-op
 }
-
-func notImplementedHandler() http.Handler {
-
-	fn := func(rsp http.ResponseWriter, req *http.Request) {
-		http.Error(rsp, "Not implemented", http.StatusNotImplemented)
-	}
-
-	return http.HandlerFunc(fn)
-}

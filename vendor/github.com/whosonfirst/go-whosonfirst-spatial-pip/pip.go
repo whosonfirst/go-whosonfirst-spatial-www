@@ -24,6 +24,7 @@ type PointInPolygonRequest struct {
 	InceptionDate       string   `json:"inception_date,omitempty"`
 	CessationDate       string   `json:"cessation_date,omitempty"`
 	Properties          []string `json:"properties,omitempty"`
+	Sort                []string `json:"sort,omitempty"`
 }
 
 func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonRequest, error) {
@@ -124,6 +125,14 @@ func NewPointInPolygonRequestFromFlagSet(fs *flag.FlagSet) (*PointInPolygonReque
 	}
 
 	req.IsSuperseding = is_superseding
+
+	sort_uris, err := lookup.MultiStringVar(fs, "sort-uri")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Sort = sort_uris
 
 	return req, nil
 }
