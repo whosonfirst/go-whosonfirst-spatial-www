@@ -1,14 +1,19 @@
 package app
 
 import (
+	"bufio"
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/sfomuseum/go-timings"
 	"github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
+	"io"
 	"log"
 	"runtime/debug"
+	"sync"
 	"time"
 )
 
@@ -18,6 +23,9 @@ type SpatialApplication struct {
 	PropertiesReader reader.Reader
 	Iterator         *iterator.Iterator
 	Logger           *log.Logger
+	Timings          []*timings.SinceResponse
+	Monitor          timings.Monitor
+	mu               *sync.RWMutex
 }
 
 func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*SpatialApplication, error) {
@@ -56,12 +64,57 @@ func NewSpatialApplicationWithFlagSet(ctx context.Context, fl *flag.FlagSet) (*S
 		return nil, fmt.Errorf("Failed to append custom placetypes, %v", err)
 	}
 
+	m, err := timings.NewMonitor(ctx, "since://")
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to create timings monitor, %w", err)
+	}
+
+	app_timings := make([]*timings.SinceResponse, 0)
+
+	r, wr := io.Pipe()
+
+	scanner := bufio.NewScanner(r)
+
+	err = m.Start(ctx, wr)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to start timings monitor, %w", err)
+	}
+
+	mu := new(sync.RWMutex)
+
 	sp := SpatialApplication{
 		SpatialDatabase:  spatial_db,
 		PropertiesReader: properties_r,
 		Iterator:         iter,
 		Logger:           logger,
+		Timings:          app_timings,
+		Monitor:          m,
+		mu:               mu,
 	}
+
+	go func() {
+
+		for scanner.Scan() {
+
+			go func(body []byte) {
+
+				var tr *timings.SinceResponse
+				err := json.Unmarshal(body, &tr)
+
+				if err != nil {
+					logger.Printf("Failed to decoder since response, %w", err)
+					return
+				}
+
+				sp.mu.Lock()
+				sp.Timings = append(sp.Timings, tr)
+				sp.mu.Unlock()
+
+			}(scanner.Bytes())
+		}
+	}()
 
 	return &sp, nil
 }
@@ -70,6 +123,7 @@ func (p *SpatialApplication) Close(ctx context.Context) error {
 
 	p.SpatialDatabase.Disconnect(ctx)
 
+	p.Monitor.Stop(ctx)
 	return nil
 }
 

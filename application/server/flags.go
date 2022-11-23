@@ -42,6 +42,8 @@ var leaflet_max_bounds string
 var server_uri string
 var authenticator_uri string
 
+var log_timings bool
+
 func DefaultFlagSet() (*flag.FlagSet, error) {
 
 	fs, err := spatial_flags.CommonFlags()
@@ -103,5 +105,6 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.IntVar(&leaflet_initial_zoom, "leaflet-initial-zoom", 14, "The initial zoom level for map views to use.")
 	fs.StringVar(&leaflet_max_bounds, "leaflet-max-bounds", "", "An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.")
 
+	fs.BoolVar(&log_timings, "log-timings", false, "Emit timing metrics to the application's logger")
 	return nil
 }

@@ -154,6 +154,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
 		EnableGeoJSON: enable_geojson,
+		Logger: logger,
+		LogTimings: log_timings,
 	}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)

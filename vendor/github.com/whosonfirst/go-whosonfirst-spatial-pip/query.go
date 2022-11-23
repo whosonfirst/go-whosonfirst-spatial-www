@@ -7,10 +7,20 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/geo"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2/sort"
+	"github.com/sfomuseum/go-timings"
 )
+
+const timingsPIPQuery string = "PIP query"
+
+const timingsPIPQueryPointInPolygon string = "PIP query point in polygon"
+
+const timingsPIPQuerySort string = "PIP query sort"
 
 func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplication, req *PointInPolygonRequest) (spr.StandardPlacesResults, error) {
 
+	app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPQuery)
+	defer app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPQuery)	
+	
 	c, err := geo.NewCoordinate(req.Longitude, req.Latitude)
 
 	if err != nil {
@@ -41,17 +51,25 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 		}
 	}
 
+	app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPQueryPointInPolygon)
+	
 	db := app.SpatialDatabase
 	rsp, err := db.PointInPolygon(ctx, c, f)
 
+	app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPQueryPointInPolygon)
+	
 	if err != nil {
 		return nil, fmt.Errorf("Failed to perform point in polygon query, %w", err)
 	}
 
 	if principal_sorter != nil {
 
+		app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPQuerySort)		
+		
 		sorted, err := principal_sorter.Sort(ctx, rsp, follow_on_sorters...)
 
+		app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPQuerySort)
+		
 		if err != nil {
 			return nil, fmt.Errorf("Failed to sort results, %w", err)
 		}
@@ -59,5 +77,6 @@ func QueryPointInPolygon(ctx context.Context, app *spatial_app.SpatialApplicatio
 		rsp = sorted
 	}
 
+	app.Monitor.Signal(ctx, "complete point in polygon")	
 	return rsp, nil
 }
