@@ -9,64 +9,94 @@ import (
 	"strings"
 )
 
+// The name of the commandline flag or query parameter used to assign the `map_provider` variable.
 const MapProviderFlag string = "map-provider"
 
+// The name (label) of the map provider to use.
 var map_provider string
 
+// The name of the commandline flag or query parameter used to assign the `leaflet_enable_hash` variable.
 const LeafletEnableHashFlag string = "leaflet-enable-hash"
 
+// Enable the Leaflet.Hash plugin.
 var leaflet_enable_hash bool
 
+// The name of the commandline flag or query parameter used to assign the `leaflet_enable_fullscreen` variable.
 const LeafletEnableFullscreenFlag string = "leaflet-enable-fullscreen"
 
+// A boolean value to enable the Leaflet.Fullscreen plugin.
 var leaflet_enable_fullscreen bool
 
+// The name of the commandline flag or query parameter used to assign the `leaflet_enable_draw` variable.
 const LeafletEnableDrawFlag string = "leaflet-enable-draw"
 
+// A boolean value to enable the Leaflet.Draw plugin.
 var leaflet_enable_draw bool
 
+// The name of the commandline flag or query parameter used to assign the `leaflet_tile_url` variable.
 const LeafletTileURLFlag string = "leaflet-tile-url"
 
+// A valid Leaflet 'tileLayer' layer URL. Only necessary if `map_provider` is "leaflet".
 var leaflet_tile_url string
 
+// The name of the commandline flag or query parameter used to assign the `nextzen_apikey` variable.
 const NextzenAPIKeyFlag string = "nextzen-apikey"
 
+// A valid Nextzen API key. Only necessary if `map-provider` is "tangram".
 var nextzen_apikey string
 
+// The name of the commandline flag or query parameter used to assign the `nextzen_style_url` variable.
 const NextzenStyleURLFlag string = "nextzen-style-url"
 
+// A valid URL for loading a Tangram.js style bundle. Only necessary if `map_provider` is "tangram".
 var nextzen_style_url string
 
+// The name of the commandline flag or query parameter used to assign the `nextzen_tile_url` variable.
 const NextzenTileURLFlag string = "nextzen-tile-url"
 
+// A valid Nextzen tile URL template for loading map tiles. Only necessary if `map_provider` is "tangram".
 var nextzen_tile_url string
 
-const ProtomapsTileURLFlag string = "protomaps-tile-url"
-
-var protomaps_tile_url string
-
+// The name of the commandline flag or query parameter used to assign the `tilezen_enable_tilepack` variable.
 const TilezenEnableTilepack string = "tilezen-enable-tilepack"
 
+// A boolean flag to enable to use of Tilezen MBTiles tilepack for tile-serving. Only necessary if `map_provider` is "tangram".
 var tilezen_enable_tilepack bool
 
+// The name of the commandline flag or query parameter used to assign the `tilezen_tilepack_path` variable.
 const TilezenTilepackPath string = "tilezen-tilepack-path"
 
+// The path to the Tilezen MBTiles tilepack to use for serving tiles. Only necessary if `map_provider` is "tangram" and 1tilezen_enable_tilezen` is true.
 var tilezen_tilepack_path string
 
+// The name of the commandline flag or query parameter used to assign the `protomaps_tile_url` variable.
+const ProtomapsTileURLFlag string = "protomaps-tile-url"
+
+// A valid Protomaps .pmtiles URL for loading map tiles. Only necessary if `map_provider` is "protomaps".
+var protomaps_tile_url string
+
+// The name of the commandline flag or query parameter used to assign the `protomaps_serve_tiles` variable.
 const ProtomapsServeTilesFlag string = "protomaps-serve-tiles"
 
+// A boolean flag to signal whether to serve Protomaps tiles locally. Only necessary if `map_provider` is "protomaps".
 var protomaps_serve_tiles bool
 
+// The name of the commandline flag or query parameter used to assign the `protomaps_cache_size` variable.
 const ProtomapsCacheSizeFlag string = "protomaps-caches-size"
 
+// whether to serve Protomaps tiles locally. Only necessary if `map_provider` is "protomaps" and `protomaps_serve_tiles` is true.
 var protomaps_cache_size int
 
+// The name of the commandline flag or query parameter used to assign the `protomaps_bucket_uri` variable.
 const ProtomapsBucketURIFlag string = "protomaps-bucket-uri"
 
+// The `gocloud.dev/blob.Bucket` URI where Protomaps tiles are stored. Only necessary if `map_provider` is "protomaps" and `protomaps_serve_tiles` is true.
 var protomaps_bucket_uri string
 
+// The name of the commandline flag or query parameter used to assign the `protomaps_database` variable.
 const ProtomapsDatabaseFlag string = "protomaps-database"
 
+// The name of the Protomaps database to serve tiles from. Only necessary if `map_provider` is "protomaps" and `protomaps_serve_tiles` is true.
 var protomaps_database string
 
 func AppendProviderFlags(fs *flag.FlagSet) error {
@@ -79,7 +109,7 @@ func AppendProviderFlags(fs *flag.FlagSet) error {
 	}
 
 	str_schemes := strings.Join(labels, ", ")
-	map_provider_desc := fmt.Sprintf("Valid options are: %s", str_schemes)
+	map_provider_desc := fmt.Sprintf("The name of the map provider to use. Valid options are: %s", str_schemes)
 
 	fs.StringVar(&map_provider, MapProviderFlag, "", map_provider_desc)
 
@@ -110,7 +140,7 @@ func AppendLeafletFlags(fs *flag.FlagSet) error {
 	fs.BoolVar(&leaflet_enable_fullscreen, LeafletEnableFullscreenFlag, false, "Enable the Leaflet.Fullscreen plugin.")
 	fs.BoolVar(&leaflet_enable_draw, LeafletEnableDrawFlag, false, "Enable the Leaflet.Draw plugin.")
 
-	fs.StringVar(&leaflet_tile_url, LeafletTileURLFlag, "", "A valid Leaflet tile URL. Only necessary if -map-provider is \"leaflet\".")
+	fs.StringVar(&leaflet_tile_url, LeafletTileURLFlag, "", "A valid Leaflet 'tileLayer' layer URL. Only necessary if -map-provider is \"leaflet\".")
 	return nil
 }
 
