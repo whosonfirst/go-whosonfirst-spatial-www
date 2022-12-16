@@ -8,31 +8,58 @@ import (
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
+// Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.
 var path_prefix string
 
+// The root URL for all API handlers
 var path_api string
+
+// The URL for the ping (health check) handler
 var path_ping string
+
+// The URL for the point in polygon web handler
 var path_pip string
+
+// The URL for data (GeoJSON) handler
 var path_data string
 
+// Enable the interactive /debug endpoint to query points and display results.
 var enable_www bool
+
+// Enable GeoJSON output for point-in-polygon API calls.
 var enable_geojson bool
 
+// Enable CORS headers for data-related and API handlers.
 var enable_cors bool
+
+// Allow HTTP credentials to be included in CORS requests.
 var cors_allow_credentials bool
 
+// One or more hosts to allow CORS requests from; may be a comma-separated list.
 var cors_origins multi.MultiCSVString
 
+// Enable gzip-encoding for data-related and API handlers.
 var enable_gzip bool
 
+// The initial latitude for map views to use.
 var leaflet_initial_latitude float64
+
+// The initial longitude for map views to use.
 var leaflet_initial_longitude float64
+
+// The initial zoom level for map views to use.
 var leaflet_initial_zoom int
+
+// An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.
 var leaflet_max_bounds string
 
+// A valid aaronland/go-http-server URI.
 var server_uri string
+
+// A valid sfomuseum/go-http-auth URI.
 var authenticator_uri string
 
+// Emit timing metrics to the application's logger
 var log_timings bool
 
 func DefaultFlagSet() (*flag.FlagSet, error) {
@@ -75,9 +102,9 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.BoolVar(&enable_geojson, "enable-geojson", false, "Enable GeoJSON output for point-in-polygon API calls.")
 
 	fs.BoolVar(&enable_cors, "enable-cors", false, "Enable CORS headers for data-related and API handlers.")
-	fs.BoolVar(&cors_allow_credentials, "cors-allow-credentials", false, "...")
+	fs.BoolVar(&cors_allow_credentials, "cors-allow-credentials", false, "Allow HTTP credentials to be included in CORS requests.")
 
-	fs.Var(&cors_origins, "cors-origin", "...")
+	fs.Var(&cors_origins, "cors-origin", "One or more hosts to allow CORS requests from; may be a comma-separated list.")
 
 	fs.BoolVar(&enable_gzip, "enable-gzip", false, "Enable gzip-encoding for data-related and API handlers.")
 

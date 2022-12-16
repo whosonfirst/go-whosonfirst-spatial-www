@@ -2,13 +2,47 @@
 
 Opinionated web application for the `go-whosonfirst-spatial` packages.
 
-## IMPORTANT
+## Documentation
 
-This is work in progress. Documentation to follow.
+Documentation is incomplete at this time.
+
+## Example
+
+```
+package main
+
+import (
+	_ "github.com/whosonfirst/go-reader-cachereader"
+	_ "github.com/whosonfirst/go-whosonfirst-spatial-rtree"
+)
+
+import (
+	"context"
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/application/server"
+	"log"
+)
+
+func main() {
+
+	ctx := context.Background()
+	logger := log.Default()
+
+	err := server.Run(ctx, logger)
+
+	if err != nil {
+		logger.Fatal(err)
+	}
+}
+```
+
+The default `server` implementation uses an in-memory RTree-based spatial index that needs to be populated when the server is started.
+
+There are also server implementations that use SQLite and Protomaps derived spatial databases:
+
+* https://github.com/whosonfirst/go-whosonfirst-spatial-www-sqlite
+* https://github.com/whosonfirst/go-whosonfirst-spatial-www-protomaps
 
 ## Tools
-
-To build binary versions of these tools run the `cli` Makefile target. For example:
 
 ```
 $> make cli
@@ -18,13 +52,13 @@ go build -mod vendor -o bin/server cmd/server/main.go
 ### server
 
 ```
-$> ./bin/server -h
+$> > ./bin/server -h
   -authenticator-uri string
     	A valid sfomuseum/go-http-auth URI. (default "null://")
   -cors-allow-credentials
-    	...
+    	Allow HTTP credentials to be included in CORS requests.
   -cors-origin value
-    	...
+    	One or more hosts to allow CORS requests from; may be a comma-separated list.
   -custom-placetypes string
     	A JSON-encoded string containing custom placetypes defined using the syntax described in the whosonfirst/go-whosonfirst-placetypes repository.
   -enable-cors
@@ -56,11 +90,11 @@ $> ./bin/server -h
   -leaflet-max-bounds string
     	An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.
   -leaflet-tile-url string
-    	A valid Leaflet tile URL. Only necessary if -map-provider is "leaflet".
+    	A valid Leaflet 'tileLayer' layer URL. Only necessary if -map-provider is "leaflet".
   -log-timings
     	Emit timing metrics to the application's logger
   -map-provider string
-    	Valid options are: leaflet, protomaps, tangram
+    	The name of the map provider to use. Valid options are: leaflet, protomaps, tangram
   -nextzen-apikey string
     	A valid Nextzen API key. Only necessary if -map-provider is "tangram".
   -nextzen-style-url string
