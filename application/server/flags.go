@@ -3,7 +3,7 @@ package server
 import (
 	"flag"
 	"fmt"
-	"github.com/aaronland/go-http-tangramjs"
+	"github.com/aaronland/go-http-maps/provider"
 	"github.com/sfomuseum/go-flags/multi"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
@@ -25,18 +25,9 @@ var cors_origins multi.MultiCSVString
 
 var enable_gzip bool
 
-var enable_tangram bool
-
-var nextzen_apikey string
-var nextzen_style_url string
-var nextzen_tile_url string
-
-var leaflet_tile_url string
-
 var leaflet_initial_latitude float64
 var leaflet_initial_longitude float64
 var leaflet_initial_zoom int
-
 var leaflet_max_bounds string
 
 var server_uri string
@@ -62,6 +53,12 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to append www flags, %w", err)
+	}
+
+	err = provider.AppendProviderFlags(fs)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to append map provider flags, %w", err)
 	}
 
 	return fs, nil
@@ -90,15 +87,6 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.StringVar(&path_ping, "path-ping", "/health/ping", "The URL for the ping (health check) handler")
 	fs.StringVar(&path_pip, "path-pip", "/point-in-polygon", "The URL for the point in polygon web handler")
 	fs.StringVar(&path_data, "path-data", "/data", "The URL for data (GeoJSON) handler")
-
-	leaflet_desc := fmt.Sprintf("A valid Leaflet (slippy map) tile template URL to use for rendering maps (if -%s is false)", "enable-tangram")
-	fs.StringVar(&leaflet_tile_url, "leaflet-tile-url", "", leaflet_desc)
-
-	fs.BoolVar(&enable_tangram, "enable-tangram", false, "Use Tangram.js for rendering map tiles")
-
-	fs.StringVar(&nextzen_apikey, "nextzen-apikey", "", "A valid Nextzen API key")
-	fs.StringVar(&nextzen_style_url, "nextzen-style-url", "/tangram/refill-style.zip", "The URL for the style bundle file to use for maps rendered with Tangram.js")
-	fs.StringVar(&nextzen_tile_url, "nextzen-tile-url", tangramjs.NEXTZEN_MVT_ENDPOINT, "The URL for Nextzen tiles to use for maps rendered with Tangram.js")
 
 	fs.Float64Var(&leaflet_initial_latitude, "leaflet-initial-latitude", 37.616906, "The initial latitude for map views to use.")
 	fs.Float64Var(&leaflet_initial_longitude, "leaflet-initial-longitude", -122.386665, "The initial longitude for map views to use.")

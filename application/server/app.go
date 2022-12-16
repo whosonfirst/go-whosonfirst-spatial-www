@@ -1,18 +1,16 @@
 package server
 
-// This is a first-cut at making the core application in to an extensible
-// package - it is likely that it will change (20201207/thisisaaronland)
-
 import (
 	"context"
 	"flag"
 	"fmt"
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
-	"github.com/aaronland/go-http-leaflet"
+	"github.com/aaronland/go-http-maps"	
+	"github.com/aaronland/go-http-maps/provider"
+	maps_www "github.com/aaronland/go-http-maps/http/www"	
 	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
-	"github.com/aaronland/go-http-tangramjs"
 	"github.com/rs/cors"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-http-auth"
@@ -100,7 +98,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 	err = spatial_app.IndexPaths(ctx, paths...)
 
 	if err != nil {
-		log.Printf("Failed to index paths, because %s", err)
+		return fmt.Errorf("Failed to index paths, because %s", err)
 	}
 
 	mux := gohttp.NewServeMux()
@@ -154,8 +152,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
 		EnableGeoJSON: enable_geojson,
-		Logger: logger,
-		LogTimings: log_timings,
+		Logger:        logger,
+		LogTimings:    log_timings,
 	}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)
@@ -183,6 +181,36 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	if enable_www {
 
+		provider_uri, err := provider.ProviderURIFromFlagSet(fs)
+
+		if err != nil {
+			return fmt.Errorf("Failed to derive map provider URI, %w", err)
+		}
+
+		map_provider, err := provider.NewProvider(ctx, provider_uri)
+
+		if err != nil {
+			return fmt.Errorf("Failed to create map provider, %w", err)
+		}
+
+		err = map_provider.SetLogger(logger)
+
+		if err != nil {
+			return fmt.Errorf("Failed to set logger for map provider, %w", err)
+		}
+
+		err = map_provider.AppendAssetHandlersWithPrefix(mux, path_prefix)
+
+		if err != nil {
+			return fmt.Errorf("Failed to append map provider asset handlers, %w", err)
+		}
+
+		err = maps_www.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
+
+		if err != nil {
+			return fmt.Errorf("Failed to append map provider static asset handler, %w", err)
+		}
+		
 		t := template.New("spatial")
 
 		t = t.Funcs(map[string]interface{}{
@@ -222,40 +250,13 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			},
 		})
 
-		t, err := t.ParseFS(html.FS, "*.html")
+		t, err = t.ParseFS(html.FS, "*.html")
 
 		if err != nil {
 			return fmt.Errorf("Unable to parse templates, %v", err)
 		}
 
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
-
-		tangramjs_opts := tangramjs.DefaultTangramJSOptions()
-		tangramjs_opts.NextzenOptions.APIKey = nextzen_apikey
-		tangramjs_opts.NextzenOptions.StyleURL = nextzen_style_url
-		tangramjs_opts.NextzenOptions.TileURL = nextzen_tile_url
-
-		tangramjs_opts.LeafletOptions.EnableHash()
-
-		leaflet_opts := leaflet.DefaultLeafletOptions()
-		leaflet_opts.EnableHash()
-
-		if enable_tangram {
-
-			err = tangramjs.AppendAssetHandlers(mux)
-
-			if err != nil {
-				return fmt.Errorf("Failed to append tangram.js assets, %v", err)
-			}
-
-		} else {
-
-			err = leaflet.AppendAssetHandlers(mux)
-
-			if err != nil {
-				return fmt.Errorf("Failed to append leaflet.js assets, %v", err)
-			}
-		}
 
 		err = bootstrap.AppendAssetHandlers(mux)
 
@@ -275,7 +276,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			InitialLongitude: leaflet_initial_longitude,
 			InitialZoom:      leaflet_initial_zoom,
 			MaxBounds:        leaflet_max_bounds,
-			LeafletTileURL:   leaflet_tile_url,
+			MapProvider: map_provider.Scheme(),
+			// LeafletTileURL:   leaflet_tile_url,
 		}
 
 		http_pip_handler, err := http.PointInPolygonHandler(spatial_app, http_pip_opts)
@@ -284,13 +286,11 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
+		maps_opts := maps.DefaultMapsOptions()
+		
 		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
 
-		if enable_tangram {
-			http_pip_handler = tangramjs.AppendResourcesHandlerWithPrefix(http_pip_handler, tangramjs_opts, path_prefix)
-		} else {
-			http_pip_handler = leaflet.AppendResourcesHandlerWithPrefix(http_pip_handler, leaflet_opts, path_prefix)
-		}
+		http_pip_handler = maps.AppendResourcesHandlerWithPrefixAndProvider(http_pip_handler, map_provider, maps_opts, path_prefix)
 
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 

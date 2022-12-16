@@ -1,25 +1,4 @@
 window.addEventListener("load", function load(event){
-
-    var api_key = document.body.getAttribute("data-nextzen-api-key");
-    var style_url = document.body.getAttribute("data-nextzen-style-url");
-    var tile_url = document.body.getAttribute("data-nextzen-tile-url");
-
-    /*
-    if (! api_key){
-	console.log("Missing API key");
-	return;
-    }
-    
-    if (! style_url){
-	console.log("Missing style URL");
-	return;
-    }
-    
-    if (! tile_url){
-	console.log("Missing tile URL");
-	return;
-    }
-     */
     
     var pip_wrapper = document.getElementById("point-in-polygon");
 
@@ -57,30 +36,21 @@ window.addEventListener("load", function load(event){
 	console.log("Missing map element");	
 	return;
     }
-    
-    var map_args = {
-	"api_key": api_key,
-	"style_url": style_url,
-	"tile_url": tile_url,
-    };
 
-    // we need to do this _before_ Tangram starts trying to draw things
-    // map_el.style.display = "block";
+    /* github.com/aaronland/go-http-maps */
+    var map = aaronland.maps.getMap(map_el);
     
-    var map = whosonfirst.spatial.maps.getMap(map_el, map_args);
-
     if (! map){
 	console.log("Unable to instantiate map");
 	return;
     }
-
-    var hash = new L.Hash(map);
     
     var layers = L.layerGroup();
     layers.addTo(map);
-
+    
     var spinner = new L.Control.Spinner();
     // map.addControl(spinner);
+
     
     var update_map = function(e){
 
@@ -283,6 +253,12 @@ window.addEventListener("load", function load(event){
 	    console.log("SAD", err);
 	}
 
+	args["sort"] = [
+	    "placetype://",
+	    "name://",
+	    "inception://",
+	];
+	
 	whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
 
 	map.addControl(spinner);	
@@ -311,7 +287,8 @@ window.addEventListener("load", function load(event){
 
     if (hash_str){
 
-	var parsed = whosonfirst.spatial.maps.parseHash(hash_str);
+	/* github.com/aaronland/go-http-maps */	
+	var parsed = aaronland.maps.parseHash(hash_str);	
 
 	if (parsed){
 	    init_lat = parsed['latitude'];
