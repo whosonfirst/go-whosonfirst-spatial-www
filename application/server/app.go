@@ -101,7 +101,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 	if err != nil {
 		return fmt.Errorf("Failed to index paths, because %s", err)
 	}
-	
+
 	mux := gohttp.NewServeMux()
 
 	ping_handler, err := ping.PingPongHandler()
@@ -153,8 +153,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	api_pip_opts := &api.PointInPolygonHandlerOptions{
 		EnableGeoJSON: enable_geojson,
-		Logger: logger,
-		LogTimings: log_timings,
+		Logger:        logger,
+		LogTimings:    log_timings,
 	}
 
 	api_pip_handler, err := api.PointInPolygonHandler(spatial_app, api_pip_opts)
@@ -183,13 +183,13 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 	if enable_www {
 
 		provider_uri, err := provider.ProviderURIFromFlagSet(fs)
-		
+
 		if err != nil {
 			return fmt.Errorf("Failed to derive map provider URI, %w", err)
 		}
-		
+
 		map_provider, err := provider.NewProvider(ctx, provider_uri)
-		
+
 		if err != nil {
 			return fmt.Errorf("Failed to create map provider, %w", err)
 		}
@@ -201,11 +201,11 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		}
 
 		err = map_provider.AppendAssetHandlers(mux)
-		
+
 		if err != nil {
 			return fmt.Errorf("Failed to append provider asset handlers, %v", err)
 		}
-		
+
 		t := template.New("spatial")
 
 		t = t.Funcs(map[string]interface{}{
@@ -267,9 +267,9 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		http_pip_opts := &http.PointInPolygonHandlerOptions{
 			Templates:        t,
-			// InitialLatitude:  leaflet_initial_latitude,
-			// InitialLongitude: leaflet_initial_longitude,
-			// InitialZoom:      leaflet_initial_zoom,
+			InitialLatitude:  leaflet_initial_latitude,
+			InitialLongitude: leaflet_initial_longitude,
+			InitialZoom:      leaflet_initial_zoom,
 			MaxBounds:        leaflet_max_bounds,
 			// LeafletTileURL:   leaflet_tile_url,
 		}

@@ -99,20 +99,28 @@ func (p *TangramProvider) Scheme() string {
 }
 
 func (p *TangramProvider) AppendResourcesHandler(handler http.Handler) http.Handler {
-	handler = leaflet.AppendResourcesHandler(handler, p.leafletOptions)
-	handler = tangramjs.AppendResourcesHandler(handler, p.tangramOptions)
+	return p.AppendResourcesHandlerWithPrefix(handler, "")
+}
+
+func (p *TangramProvider) AppendResourcesHandlerWithPrefix(handler http.Handler, prefix string) http.Handler {
+	handler = leaflet.AppendResourcesHandlerWithPrefix(handler, p.leafletOptions, prefix)
+	handler = tangramjs.AppendResourcesHandlerWithPrefix(handler, p.tangramOptions, prefix)
 	return handler
 }
 
 func (p *TangramProvider) AppendAssetHandlers(mux *http.ServeMux) error {
+	return p.AppendAssetHandlersWithPrefix(mux, "")
+}
 
-	err := leaflet.AppendAssetHandlers(mux)
+func (p *TangramProvider) AppendAssetHandlersWithPrefix(mux *http.ServeMux, prefix string) error {
+
+	err := leaflet.AppendAssetHandlersWithPrefix(mux, prefix)
 
 	if err != nil {
 		return fmt.Errorf("Failed to append leaflet asset handler, %w", err)
 	}
 
-	err = tangramjs.AppendAssetHandlers(mux)
+	err = tangramjs.AppendAssetHandlersWithPrefix(mux, prefix)
 
 	if err != nil {
 		return fmt.Errorf("Failed to append tangram asset handler, %w", err)
@@ -126,8 +134,19 @@ func (p *TangramProvider) AppendAssetHandlers(mux *http.ServeMux) error {
 			return fmt.Errorf("Failed to create tilepack reader, %w", err)
 		}
 
+		tilepack_url := p.tilezenOptions.TilepackURL
+
+		if prefix != "" {
+
+			tilepack_url, err = url.JoinPath(prefix, tilepack_url)
+
+			if err != nil {
+				return fmt.Errorf("Failed to join path with %s and %s", prefix, tilepack_url)
+			}
+		}
+
 		tilepack_handler := tilepack_http.MbtilesHandler(tilepack_reader)
-		mux.Handle(p.tilezenOptions.TilepackURL, tilepack_handler)
+		mux.Handle(tilepack_url, tilepack_handler)
 	}
 
 	return nil

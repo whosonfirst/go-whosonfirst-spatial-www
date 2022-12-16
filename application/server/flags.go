@@ -25,7 +25,9 @@ var cors_origins multi.MultiCSVString
 
 var enable_gzip bool
 
-
+var leaflet_initial_latitude float64
+var leaflet_initial_longitude float64
+var leaflet_initial_zoom int
 var leaflet_max_bounds string
 
 var server_uri string
@@ -58,7 +60,7 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to append map provider flags, %w", err)
 	}
-	
+
 	return fs, nil
 }
 
@@ -86,10 +88,10 @@ func AppendWWWFlags(fs *flag.FlagSet) error {
 	fs.StringVar(&path_pip, "path-pip", "/point-in-polygon", "The URL for the point in polygon web handler")
 	fs.StringVar(&path_data, "path-data", "/data", "The URL for data (GeoJSON) handler")
 
-	// leaflet_desc := fmt.Sprintf("A valid Leaflet (slippy map) tile template URL to use for rendering maps (if -%s is false)", "enable-tangram")
-	// fs.StringVar(&leaflet_tile_url, "leaflet-tile-url", "", leaflet_desc)
-
-	// fs.StringVar(&leaflet_max_bounds, "leaflet-max-bounds", "", "An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.")
+	fs.Float64Var(&leaflet_initial_latitude, "leaflet-initial-latitude", 37.616906, "The initial latitude for map views to use.")
+	fs.Float64Var(&leaflet_initial_longitude, "leaflet-initial-longitude", -122.386665, "The initial longitude for map views to use.")
+	fs.IntVar(&leaflet_initial_zoom, "leaflet-initial-zoom", 14, "The initial zoom level for map views to use.")
+	fs.StringVar(&leaflet_max_bounds, "leaflet-max-bounds", "", "An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.")
 
 	fs.BoolVar(&log_timings, "log-timings", false, "Emit timing metrics to the application's logger")
 	return nil

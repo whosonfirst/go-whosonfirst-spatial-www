@@ -1,11 +1,30 @@
 package provider
 
 import (
+	"context"
 	"fmt"
 	"github.com/aaronland/go-http-leaflet"
+	"io"
+	"log"
+	"net/http"
 	"net/url"
 	"strconv"
 )
+
+
+const LEAFLET_SCHEME string = "leaflet"
+
+type LeafletProvider struct {
+	Provider
+	leafletOptions *leaflet.LeafletOptions
+	logger         *log.Logger
+}
+
+func init() {
+
+	ctx := context.Background()
+	RegisterProvider(ctx, LEAFLET_SCHEME, NewLeafletProvider)
+}
 
 func LeafletOptionsFromURL(u *url.URL) (*leaflet.LeafletOptions, error) {
 
@@ -58,5 +77,68 @@ func LeafletOptionsFromURL(u *url.URL) (*leaflet.LeafletOptions, error) {
 		}
 	}
 
+	q_tile_url := q.Get(LeafletTileURLFlag)
+
+	opts.DataAttributes = map[string]string{
+		"leaflet-tile-url": q_tile_url,
+	}
+
 	return opts, nil
+}
+
+func NewLeafletProvider(ctx context.Context, uri string) (Provider, error) {
+
+	u, err := url.Parse(uri)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to parse URI, %w", err)
+	}
+
+	leaflet_opts, err := LeafletOptionsFromURL(u)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to create leaflet options, %w", err)
+	}
+
+	logger := log.New(io.Discard, "", 0)
+
+	p := &LeafletProvider{
+		leafletOptions: leaflet_opts,
+		logger:         logger,
+	}
+
+	return p, nil
+}
+
+func (p *LeafletProvider) Scheme() string {
+	return LEAFLET_SCHEME
+}
+
+func (p *LeafletProvider) AppendResourcesHandler(handler http.Handler) http.Handler {
+	return p.AppendResourcesHandlerWithPrefix(handler, "")
+}
+
+func (p *LeafletProvider) AppendResourcesHandlerWithPrefix(handler http.Handler, prefix string) http.Handler {
+	handler = leaflet.AppendResourcesHandlerWithPrefix(handler, p.leafletOptions, prefix)
+	return handler
+}
+
+func (p *LeafletProvider) AppendAssetHandlers(mux *http.ServeMux) error {
+	return p.AppendAssetHandlersWithPrefix(mux, "")
+}
+
+func (p *LeafletProvider) AppendAssetHandlersWithPrefix(mux *http.ServeMux, prefix string) error {
+
+	err := leaflet.AppendAssetHandlersWithPrefix(mux, prefix)
+
+	if err != nil {
+		return fmt.Errorf("Failed to append leaflet asset handler, %w", err)
+	}
+
+	return nil
+}
+
+func (p *LeafletProvider) SetLogger(logger *log.Logger) error {
+	p.logger = logger
+	return nil
 }

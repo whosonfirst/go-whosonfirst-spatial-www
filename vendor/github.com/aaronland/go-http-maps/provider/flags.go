@@ -25,6 +25,10 @@ const LeafletEnableDrawFlag string = "leaflet-enable-draw"
 
 var leaflet_enable_draw bool
 
+const LeafletTileURLFlag string = "leaflet-tile-url"
+
+var leaflet_tile_url string
+
 const NextzenAPIKeyFlag string = "nextzen-apikey"
 
 var nextzen_apikey string
@@ -106,6 +110,7 @@ func AppendLeafletFlags(fs *flag.FlagSet) error {
 	fs.BoolVar(&leaflet_enable_fullscreen, LeafletEnableFullscreenFlag, false, "Enable the Leaflet.Fullscreen plugin.")
 	fs.BoolVar(&leaflet_enable_draw, LeafletEnableDrawFlag, false, "Enable the Leaflet.Draw plugin.")
 
+	fs.StringVar(&leaflet_tile_url, LeafletTileURLFlag, "", "A valid Leaflet tile URL.")
 	return nil
 }
 
@@ -153,6 +158,10 @@ func ProviderURIFromFlagSet(fs *flag.FlagSet) (string, error) {
 	}
 
 	switch map_provider {
+	case "leaflet":
+
+		q.Set(LeafletTileURLFlag, leaflet_tile_url)
+
 	case "protomaps":
 
 		q.Set(ProtomapsTileURLFlag, protomaps_tile_url)
