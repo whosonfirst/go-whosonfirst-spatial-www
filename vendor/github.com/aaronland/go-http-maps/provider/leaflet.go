@@ -11,7 +11,6 @@ import (
 	"strconv"
 )
 
-
 const LEAFLET_SCHEME string = "leaflet"
 
 type LeafletProvider struct {

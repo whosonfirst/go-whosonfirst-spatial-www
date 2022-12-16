@@ -1,15 +1,14 @@
 package server
 
-// This is a first-cut at making the core application in to an extensible
-// package - it is likely that it will change (20201207/thisisaaronland)
-
 import (
 	"context"
 	"flag"
 	"fmt"
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
+	"github.com/aaronland/go-http-maps"	
 	"github.com/aaronland/go-http-maps/provider"
+	maps_www "github.com/aaronland/go-http-maps/http/www"	
 	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
 	"github.com/rs/cors"
@@ -200,12 +199,18 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to set logger for map provider, %w", err)
 		}
 
-		err = map_provider.AppendAssetHandlers(mux)
+		err = map_provider.AppendAssetHandlersWithPrefix(mux, path_prefix)
 
 		if err != nil {
-			return fmt.Errorf("Failed to append provider asset handlers, %v", err)
+			return fmt.Errorf("Failed to append map provider asset handlers, %w", err)
 		}
 
+		err = maps_www.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
+
+		if err != nil {
+			return fmt.Errorf("Failed to append map provider static asset handler, %w", err)
+		}
+		
 		t := template.New("spatial")
 
 		t = t.Funcs(map[string]interface{}{
@@ -271,6 +276,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			InitialLongitude: leaflet_initial_longitude,
 			InitialZoom:      leaflet_initial_zoom,
 			MaxBounds:        leaflet_max_bounds,
+			MapProvider: map_provider.Scheme(),
 			// LeafletTileURL:   leaflet_tile_url,
 		}
 
@@ -280,9 +286,11 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
+		maps_opts := maps.DefaultMapsOptions()
+		
 		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
 
-		http_pip_handler = map_provider.AppendResourcesHandlerWithPrefix(http_pip_handler, path_prefix)
+		http_pip_handler = maps.AppendResourcesHandlerWithPrefixAndProvider(http_pip_handler, map_provider, maps_opts, path_prefix)
 
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 

@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/aaronland/go-http-bootstrap v0.1.0
-	github.com/aaronland/go-http-maps v0.0.6
+	github.com/aaronland/go-http-maps v0.0.7
 	github.com/aaronland/go-http-ping/v2 v2.0.0
 	github.com/aaronland/go-http-server v1.0.0
 	github.com/rs/cors v1.8.2

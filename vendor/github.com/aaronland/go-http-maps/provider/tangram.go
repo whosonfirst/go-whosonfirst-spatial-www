@@ -30,7 +30,6 @@ func init() {
 
 	ctx := context.Background()
 	RegisterProvider(ctx, TANGRAM_SCHEME, NewTangramProvider)
-	RegisterProvider(ctx, "tangramjs", NewTangramProvider)
 }
 
 func TangramJSOptionsFromURL(u *url.URL) (*tangramjs.TangramJSOptions, error) {

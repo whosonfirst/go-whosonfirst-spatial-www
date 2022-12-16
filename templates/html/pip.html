@@ -5,7 +5,9 @@
 
 	<div class="card" id="point-in-polygon" data-initial-latitude="{{ .InitialLatitude }}" data-initial-longitude="{{ .InitialLongitude }}" data-initial-zoom="{{ .InitialZoom }}" data-max-bounds="{{ .MaxBounds }}">
 
-	    <div id="map" class="card-body" data-leaflet-tile-url="{{ .LeafletTileURL }}"></div>
+	    <div id="map" data-map-provider="{{ .MapProvider }}" data-initial-latitude="{{ .InitialLatitude }}" data-initial-longitude="{{ .InitialLongitude }}" data-initial-zoom="{{ .InitialZoom }}"></div>
+	    
+	    <!-- <div id="map" class="card-body" data-leaflet-tile-url="{{ .LeafletTileURL }}"></div> -->
 	    <div class="card-footer">
 
 		<details>

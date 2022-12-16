@@ -110,30 +110,30 @@ func AppendLeafletFlags(fs *flag.FlagSet) error {
 	fs.BoolVar(&leaflet_enable_fullscreen, LeafletEnableFullscreenFlag, false, "Enable the Leaflet.Fullscreen plugin.")
 	fs.BoolVar(&leaflet_enable_draw, LeafletEnableDrawFlag, false, "Enable the Leaflet.Draw plugin.")
 
-	fs.StringVar(&leaflet_tile_url, LeafletTileURLFlag, "", "A valid Leaflet tile URL.")
+	fs.StringVar(&leaflet_tile_url, LeafletTileURLFlag, "", "A valid Leaflet tile URL. Only necessary if -map-provider is \"leaflet\".")
 	return nil
 }
 
 func AppendTangramProviderFlags(fs *flag.FlagSet) error {
 
-	fs.StringVar(&nextzen_apikey, NextzenAPIKeyFlag, "", "A valid Nextzen API key")
-	fs.StringVar(&nextzen_style_url, NextzenStyleURLFlag, "/tangram/refill-style.zip", "A valid URL for loading a Tangram.js style bundle.")
-	fs.StringVar(&nextzen_tile_url, NextzenTileURLFlag, tangramjs.NEXTZEN_MVT_ENDPOINT, "A valid Nextzen tile URL template for loading map tiles.")
+	fs.StringVar(&nextzen_apikey, NextzenAPIKeyFlag, "", "A valid Nextzen API key. Only necessary if -map-provider is \"tangram\".")
+	fs.StringVar(&nextzen_style_url, NextzenStyleURLFlag, "/tangram/refill-style.zip", "A valid URL for loading a Tangram.js style bundle. Only necessary if -map-provider is \"tangram\".")
+	fs.StringVar(&nextzen_tile_url, NextzenTileURLFlag, tangramjs.NEXTZEN_MVT_ENDPOINT, "A valid Nextzen tile URL template for loading map tiles. Only necessary if -map-provider is \"tangram\".")
 
-	fs.BoolVar(&tilezen_enable_tilepack, TilezenEnableTilepack, false, "Enable to use of Tilezen MBTiles tilepack for tile-serving.")
-	fs.StringVar(&tilezen_tilepack_path, TilezenTilepackPath, "", "The path to the Tilezen MBTiles tilepack to use for serving tiles.")
+	fs.BoolVar(&tilezen_enable_tilepack, TilezenEnableTilepack, false, "Enable to use of Tilezen MBTiles tilepack for tile-serving. Only necessary if -map-provider is \"tangram\".")
+	fs.StringVar(&tilezen_tilepack_path, TilezenTilepackPath, "", "The path to the Tilezen MBTiles tilepack to use for serving tiles. Only necessary if -map-provider is \"tangram\" and -tilezen-enable-tilezen is true.")
 
 	return nil
 }
 
 func AppendProtomapsProviderFlags(fs *flag.FlagSet) error {
 
-	fs.StringVar(&protomaps_tile_url, ProtomapsTileURLFlag, "/tiles/", "A valid Protomaps .pmtiles URL for loading map tiles.")
+	fs.StringVar(&protomaps_tile_url, ProtomapsTileURLFlag, "/tiles/", "A valid Protomaps .pmtiles URL for loading map tiles. Only necessary if -map-provider is \"protomaps\".")
 
-	fs.BoolVar(&protomaps_serve_tiles, ProtomapsServeTilesFlag, false, "A boolean flag signaling whether to serve Protomaps tiles locally.")
-	fs.IntVar(&protomaps_cache_size, ProtomapsCacheSizeFlag, 64, "The size of the internal Protomaps cache if serving tiles locally.")
-	fs.StringVar(&protomaps_bucket_uri, ProtomapsBucketURIFlag, "", "The gocloud.dev/blob.Bucket URI where Protomaps tiles are stored.")
-	fs.StringVar(&protomaps_database, ProtomapsDatabaseFlag, "", "The name of the Protomaps database to serve tiles from.")
+	fs.BoolVar(&protomaps_serve_tiles, ProtomapsServeTilesFlag, false, "A boolean flag signaling whether to serve Protomaps tiles locally. Only necessary if -map-provider is \"protomaps\".")
+	fs.IntVar(&protomaps_cache_size, ProtomapsCacheSizeFlag, 64, "The size of the internal Protomaps cache if serving tiles locally. Only necessary if -map-provider is \"protomaps\" and -protomaps-serve-tiles is true.")
+	fs.StringVar(&protomaps_bucket_uri, ProtomapsBucketURIFlag, "", "The gocloud.dev/blob.Bucket URI where Protomaps tiles are stored. Only necessary if -map-provider is \"protomaps\" and -protomaps-serve-tiles is true.")
+	fs.StringVar(&protomaps_database, ProtomapsDatabaseFlag, "", "The name of the Protomaps database to serve tiles from. Only necessary if -map-provider is \"protomaps\" and -protomaps-serve-tiles is true.")
 
 	return nil
 }
