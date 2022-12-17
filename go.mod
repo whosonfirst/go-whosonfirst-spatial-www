@@ -13,10 +13,10 @@ require (
 	github.com/sfomuseum/go-http-auth v0.0.6
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-reader-cachereader v1.0.0
-	github.com/whosonfirst/go-whosonfirst-placetypes v0.4.1
-	github.com/whosonfirst/go-whosonfirst-spatial v0.5.1
-	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.3.1
-	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.4
+	github.com/whosonfirst/go-whosonfirst-placetypes v0.4.2
+	github.com/whosonfirst/go-whosonfirst-spatial v0.5.4
+	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.3.2
+	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.5
 	github.com/whosonfirst/go-whosonfirst-uri v1.2.0
 )
 
@@ -30,7 +30,7 @@ require (
 	github.com/aaronland/go-roster v1.0.0 // indirect
 	github.com/aaronland/go-string v1.0.0 // indirect
 	github.com/akrylysov/algnhsa v0.12.1 // indirect
-	github.com/aws/aws-lambda-go v1.35.0 // indirect
+	github.com/aws/aws-lambda-go v1.36.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.68 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/dhconnelly/rtreego v1.1.0 // indirect
@@ -70,12 +70,12 @@ require (
 	github.com/whosonfirst/go-ioutil v1.0.2 // indirect
 	github.com/whosonfirst/go-sanitize v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-crawl v0.2.1 // indirect
-	github.com/whosonfirst/go-whosonfirst-feature v0.0.24 // indirect
+	github.com/whosonfirst/go-whosonfirst-feature v0.0.25 // indirect
 	github.com/whosonfirst/go-whosonfirst-flags v0.4.4 // indirect
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.1 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8 // indirect
-	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.2 // indirect
+	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.3 // indirect
 	github.com/whosonfirst/go-writer-featurecollection/v3 v3.0.0-20220916180959-42588e308a3e // indirect
 	github.com/whosonfirst/go-writer/v3 v3.1.0 // indirect
 	github.com/whosonfirst/walk v0.0.1 // indirect

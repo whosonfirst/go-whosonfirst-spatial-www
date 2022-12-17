@@ -48,7 +48,7 @@ github.com/aaronland/go-string/dsn
 # github.com/akrylysov/algnhsa v0.12.1
 ## explicit; go 1.12
 github.com/akrylysov/algnhsa
-# github.com/aws/aws-lambda-go v1.35.0
+# github.com/aws/aws-lambda-go v1.36.0
 ## explicit; go 1.18
 github.com/aws/aws-lambda-go/events
 github.com/aws/aws-lambda-go/lambda
@@ -260,8 +260,8 @@ github.com/whosonfirst/go-sanitize
 # github.com/whosonfirst/go-whosonfirst-crawl v0.2.1
 ## explicit; go 1.12
 github.com/whosonfirst/go-whosonfirst-crawl
-# github.com/whosonfirst/go-whosonfirst-feature v0.0.24
-## explicit; go 1.16
+# github.com/whosonfirst/go-whosonfirst-feature v0.0.25
+## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-feature/alt
 github.com/whosonfirst/go-whosonfirst-feature/geometry
 github.com/whosonfirst/go-whosonfirst-feature/properties
@@ -277,14 +277,14 @@ github.com/whosonfirst/go-whosonfirst-flags/placetypes
 github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
 github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator
-# github.com/whosonfirst/go-whosonfirst-placetypes v0.4.1
+# github.com/whosonfirst/go-whosonfirst-placetypes v0.4.2
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-placetypes
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0
 ## explicit; go 1.12
 github.com/whosonfirst/go-whosonfirst-sources
 github.com/whosonfirst/go-whosonfirst-sources/sources
-# github.com/whosonfirst/go-whosonfirst-spatial v0.5.1
+# github.com/whosonfirst/go-whosonfirst-spatial v0.5.4
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/app
@@ -292,18 +292,17 @@ github.com/whosonfirst/go-whosonfirst-spatial/database
 github.com/whosonfirst/go-whosonfirst-spatial/filter
 github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo
-github.com/whosonfirst/go-whosonfirst-spatial/timer
-# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.3.1
+# github.com/whosonfirst/go-whosonfirst-spatial-pip v0.3.2
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial-pip
 github.com/whosonfirst/go-whosonfirst-spatial-pip/http/api
-# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.4
+# github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.5
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spatial-rtree
 # github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spr-geojson
-# github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.2
+# github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.3
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-spr/v2
 github.com/whosonfirst/go-whosonfirst-spr/v2/sort

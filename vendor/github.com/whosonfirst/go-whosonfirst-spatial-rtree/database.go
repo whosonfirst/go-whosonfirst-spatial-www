@@ -17,7 +17,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
-	"github.com/whosonfirst/go-whosonfirst-spatial/timer"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
@@ -44,7 +43,6 @@ type RTreeCache struct {
 type RTreeSpatialDatabase struct {
 	database.SpatialDatabase
 	Logger          *log.Logger
-	Timer           *timer.Timer
 	index_alt_files bool
 	rtree           *rtreego.Rtree
 	gocache         *gocache.Cache
@@ -140,11 +138,8 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 	mu := new(sync.RWMutex)
 
-	t := timer.NewTimer()
-
 	db := &RTreeSpatialDatabase{
 		Logger:          logger,
-		Timer:           t,
 		rtree:           rtree,
 		index_alt_files: index_alt_files,
 		gocache:         gc,
@@ -462,9 +457,6 @@ func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego
 
 func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial, error) {
 
-	// to do: timings that don't slow everything down the way
-	// go-whosonfirst-timer does now (20170915/thisisaaronland)
-
 	results := r.rtree.SearchIntersect(rect)
 	return results, nil
 }
@@ -485,12 +477,6 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 
 			sp_id := sp.Id
 			feature_id := sp.FeatureId
-
-			t1 := time.Now()
-
-			defer func() {
-				r.Timer.Add(ctx, sp_id, "time to inflate", time.Since(t1))
-			}()
 
 			defer wg.Done()
 
@@ -513,11 +499,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 			seen[feature_id] = true
 			mu.Unlock()
 
-			t2 := time.Now()
-
 			cache_item, err := r.retrieveCache(ctx, sp)
-
-			r.Timer.Add(ctx, sp_id, "time to retrieve cache", time.Since(t2))
 
 			if err != nil {
 				r.Logger.Printf("Failed to retrieve cache for %s, %v", sp_id, err)
@@ -525,8 +507,6 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 			}
 
 			s := cache_item.SPR
-
-			t3 := time.Now()
 
 			for _, f := range filters {
 
@@ -537,10 +517,6 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 					return
 				}
 			}
-
-			r.Timer.Add(ctx, sp_id, "time to filter", time.Since(t3))
-
-			t4 := time.Now()
 
 			geom := cache_item.Geometry
 
@@ -557,8 +533,6 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 			default:
 				r.Logger.Printf("Geometry has unsupported geometry type '%s'", geom.Type)
 			}
-
-			r.Timer.Add(ctx, sp_id, "time to test geometry", time.Since(t4))
 
 			if !contains {
 				// r.Logger.Debug("SKIP %s because does not contain coord (%v)", sp_id, c)
