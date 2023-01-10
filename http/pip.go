@@ -14,7 +14,7 @@ type PointInPolygonHandlerOptions struct {
 	InitialLatitude  float64
 	InitialLongitude float64
 	InitialZoom      int
-	MapProvider string
+	MapProvider      string
 	MaxBounds        string
 	LeafletTileURL   string
 }
@@ -24,7 +24,7 @@ type PointInPolygonHandlerTemplateVars struct {
 	InitialLongitude float64
 	InitialZoom      int
 	MaxBounds        string
-	MapProvider string
+	MapProvider      string
 	LeafletTileURL   string
 	Placetypes       []*placetypes.WOFPlacetype
 }
@@ -62,7 +62,7 @@ func PointInPolygonHandler(spatial_app *app.SpatialApplication, opts *PointInPol
 			InitialZoom:      opts.InitialZoom,
 			LeafletTileURL:   opts.LeafletTileURL,
 			MaxBounds:        opts.MaxBounds,
-			MapProvider: opts.MapProvider,
+			MapProvider:      opts.MapProvider,
 			Placetypes:       pt_list,
 		}
 

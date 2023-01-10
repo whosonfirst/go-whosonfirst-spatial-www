@@ -178,8 +178,8 @@ github.com/aaronland/go-http-bootstrap v0.2.0/go.mod h1:Dd4Z7H55XdgB7JyVma3cFvKQ
 github.com/aaronland/go-http-leaflet v0.1.0/go.mod h1:M6Brt/UMWXsT+3qK5idwxr3y6kELHHi7OhgoiecMt6U=
 github.com/aaronland/go-http-leaflet v0.1.3 h1:HY3u9EHthS4ddTij4aoqSF2JgSru1IIUWZT+2I7Ica0=
 github.com/aaronland/go-http-leaflet v0.1.3/go.mod h1:JuRh3NIHjOj4G5ITXOCXbxaLVTCgD5FRIePDqKSJYG0=
-github.com/aaronland/go-http-maps v0.0.11 h1:isrBUxKjtghAmRVcgjl5pC72pjRKEzMj7IhGn0Pn+oY=
-github.com/aaronland/go-http-maps v0.0.11/go.mod h1:+IQExlv5UYDqwQu2Mu3HCZf5aWQ1I8saQwFE7Aw2QEc=
+github.com/aaronland/go-http-maps v0.0.12 h1:2njH8BcmB5bcakM0nEuRINexhnngOxxbGHXNQzbLT3Y=
+github.com/aaronland/go-http-maps v0.0.12/go.mod h1:+IQExlv5UYDqwQu2Mu3HCZf5aWQ1I8saQwFE7Aw2QEc=
 github.com/aaronland/go-http-ping/v2 v2.0.0 h1:PO/CfpNwxPSMqEuDAA+2/IzSoArAa/0deSHCmCuvfiA=
 github.com/aaronland/go-http-ping/v2 v2.0.0/go.mod h1:fXKuw0WvfXMyt09ibXILN4LzEIhCnxoAhmZqoC5iBm8=
 github.com/aaronland/go-http-rewrite v0.0.6/go.mod h1:+Ehclg6SIiQPEJlSv3LR+8rojSSYPLGQuDf2z9bChpY=
