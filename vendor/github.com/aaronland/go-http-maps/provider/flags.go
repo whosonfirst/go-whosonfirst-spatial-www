@@ -99,6 +99,18 @@ const ProtomapsDatabaseFlag string = "protomaps-database"
 // The name of the Protomaps database to serve tiles from. Only necessary if `map_provider` is "protomaps" and `protomaps_serve_tiles` is true.
 var protomaps_database string
 
+// The names of the commandline flag or query parameter used to assign the `protomaps_paint_rules_uri` variable.
+const ProtomapsPaintRulesURIFlag string = "protomaps-paint-rules-uri"
+
+// An optional `gocloud.dev/runtimevar` URI referencing a custom Javascript variable used to define Protomaps paint rules.
+var protomaps_paint_rules_uri string
+
+// The names of the commandline flag or query parameter used to assign the `protomaps_paint_rules_uri` variable.
+const ProtomapsLabelRulesURIFlag string = "protomaps-label-rules-uri"
+
+// An optional `gocloud.dev/runtimevar` URI referencing a custom Javascript variable used to define Protomaps label rules.
+var protomaps_label_rules_uri string
+
 func AppendProviderFlags(fs *flag.FlagSet) error {
 
 	schemes := Schemes()
@@ -165,6 +177,9 @@ func AppendProtomapsProviderFlags(fs *flag.FlagSet) error {
 	fs.StringVar(&protomaps_bucket_uri, ProtomapsBucketURIFlag, "", "The gocloud.dev/blob.Bucket URI where Protomaps tiles are stored. Only necessary if -map-provider is \"protomaps\" and -protomaps-serve-tiles is true.")
 	fs.StringVar(&protomaps_database, ProtomapsDatabaseFlag, "", "The name of the Protomaps database to serve tiles from. Only necessary if -map-provider is \"protomaps\" and -protomaps-serve-tiles is true.")
 
+	fs.StringVar(&protomaps_paint_rules_uri, ProtomapsPaintRulesURIFlag, "", "// An optional `gocloud.dev/runtimevar` URI referencing a custom Javascript variable used to define Protomaps paint rules.")
+	fs.StringVar(&protomaps_label_rules_uri, ProtomapsLabelRulesURIFlag, "", "// An optional `gocloud.dev/runtimevar` URI referencing a custom Javascript variable used to define Protomaps label rules.")
+
 	return nil
 }
 
@@ -203,6 +218,9 @@ func ProviderURIFromFlagSet(fs *flag.FlagSet) (string, error) {
 			q.Set(ProtomapsBucketURIFlag, protomaps_bucket_uri)
 			q.Set(ProtomapsDatabaseFlag, protomaps_database)
 		}
+
+		q.Set(ProtomapsPaintRulesURIFlag, protomaps_paint_rules_uri)
+		q.Set(ProtomapsLabelRulesURIFlag, protomaps_label_rules_uri)
 
 	case "tangram":
 

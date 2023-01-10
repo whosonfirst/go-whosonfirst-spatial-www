@@ -91,8 +91,23 @@ aaronland.maps = (function(){
 		case "protomaps":
 		
 		    var tile_url = document.body.getAttribute("data-protomaps-tile-url");
+
+		    var args = {
+			url: tile_url,
+		    };
+
+		    var paint_rules = aaronland.protomaps.rules.paintRules();
+		    var label_rules = aaronland.protomaps.rules.labelRules();
 		    
-		    var layer = protomaps.leafletLayer({url:tile_url})
+		    if (paint_rules){
+			args['paint_rules'] = paint_rules;
+		    }
+		   
+		    if (label_rules){
+			args['label_rules'] = label_rules;
+		    }
+		    
+		    var layer = protomaps.leafletLayer(args)
 		    layer.addTo(map);
 		    break;
 		    

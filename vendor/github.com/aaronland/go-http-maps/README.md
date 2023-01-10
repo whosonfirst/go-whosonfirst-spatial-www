@@ -44,6 +44,10 @@ $> ./bin/server -h
     	The size of the internal Protomaps cache if serving tiles locally. Only necessary if -map-provider is "protomaps" and -protomaps-serve-tiles is true. (default 64)
   -protomaps-database string
     	The name of the Protomaps database to serve tiles from. Only necessary if -map-provider is "protomaps" and -protomaps-serve-tiles is true.
+  -protomaps-label-rules-uri gocloud.dev/runtimevar
+    	// An optional gocloud.dev/runtimevar URI referencing a custom Javascript variable used to define Protomaps label rules.
+  -protomaps-paint-rules-uri gocloud.dev/runtimevar
+    	// An optional gocloud.dev/runtimevar URI referencing a custom Javascript variable used to define Protomaps paint rules.
   -protomaps-serve-tiles
     	A boolean flag signaling whether to serve Protomaps tiles locally. Only necessary if -map-provider is "protomaps".
   -protomaps-tile-url string

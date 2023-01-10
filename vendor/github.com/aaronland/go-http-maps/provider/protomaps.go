@@ -8,23 +8,31 @@ import (
 	"context"
 	"fmt"
 	"github.com/aaronland/go-http-leaflet"
+	"github.com/aaronland/go-http-maps/templates/javascript"
 	"github.com/protomaps/go-pmtiles/pmtiles"
 	"github.com/sfomuseum/go-http-protomaps"
 	pmhttp "github.com/sfomuseum/go-sfomuseum-pmtiles/http"
+	"github.com/sfomuseum/runtimevar"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
 const PROTOMAPS_SCHEME string = "protomaps"
+
+const pathRulesJavascript string = "/javascript/aaronland.protomaps.rules.js"
 
 type ProtomapsProvider struct {
 	Provider
 	leafletOptions   *leaflet.LeafletOptions
 	protomapsOptions *protomaps.ProtomapsOptions
+	paintRules       string
+	labelRules       string
+	rulesTemplate    *template.Template
 	logger           *log.Logger
 	serve_tiles      bool
 	cache_size       int
@@ -66,6 +74,20 @@ func NewProtomapsProvider(ctx context.Context, uri string) (Provider, error) {
 		return nil, fmt.Errorf("Failed to create protomaps options, %w", err)
 	}
 
+	protomaps_opts.JS = append(protomaps_opts.JS, pathRulesJavascript)
+
+	t, err := javascript.LoadTemplates(ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to load Javascript templates, %w", err)
+	}
+
+	rules_t := t.Lookup("rules")
+
+	if t == nil {
+		return nil, fmt.Errorf("Missing 'rules' Javascript template")
+	}
+
 	q := u.Query()
 
 	q_tile_url := q.Get(ProtomapsTileURLFlag)
@@ -77,6 +99,32 @@ func NewProtomapsProvider(ctx context.Context, uri string) (Provider, error) {
 		leafletOptions:   leaflet_opts,
 		protomapsOptions: protomaps_opts,
 		logger:           logger,
+		rulesTemplate:    rules_t,
+	}
+
+	custom_paint_uri := q.Get(ProtomapsPaintRulesURIFlag)
+	custom_labels_uri := q.Get(ProtomapsLabelRulesURIFlag)
+
+	if custom_paint_uri != "" {
+
+		paint_rules, err := runtimevar.StringVar(ctx, custom_paint_uri)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to derive custom paint rules from %s= query parameter, %w", ProtomapsPaintRulesURIFlag, err)
+		}
+
+		p.paintRules = paint_rules
+	}
+
+	if custom_labels_uri != "" {
+
+		label_rules, err := runtimevar.StringVar(ctx, custom_labels_uri)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to derive custom label rules from %s= query parameter, %w", ProtomapsLabelRulesURIFlag, err)
+		}
+
+		p.labelRules = label_rules
 	}
 
 	serve_tiles := false
@@ -142,7 +190,7 @@ func (p *ProtomapsProvider) AppendAssetHandlersWithPrefix(mux *http.ServeMux, pr
 		return fmt.Errorf("Failed to append leaflet asset handler, %w", err)
 	}
 
-	err = protomaps.AppendAssetHandlers(mux)
+	err = protomaps.AppendAssetHandlersWithPrefix(mux, prefix)
 
 	if err != nil {
 		return fmt.Errorf("Failed to append protomaps asset handler, %w", err)
@@ -174,7 +222,7 @@ func (p *ProtomapsProvider) AppendAssetHandlersWithPrefix(mux *http.ServeMux, pr
 		strip_path := strings.TrimRight(path_tiles, "/")
 		pmtiles_handler = http.StripPrefix(strip_path, pmtiles_handler)
 
-		mux.Handle(p.path_tiles, pmtiles_handler)
+		mux.Handle(path_tiles, pmtiles_handler)
 
 		// Because inevitably I will forget...
 		protomaps_tiles_database := strings.Replace(p.database, ".pmtiles", "", 1)
@@ -193,10 +241,72 @@ func (p *ProtomapsProvider) AppendAssetHandlersWithPrefix(mux *http.ServeMux, pr
 		p.protomapsOptions.TileURL = pm_tile_url
 	}
 
+	err = p.appendRulesAssetHandlers(mux, prefix)
+
+	if err != nil {
+		return fmt.Errorf("Failed to assign rules asset handlers, %w", err)
+	}
+
 	return nil
 }
 
 func (p *ProtomapsProvider) SetLogger(logger *log.Logger) error {
 	p.logger = logger
 	return nil
+}
+
+func (p *ProtomapsProvider) appendRulesAssetHandlers(mux *http.ServeMux, prefix string) error {
+
+	rules_handler, err := p.rulesHandler()
+
+	if err != nil {
+		return fmt.Errorf("Failed to create rules handler, %w", err)
+	}
+
+	path_rules := pathRulesJavascript
+
+	if prefix != "" {
+
+		path, err := url.JoinPath(prefix, path_rules)
+
+		if err != nil {
+			return fmt.Errorf("Failed to join path for paint rules, %w", err)
+		}
+
+		path_rules = path
+	}
+
+	mux.Handle(path_rules, rules_handler)
+	return nil
+}
+
+func (p *ProtomapsProvider) rulesHandler() (http.Handler, error) {
+
+	type ProtomapsRulesVars struct {
+		PaintRules string
+		LabelRules string
+	}
+
+	vars := ProtomapsRulesVars{
+		PaintRules: p.paintRules,
+		LabelRules: p.labelRules,
+	}
+
+	t := p.rulesTemplate
+
+	fn := func(rsp http.ResponseWriter, req *http.Request) {
+
+		rsp.Header().Set("Content-type", "text/javascript")
+
+		err := t.Execute(rsp, vars)
+
+		if err != nil {
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		return
+	}
+
+	return http.HandlerFunc(fn), nil
 }
