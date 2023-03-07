@@ -1281,6 +1281,61 @@ func (m *awsAwsjson11_serializeOpDeleteResourceDataSync) HandleSerialize(ctx con
 	return next.HandleSerialize(ctx, in)
 }
 
+type awsAwsjson11_serializeOpDeleteResourcePolicy struct {
+}
+
+func (*awsAwsjson11_serializeOpDeleteResourcePolicy) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson11_serializeOpDeleteResourcePolicy) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*DeleteResourcePolicyInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.1")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("AmazonSSM.DeleteResourcePolicy")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson11_serializeOpDocumentDeleteResourcePolicyInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	return next.HandleSerialize(ctx, in)
+}
+
 type awsAwsjson11_serializeOpDeregisterManagedInstance struct {
 }
 
@@ -4581,6 +4636,61 @@ func (m *awsAwsjson11_serializeOpGetPatchBaselineForPatchGroup) HandleSerialize(
 	return next.HandleSerialize(ctx, in)
 }
 
+type awsAwsjson11_serializeOpGetResourcePolicies struct {
+}
+
+func (*awsAwsjson11_serializeOpGetResourcePolicies) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson11_serializeOpGetResourcePolicies) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetResourcePoliciesInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.1")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("AmazonSSM.GetResourcePolicies")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson11_serializeOpDocumentGetResourcePoliciesInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	return next.HandleSerialize(ctx, in)
+}
+
 type awsAwsjson11_serializeOpGetServiceSetting struct {
 }
 
@@ -5776,6 +5886,61 @@ func (m *awsAwsjson11_serializeOpPutParameter) HandleSerialize(ctx context.Conte
 
 	jsonEncoder := smithyjson.NewEncoder()
 	if err := awsAwsjson11_serializeOpDocumentPutParameterInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson11_serializeOpPutResourcePolicy struct {
+}
+
+func (*awsAwsjson11_serializeOpPutResourcePolicy) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson11_serializeOpPutResourcePolicy) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*PutResourcePolicyInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.1")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("AmazonSSM.PutResourcePolicy")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson11_serializeOpDocumentPutResourcePolicyInput(input, jsonEncoder.Value); err != nil {
 		return out, metadata, &smithy.SerializationError{Err: err}
 	}
 
@@ -7462,6 +7627,50 @@ func awsAwsjson11_serializeDocumentAccounts(v []string, value smithyjson.Value) 
 	return nil
 }
 
+func awsAwsjson11_serializeDocumentAlarm(v *types.Alarm, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	return nil
+}
+
+func awsAwsjson11_serializeDocumentAlarmConfiguration(v *types.AlarmConfiguration, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Alarms != nil {
+		ok := object.Key("Alarms")
+		if err := awsAwsjson11_serializeDocumentAlarmList(v.Alarms, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.IgnorePollAlarmFailure {
+		ok := object.Key("IgnorePollAlarmFailure")
+		ok.Boolean(v.IgnorePollAlarmFailure)
+	}
+
+	return nil
+}
+
+func awsAwsjson11_serializeDocumentAlarmList(v []types.Alarm, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsjson11_serializeDocumentAlarm(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func awsAwsjson11_serializeDocumentAssociationExecutionFilter(v *types.AssociationExecutionFilter, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -8000,6 +8209,13 @@ func awsAwsjson11_serializeDocumentCreateAssociationBatchRequestEntry(v *types.C
 	object := value.Object()
 	defer object.Close()
 
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.ApplyOnlyAtCronInterval {
 		ok := object.Key("ApplyOnlyAtCronInterval")
 		ok.Boolean(v.ApplyOnlyAtCronInterval)
@@ -8071,9 +8287,9 @@ func awsAwsjson11_serializeDocumentCreateAssociationBatchRequestEntry(v *types.C
 		ok.String(*v.ScheduleExpression)
 	}
 
-	if v.ScheduleOffset != 0 {
+	if v.ScheduleOffset != nil {
 		ok := object.Key("ScheduleOffset")
-		ok.Integer(v.ScheduleOffset)
+		ok.Integer(*v.ScheduleOffset)
 	}
 
 	if len(v.SyncCompliance) > 0 {
@@ -8219,9 +8435,19 @@ func awsAwsjson11_serializeDocumentDocumentRequires(v *types.DocumentRequires, v
 		ok.String(*v.Name)
 	}
 
+	if v.RequireType != nil {
+		ok := object.Key("RequireType")
+		ok.String(*v.RequireType)
+	}
+
 	if v.Version != nil {
 		ok := object.Key("Version")
 		ok.String(*v.Version)
+	}
+
+	if v.VersionName != nil {
+		ok := object.Key("VersionName")
+		ok.String(*v.VersionName)
 	}
 
 	return nil
@@ -8825,9 +9051,9 @@ func awsAwsjson11_serializeDocumentMaintenanceWindowRunCommandParameters(v *type
 		ok.String(*v.ServiceRoleArn)
 	}
 
-	if v.TimeoutSeconds != 0 {
+	if v.TimeoutSeconds != nil {
 		ok := object.Key("TimeoutSeconds")
-		ok.Integer(v.TimeoutSeconds)
+		ok.Integer(*v.TimeoutSeconds)
 	}
 
 	return nil
@@ -9645,9 +9871,9 @@ func awsAwsjson11_serializeDocumentPatchRule(v *types.PatchRule, value smithyjso
 	object := value.Object()
 	defer object.Close()
 
-	if v.ApproveAfterDays != 0 {
+	if v.ApproveAfterDays != nil {
 		ok := object.Key("ApproveAfterDays")
-		ok.Integer(v.ApproveAfterDays)
+		ok.Integer(*v.ApproveAfterDays)
 	}
 
 	if v.ApproveUntilDate != nil {
@@ -9660,9 +9886,9 @@ func awsAwsjson11_serializeDocumentPatchRule(v *types.PatchRule, value smithyjso
 		ok.String(string(v.ComplianceLevel))
 	}
 
-	if v.EnableNonSecurity {
+	if v.EnableNonSecurity != nil {
 		ok := object.Key("EnableNonSecurity")
-		ok.Boolean(v.EnableNonSecurity)
+		ok.Boolean(*v.EnableNonSecurity)
 	}
 
 	if v.PatchFilterGroup != nil {
@@ -10261,6 +10487,13 @@ func awsAwsjson11_serializeDocumentTargetLocation(v *types.TargetLocation, value
 		}
 	}
 
+	if v.TargetLocationAlarmConfiguration != nil {
+		ok := object.Key("TargetLocationAlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.TargetLocationAlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.TargetLocationMaxConcurrency != nil {
 		ok := object.Key("TargetLocationMaxConcurrency")
 		ok.String(*v.TargetLocationMaxConcurrency)
@@ -10460,9 +10693,9 @@ func awsAwsjson11_serializeOpDocumentCreateActivationInput(v *CreateActivationIn
 		ok.String(*v.IamRole)
 	}
 
-	if v.RegistrationLimit != 0 {
+	if v.RegistrationLimit != nil {
 		ok := object.Key("RegistrationLimit")
-		ok.Integer(v.RegistrationLimit)
+		ok.Integer(*v.RegistrationLimit)
 	}
 
 	if v.RegistrationMetadata != nil {
@@ -10499,6 +10732,13 @@ func awsAwsjson11_serializeOpDocumentCreateAssociationBatchInput(v *CreateAssoci
 func awsAwsjson11_serializeOpDocumentCreateAssociationInput(v *CreateAssociationInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
+
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
 
 	if v.ApplyOnlyAtCronInterval {
 		ok := object.Key("ApplyOnlyAtCronInterval")
@@ -10571,14 +10811,21 @@ func awsAwsjson11_serializeOpDocumentCreateAssociationInput(v *CreateAssociation
 		ok.String(*v.ScheduleExpression)
 	}
 
-	if v.ScheduleOffset != 0 {
+	if v.ScheduleOffset != nil {
 		ok := object.Key("ScheduleOffset")
-		ok.Integer(v.ScheduleOffset)
+		ok.Integer(*v.ScheduleOffset)
 	}
 
 	if len(v.SyncCompliance) > 0 {
 		ok := object.Key("SyncCompliance")
 		ok.String(string(v.SyncCompliance))
+	}
+
+	if v.Tags != nil {
+		ok := object.Key("Tags")
+		if err := awsAwsjson11_serializeDocumentTagList(v.Tags, ok); err != nil {
+			return err
+		}
 	}
 
 	if v.TargetLocations != nil {
@@ -10712,9 +10959,9 @@ func awsAwsjson11_serializeOpDocumentCreateMaintenanceWindowInput(v *CreateMaint
 		ok.String(*v.Schedule)
 	}
 
-	if v.ScheduleOffset != 0 {
+	if v.ScheduleOffset != nil {
 		ok := object.Key("ScheduleOffset")
-		ok.Integer(v.ScheduleOffset)
+		ok.Integer(*v.ScheduleOffset)
 	}
 
 	if v.ScheduleTimezone != nil {
@@ -10740,6 +10987,11 @@ func awsAwsjson11_serializeOpDocumentCreateMaintenanceWindowInput(v *CreateMaint
 func awsAwsjson11_serializeOpDocumentCreateOpsItemInput(v *CreateOpsItemInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
+
+	if v.AccountId != nil {
+		ok := object.Key("AccountId")
+		ok.String(*v.AccountId)
+	}
 
 	if v.ActualEndTime != nil {
 		ok := object.Key("ActualEndTime")
@@ -10876,9 +11128,9 @@ func awsAwsjson11_serializeOpDocumentCreatePatchBaselineInput(v *CreatePatchBase
 		ok.String(string(v.ApprovedPatchesComplianceLevel))
 	}
 
-	if v.ApprovedPatchesEnableNonSecurity {
+	if v.ApprovedPatchesEnableNonSecurity != nil {
 		ok := object.Key("ApprovedPatchesEnableNonSecurity")
-		ok.Boolean(v.ApprovedPatchesEnableNonSecurity)
+		ok.Boolean(*v.ApprovedPatchesEnableNonSecurity)
 	}
 
 	if v.ClientToken != nil {
@@ -11135,6 +11387,28 @@ func awsAwsjson11_serializeOpDocumentDeleteResourceDataSyncInput(v *DeleteResour
 	return nil
 }
 
+func awsAwsjson11_serializeOpDocumentDeleteResourcePolicyInput(v *DeleteResourcePolicyInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.PolicyHash != nil {
+		ok := object.Key("PolicyHash")
+		ok.String(*v.PolicyHash)
+	}
+
+	if v.PolicyId != nil {
+		ok := object.Key("PolicyId")
+		ok.String(*v.PolicyId)
+	}
+
+	if v.ResourceArn != nil {
+		ok := object.Key("ResourceArn")
+		ok.String(*v.ResourceArn)
+	}
+
+	return nil
+}
+
 func awsAwsjson11_serializeOpDocumentDeregisterManagedInstanceInput(v *DeregisterManagedInstanceInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -11168,9 +11442,9 @@ func awsAwsjson11_serializeOpDocumentDeregisterTargetFromMaintenanceWindowInput(
 	object := value.Object()
 	defer object.Close()
 
-	if v.Safe {
+	if v.Safe != nil {
 		ok := object.Key("Safe")
-		ok.Boolean(v.Safe)
+		ok.Boolean(*v.Safe)
 	}
 
 	if v.WindowId != nil {
@@ -11214,9 +11488,9 @@ func awsAwsjson11_serializeOpDocumentDescribeActivationsInput(v *DescribeActivat
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11243,9 +11517,9 @@ func awsAwsjson11_serializeOpDocumentDescribeAssociationExecutionsInput(v *Descr
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11277,9 +11551,9 @@ func awsAwsjson11_serializeOpDocumentDescribeAssociationExecutionTargetsInput(v 
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11328,9 +11602,9 @@ func awsAwsjson11_serializeOpDocumentDescribeAutomationExecutionsInput(v *Descri
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11357,9 +11631,9 @@ func awsAwsjson11_serializeOpDocumentDescribeAutomationStepExecutionsInput(v *De
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11367,9 +11641,9 @@ func awsAwsjson11_serializeOpDocumentDescribeAutomationStepExecutionsInput(v *De
 		ok.String(*v.NextToken)
 	}
 
-	if v.ReverseOrder {
+	if v.ReverseOrder != nil {
 		ok := object.Key("ReverseOrder")
-		ok.Boolean(v.ReverseOrder)
+		ok.Boolean(*v.ReverseOrder)
 	}
 
 	return nil
@@ -11386,9 +11660,9 @@ func awsAwsjson11_serializeOpDocumentDescribeAvailablePatchesInput(v *DescribeAv
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11425,9 +11699,9 @@ func awsAwsjson11_serializeOpDocumentDescribeDocumentPermissionInput(v *Describe
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.Name != nil {
@@ -11457,9 +11731,9 @@ func awsAwsjson11_serializeOpDocumentDescribeEffectiveInstanceAssociationsInput(
 		ok.String(*v.InstanceId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11479,9 +11753,9 @@ func awsAwsjson11_serializeOpDocumentDescribeEffectivePatchesForPatchBaselineInp
 		ok.String(*v.BaselineId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11501,9 +11775,9 @@ func awsAwsjson11_serializeOpDocumentDescribeInstanceAssociationsStatusInput(v *
 		ok.String(*v.InstanceId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11532,9 +11806,9 @@ func awsAwsjson11_serializeOpDocumentDescribeInstanceInformationInput(v *Describ
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11561,9 +11835,9 @@ func awsAwsjson11_serializeOpDocumentDescribeInstancePatchesInput(v *DescribeIns
 		ok.String(*v.InstanceId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11585,9 +11859,9 @@ func awsAwsjson11_serializeOpDocumentDescribeInstancePatchStatesForPatchGroupInp
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11614,9 +11888,9 @@ func awsAwsjson11_serializeOpDocumentDescribeInstancePatchStatesInput(v *Describ
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11636,9 +11910,9 @@ func awsAwsjson11_serializeOpDocumentDescribeInventoryDeletionsInput(v *Describe
 		ok.String(*v.DeletionId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11660,9 +11934,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowExecutionsInput(v 
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11689,9 +11963,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowExecutionTaskInvoc
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11723,9 +11997,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowExecutionTasksInpu
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11752,9 +12026,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowScheduleInput(v *D
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11786,9 +12060,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowsForTargetInput(v 
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11822,9 +12096,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowsInput(v *Describe
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11846,9 +12120,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowTargetsInput(v *De
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11875,9 +12149,9 @@ func awsAwsjson11_serializeOpDocumentDescribeMaintenanceWindowTasksInput(v *Desc
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11928,9 +12202,9 @@ func awsAwsjson11_serializeOpDocumentDescribeParametersInput(v *DescribeParamete
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11959,9 +12233,9 @@ func awsAwsjson11_serializeOpDocumentDescribePatchBaselinesInput(v *DescribePatc
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -11983,9 +12257,9 @@ func awsAwsjson11_serializeOpDocumentDescribePatchGroupsInput(v *DescribePatchGr
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12012,9 +12286,9 @@ func awsAwsjson11_serializeOpDocumentDescribePatchPropertiesInput(v *DescribePat
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12051,9 +12325,9 @@ func awsAwsjson11_serializeOpDocumentDescribeSessionsInput(v *DescribeSessionsIn
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12232,9 +12506,9 @@ func awsAwsjson11_serializeOpDocumentGetInventoryInput(v *GetInventoryInput, val
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12261,9 +12535,9 @@ func awsAwsjson11_serializeOpDocumentGetInventorySchemaInput(v *GetInventorySche
 		ok.Boolean(v.Aggregator)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12271,9 +12545,9 @@ func awsAwsjson11_serializeOpDocumentGetInventorySchemaInput(v *GetInventorySche
 		ok.String(*v.NextToken)
 	}
 
-	if v.SubType {
+	if v.SubType != nil {
 		ok := object.Key("SubType")
-		ok.Boolean(v.SubType)
+		ok.Boolean(*v.SubType)
 	}
 
 	if v.TypeName != nil {
@@ -12368,6 +12642,11 @@ func awsAwsjson11_serializeOpDocumentGetOpsItemInput(v *GetOpsItemInput, value s
 	object := value.Object()
 	defer object.Close()
 
+	if v.OpsItemArn != nil {
+		ok := object.Key("OpsItemArn")
+		ok.String(*v.OpsItemArn)
+	}
+
 	if v.OpsItemId != nil {
 		ok := object.Key("OpsItemId")
 		ok.String(*v.OpsItemId)
@@ -12380,9 +12659,9 @@ func awsAwsjson11_serializeOpDocumentGetOpsMetadataInput(v *GetOpsMetadataInput,
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12416,9 +12695,9 @@ func awsAwsjson11_serializeOpDocumentGetOpsSummaryInput(v *GetOpsSummaryInput, v
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12445,9 +12724,9 @@ func awsAwsjson11_serializeOpDocumentGetParameterHistoryInput(v *GetParameterHis
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.Name != nil {
@@ -12460,9 +12739,9 @@ func awsAwsjson11_serializeOpDocumentGetParameterHistoryInput(v *GetParameterHis
 		ok.String(*v.NextToken)
 	}
 
-	if v.WithDecryption {
+	if v.WithDecryption != nil {
 		ok := object.Key("WithDecryption")
-		ok.Boolean(v.WithDecryption)
+		ok.Boolean(*v.WithDecryption)
 	}
 
 	return nil
@@ -12477,9 +12756,9 @@ func awsAwsjson11_serializeOpDocumentGetParameterInput(v *GetParameterInput, val
 		ok.String(*v.Name)
 	}
 
-	if v.WithDecryption {
+	if v.WithDecryption != nil {
 		ok := object.Key("WithDecryption")
-		ok.Boolean(v.WithDecryption)
+		ok.Boolean(*v.WithDecryption)
 	}
 
 	return nil
@@ -12489,9 +12768,9 @@ func awsAwsjson11_serializeOpDocumentGetParametersByPathInput(v *GetParametersBy
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12511,14 +12790,14 @@ func awsAwsjson11_serializeOpDocumentGetParametersByPathInput(v *GetParametersBy
 		ok.String(*v.Path)
 	}
 
-	if v.Recursive {
+	if v.Recursive != nil {
 		ok := object.Key("Recursive")
-		ok.Boolean(v.Recursive)
+		ok.Boolean(*v.Recursive)
 	}
 
-	if v.WithDecryption {
+	if v.WithDecryption != nil {
 		ok := object.Key("WithDecryption")
-		ok.Boolean(v.WithDecryption)
+		ok.Boolean(*v.WithDecryption)
 	}
 
 	return nil
@@ -12535,9 +12814,9 @@ func awsAwsjson11_serializeOpDocumentGetParametersInput(v *GetParametersInput, v
 		}
 	}
 
-	if v.WithDecryption {
+	if v.WithDecryption != nil {
 		ok := object.Key("WithDecryption")
-		ok.Boolean(v.WithDecryption)
+		ok.Boolean(*v.WithDecryption)
 	}
 
 	return nil
@@ -12572,6 +12851,28 @@ func awsAwsjson11_serializeOpDocumentGetPatchBaselineInput(v *GetPatchBaselineIn
 	return nil
 }
 
+func awsAwsjson11_serializeOpDocumentGetResourcePoliciesInput(v *GetResourcePoliciesInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.MaxResults != nil {
+		ok := object.Key("MaxResults")
+		ok.Integer(*v.MaxResults)
+	}
+
+	if v.NextToken != nil {
+		ok := object.Key("NextToken")
+		ok.String(*v.NextToken)
+	}
+
+	if v.ResourceArn != nil {
+		ok := object.Key("ResourceArn")
+		ok.String(*v.ResourceArn)
+	}
+
+	return nil
+}
+
 func awsAwsjson11_serializeOpDocumentGetServiceSettingInput(v *GetServiceSettingInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -12600,9 +12901,9 @@ func awsAwsjson11_serializeOpDocumentLabelParameterVersionInput(v *LabelParamete
 		ok.String(*v.Name)
 	}
 
-	if v.ParameterVersion != 0 {
+	if v.ParameterVersion != nil {
 		ok := object.Key("ParameterVersion")
-		ok.Long(v.ParameterVersion)
+		ok.Long(*v.ParameterVersion)
 	}
 
 	return nil
@@ -12619,9 +12920,9 @@ func awsAwsjson11_serializeOpDocumentListAssociationsInput(v *ListAssociationsIn
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12641,9 +12942,9 @@ func awsAwsjson11_serializeOpDocumentListAssociationVersionsInput(v *ListAssocia
 		ok.String(*v.AssociationId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12680,9 +12981,9 @@ func awsAwsjson11_serializeOpDocumentListCommandInvocationsInput(v *ListCommandI
 		ok.String(*v.InstanceId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12714,9 +13015,9 @@ func awsAwsjson11_serializeOpDocumentListCommandsInput(v *ListCommandsInput, val
 		ok.String(*v.InstanceId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12738,9 +13039,9 @@ func awsAwsjson11_serializeOpDocumentListComplianceItemsInput(v *ListComplianceI
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12776,9 +13077,9 @@ func awsAwsjson11_serializeOpDocumentListComplianceSummariesInput(v *ListComplia
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12798,9 +13099,9 @@ func awsAwsjson11_serializeOpDocumentListDocumentMetadataHistoryInput(v *ListDoc
 		ok.String(*v.DocumentVersion)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if len(v.Metadata) > 0 {
@@ -12839,9 +13140,9 @@ func awsAwsjson11_serializeOpDocumentListDocumentsInput(v *ListDocumentsInput, v
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12856,9 +13157,9 @@ func awsAwsjson11_serializeOpDocumentListDocumentVersionsInput(v *ListDocumentVe
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.Name != nil {
@@ -12890,9 +13191,9 @@ func awsAwsjson11_serializeOpDocumentListInventoryEntriesInput(v *ListInventoryE
 		ok.String(*v.InstanceId)
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12972,9 +13273,9 @@ func awsAwsjson11_serializeOpDocumentListOpsMetadataInput(v *ListOpsMetadataInpu
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -12996,9 +13297,9 @@ func awsAwsjson11_serializeOpDocumentListResourceComplianceSummariesInput(v *Lis
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -13013,9 +13314,9 @@ func awsAwsjson11_serializeOpDocumentListResourceDataSyncInput(v *ListResourceDa
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -13178,9 +13479,9 @@ func awsAwsjson11_serializeOpDocumentPutParameterInput(v *PutParameterInput, val
 		ok.String(*v.Name)
 	}
 
-	if v.Overwrite {
+	if v.Overwrite != nil {
 		ok := object.Key("Overwrite")
-		ok.Boolean(v.Overwrite)
+		ok.Boolean(*v.Overwrite)
 	}
 
 	if v.Policies != nil {
@@ -13208,6 +13509,33 @@ func awsAwsjson11_serializeOpDocumentPutParameterInput(v *PutParameterInput, val
 	if v.Value != nil {
 		ok := object.Key("Value")
 		ok.String(*v.Value)
+	}
+
+	return nil
+}
+
+func awsAwsjson11_serializeOpDocumentPutResourcePolicyInput(v *PutResourcePolicyInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Policy != nil {
+		ok := object.Key("Policy")
+		ok.String(*v.Policy)
+	}
+
+	if v.PolicyHash != nil {
+		ok := object.Key("PolicyHash")
+		ok.String(*v.PolicyHash)
+	}
+
+	if v.PolicyId != nil {
+		ok := object.Key("PolicyId")
+		ok.String(*v.PolicyId)
+	}
+
+	if v.ResourceArn != nil {
+		ok := object.Key("ResourceArn")
+		ok.String(*v.ResourceArn)
 	}
 
 	return nil
@@ -13290,6 +13618,13 @@ func awsAwsjson11_serializeOpDocumentRegisterTaskWithMaintenanceWindowInput(v *R
 	object := value.Object()
 	defer object.Close()
 
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.ClientToken != nil {
 		ok := object.Key("ClientToken")
 		ok.String(*v.ClientToken)
@@ -13327,9 +13662,9 @@ func awsAwsjson11_serializeOpDocumentRegisterTaskWithMaintenanceWindowInput(v *R
 		ok.String(*v.Name)
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.ServiceRoleArn != nil {
@@ -13452,6 +13787,13 @@ func awsAwsjson11_serializeOpDocumentSendCommandInput(v *SendCommandInput, value
 	object := value.Object()
 	defer object.Close()
 
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.CloudWatchOutputConfig != nil {
 		ok := object.Key("CloudWatchOutputConfig")
 		if err := awsAwsjson11_serializeDocumentCloudWatchOutputConfig(v.CloudWatchOutputConfig, ok); err != nil {
@@ -13542,9 +13884,9 @@ func awsAwsjson11_serializeOpDocumentSendCommandInput(v *SendCommandInput, value
 		}
 	}
 
-	if v.TimeoutSeconds != 0 {
+	if v.TimeoutSeconds != nil {
 		ok := object.Key("TimeoutSeconds")
-		ok.Integer(v.TimeoutSeconds)
+		ok.Integer(*v.TimeoutSeconds)
 	}
 
 	return nil
@@ -13567,6 +13909,13 @@ func awsAwsjson11_serializeOpDocumentStartAssociationsOnceInput(v *StartAssociat
 func awsAwsjson11_serializeOpDocumentStartAutomationExecutionInput(v *StartAutomationExecutionInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
+
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
 
 	if v.ClientToken != nil {
 		ok := object.Key("ClientToken")
@@ -13783,9 +14132,9 @@ func awsAwsjson11_serializeOpDocumentUnlabelParameterVersionInput(v *UnlabelPara
 		ok.String(*v.Name)
 	}
 
-	{
+	if v.ParameterVersion != nil {
 		ok := object.Key("ParameterVersion")
-		ok.Long(v.ParameterVersion)
+		ok.Long(*v.ParameterVersion)
 	}
 
 	return nil
@@ -13794,6 +14143,13 @@ func awsAwsjson11_serializeOpDocumentUnlabelParameterVersionInput(v *UnlabelPara
 func awsAwsjson11_serializeOpDocumentUpdateAssociationInput(v *UpdateAssociationInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
+
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
 
 	if v.ApplyOnlyAtCronInterval {
 		ok := object.Key("ApplyOnlyAtCronInterval")
@@ -13871,9 +14227,9 @@ func awsAwsjson11_serializeOpDocumentUpdateAssociationInput(v *UpdateAssociation
 		ok.String(*v.ScheduleExpression)
 	}
 
-	if v.ScheduleOffset != 0 {
+	if v.ScheduleOffset != nil {
 		ok := object.Key("ScheduleOffset")
-		ok.Integer(v.ScheduleOffset)
+		ok.Integer(*v.ScheduleOffset)
 	}
 
 	if len(v.SyncCompliance) > 0 {
@@ -14023,14 +14379,14 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowInput(v *UpdateMaint
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllowUnassociatedTargets {
+	if v.AllowUnassociatedTargets != nil {
 		ok := object.Key("AllowUnassociatedTargets")
-		ok.Boolean(v.AllowUnassociatedTargets)
+		ok.Boolean(*v.AllowUnassociatedTargets)
 	}
 
-	if v.Cutoff != 0 {
+	if v.Cutoff != nil {
 		ok := object.Key("Cutoff")
-		ok.Integer(v.Cutoff)
+		ok.Integer(*v.Cutoff)
 	}
 
 	if v.Description != nil {
@@ -14038,14 +14394,14 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowInput(v *UpdateMaint
 		ok.String(*v.Description)
 	}
 
-	if v.Duration != 0 {
+	if v.Duration != nil {
 		ok := object.Key("Duration")
-		ok.Integer(v.Duration)
+		ok.Integer(*v.Duration)
 	}
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	if v.EndDate != nil {
@@ -14058,9 +14414,9 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowInput(v *UpdateMaint
 		ok.String(*v.Name)
 	}
 
-	if v.Replace {
+	if v.Replace != nil {
 		ok := object.Key("Replace")
-		ok.Boolean(v.Replace)
+		ok.Boolean(*v.Replace)
 	}
 
 	if v.Schedule != nil {
@@ -14068,9 +14424,9 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowInput(v *UpdateMaint
 		ok.String(*v.Schedule)
 	}
 
-	if v.ScheduleOffset != 0 {
+	if v.ScheduleOffset != nil {
 		ok := object.Key("ScheduleOffset")
-		ok.Integer(v.ScheduleOffset)
+		ok.Integer(*v.ScheduleOffset)
 	}
 
 	if v.ScheduleTimezone != nil {
@@ -14110,9 +14466,9 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowTargetInput(v *Updat
 		ok.String(*v.OwnerInformation)
 	}
 
-	if v.Replace {
+	if v.Replace != nil {
 		ok := object.Key("Replace")
-		ok.Boolean(v.Replace)
+		ok.Boolean(*v.Replace)
 	}
 
 	if v.Targets != nil {
@@ -14138,6 +14494,13 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowTargetInput(v *Updat
 func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowTaskInput(v *UpdateMaintenanceWindowTaskInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
+
+	if v.AlarmConfiguration != nil {
+		ok := object.Key("AlarmConfiguration")
+		if err := awsAwsjson11_serializeDocumentAlarmConfiguration(v.AlarmConfiguration, ok); err != nil {
+			return err
+		}
+	}
 
 	if len(v.CutoffBehavior) > 0 {
 		ok := object.Key("CutoffBehavior")
@@ -14171,14 +14534,14 @@ func awsAwsjson11_serializeOpDocumentUpdateMaintenanceWindowTaskInput(v *UpdateM
 		ok.String(*v.Name)
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
-	if v.Replace {
+	if v.Replace != nil {
 		ok := object.Key("Replace")
-		ok.Boolean(v.Replace)
+		ok.Boolean(*v.Replace)
 	}
 
 	if v.ServiceRoleArn != nil {
@@ -14287,6 +14650,11 @@ func awsAwsjson11_serializeOpDocumentUpdateOpsItemInput(v *UpdateOpsItemInput, v
 		}
 	}
 
+	if v.OpsItemArn != nil {
+		ok := object.Key("OpsItemArn")
+		ok.String(*v.OpsItemArn)
+	}
+
 	if v.OpsItemId != nil {
 		ok := object.Key("OpsItemId")
 		ok.String(*v.OpsItemId)
@@ -14381,9 +14749,9 @@ func awsAwsjson11_serializeOpDocumentUpdatePatchBaselineInput(v *UpdatePatchBase
 		ok.String(string(v.ApprovedPatchesComplianceLevel))
 	}
 
-	if v.ApprovedPatchesEnableNonSecurity {
+	if v.ApprovedPatchesEnableNonSecurity != nil {
 		ok := object.Key("ApprovedPatchesEnableNonSecurity")
-		ok.Boolean(v.ApprovedPatchesEnableNonSecurity)
+		ok.Boolean(*v.ApprovedPatchesEnableNonSecurity)
 	}
 
 	if v.BaselineId != nil {
@@ -14420,9 +14788,9 @@ func awsAwsjson11_serializeOpDocumentUpdatePatchBaselineInput(v *UpdatePatchBase
 		ok.String(string(v.RejectedPatchesAction))
 	}
 
-	if v.Replace {
+	if v.Replace != nil {
 		ok := object.Key("Replace")
-		ok.Boolean(v.Replace)
+		ok.Boolean(*v.Replace)
 	}
 
 	if v.Sources != nil {

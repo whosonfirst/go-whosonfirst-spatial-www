@@ -1,26 +1,5 @@
 window.addEventListener("load", function load(event){
 
-    // convert a set of draw layers to a geojson featurecollection
-    // and then ensure that any circle layers have their radius appended
-    // to the corresponding feature properties dictionary - hand
-    // of the featurecollection to the dump_geojson() method.
-    var export_layers = function(layers){
-
-	var fc = layers.toGeoJSON();	
-	var idx = 0;
-	
-        layers.eachLayer(function (layer) {
-
-	    if (layer._mRadius){
-		fc.features[idx].properties["radius"] = layer._mRadius;
-	    }
-	    
-	    idx += 1;
-	});
-	    
-	dump_geojson(fc);	
-    };
-
     // stringify featurecollection (fc) and write it
     // to a <pre> element.
     var dump_geojson = function(fc) {
@@ -86,50 +65,37 @@ window.addEventListener("load", function load(event){
     }
 
     map.setView([init_lat, init_lon], init_zoom);
-    
-    // https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html
-    // https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html#l-draw
-    
-    var drawnItems = new L.FeatureGroup();
-    
-    map.addLayer(drawnItems);
-    
-    var drawControl = new L.Control.Draw({
-        edit: {
-            featureGroup: drawnItems
-        }
-    });
-    
-    map.addControl(drawControl);
 
-    map.on(L.Draw.Event.CREATED, function (e){
+    if (map.pm){
 	
-        var type = e.layerType;
-        var layer = e.layer;
+	 var on_update = function(){
+	     var feature_group = map.pm.getGeomanLayers(true);
+	     var feature_collection = feature_group.toGeoJSON();
+	     dump_geojson(feature_collection);	     
+	 };
+	 
+	 map.pm.addControls({  
+	     position: 'topleft',  
+	 });
+	 
+	 map.on("pm:drawend", function(e){
+	     console.log("draw end");
+	     on_update();
+	 });
+	 
+	 map.on('pm:remove', function (e) {
+	     console.log("remove");	     
+	     on_update();	     
+	 });
 
-        if (type === 'marker') {
-            layer.bindPopup('A popup!');
-        }
-	
-        drawnItems.addLayer(layer);
-	export_layers(drawnItems);
-
-    });
-
-    map.on(L.Draw.Event.EDITED, function (e){
-
-	export_layers(drawnItems);
-	
-    });
-
-    map.on(L.Draw.Event.DELETED, function (e){
-
-        var type = e.layerType;
-        var layer = e.layer;
-
-        drawnItems.removeLayer(layer);
-	export_layers(drawnItems);
-	
-    });
+	 // This does not appear to capture drag or edit-vertex events
+	 // Not sure what's up with that...
+	 
+	 map.on('pm:globaleditmodetoggled', (e) => {
+	     console.log("remove");	     
+	     on_update();	     
+	 });
+    }
+    
     
 });
