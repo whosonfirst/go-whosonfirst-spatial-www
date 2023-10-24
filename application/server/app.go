@@ -4,10 +4,16 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"html/template"
+	"log"
+	gohttp "net/http"
+	"path/filepath"
+	"strings"
+
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
-	"github.com/aaronland/go-http-maps"
-	maps_www "github.com/aaronland/go-http-maps/http/www"
+	// "github.com/aaronland/go-http-maps"
+	// maps_www "github.com/aaronland/go-http-maps/http/www"
 	"github.com/aaronland/go-http-maps/provider"
 	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
@@ -18,12 +24,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
-	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"html/template"
-	"log"
-	gohttp "net/http"
-	"path/filepath"
-	"strings"
+	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"	
 )
 
 type RunOptions struct {
@@ -199,18 +200,20 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to set logger for map provider, %w", err)
 		}
 
-		err = map_provider.AppendAssetHandlersWithPrefix(mux, path_prefix)
+		err = map_provider.AppendAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append map provider asset handlers, %w", err)
 		}
 
-		err = maps_www.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
+		/*
+		err = maps_www.AppendStaticAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append map provider static asset handler, %w", err)
 		}
-
+		*/
+		
 		t := template.New("spatial")
 
 		t = t.Funcs(map[string]interface{}{
@@ -258,7 +261,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
 
-		err = bootstrap.AppendAssetHandlers(mux)
+		err = bootstrap.AppendAssetHandlers(mux, bootstrap_opts)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
@@ -286,11 +289,11 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		maps_opts := maps.DefaultMapsOptions()
+		// maps_opts := maps.DefaultMapsOptions()
 
-		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
+		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
 
-		http_pip_handler = maps.AppendResourcesHandlerWithPrefixAndProvider(http_pip_handler, map_provider, maps_opts, path_prefix)
+		// http_pip_handler = maps.AppendResourcesHandlerWithPrefixAndProvider(http_pip_handler, map_provider, maps_opts, path_prefix)
 
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 
@@ -312,7 +315,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to create index handler, %v", err)
 		}
 
-		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
+		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
 
 		index_handler = authenticator.WrapHandler(index_handler)
 
