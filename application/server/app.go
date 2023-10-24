@@ -96,6 +96,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	paths := fs.Args()
 
+	log.Println("PATHS", paths)
 	err = spatial_app.IndexPaths(ctx, paths...)
 
 	if err != nil {
