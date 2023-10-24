@@ -5,6 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net/url"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/dhconnelly/rtreego"
 	gocache "github.com/patrickmn/go-cache"
 	"github.com/paulmach/orb"
@@ -19,13 +27,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-uri"
-	"io"
-	"log"
-	"net/url"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
 )
 
 func init() {
@@ -172,7 +173,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 	if err != nil {
 		return fmt.Errorf("Failed to cache feature, %w", err)
 	}
-	
+
 	feature_id, err := properties.Id(body)
 
 	if err != nil {
@@ -248,7 +249,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 			return nil
 		}
 
-		r.Logger.Printf("index %s %v", sp_id, rect)
+		// r.Logger.Printf("index %s %v", sp_id, rect)
 
 		sp := &RTreeSpatialIndex{
 			Rect:      rect,
@@ -338,8 +339,6 @@ func (r *RTreeSpatialDatabase) PointInPolygon(ctx context.Context, coord *orb.Po
 			results = append(results, rsp)
 		case err := <-err_ch:
 			return nil, err
-		default:
-			// pass
 		}
 
 		if !working {
@@ -395,8 +394,6 @@ func (r *RTreeSpatialDatabase) PointInPolygonCandidates(ctx context.Context, coo
 			candidates = append(candidates, rsp)
 		case err := <-err_ch:
 			return nil, err
-		default:
-			// pass
 		}
 
 		if !working {
