@@ -12,7 +12,7 @@ import (
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
-	// "github.com/aaronland/go-http-maps"
+	"github.com/aaronland/go-http-maps"
 	// maps_www "github.com/aaronland/go-http-maps/http/www"
 	"github.com/aaronland/go-http-maps/provider"
 	"github.com/aaronland/go-http-ping/v2"
@@ -24,7 +24,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
-	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"	
+	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
 type RunOptions struct {
@@ -96,7 +96,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	paths := fs.Args()
 
-	log.Println("PATHS", paths)
 	err = spatial_app.IndexPaths(ctx, paths...)
 
 	if err != nil {
@@ -207,14 +206,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to append map provider asset handlers, %w", err)
 		}
 
-		/*
-		err = maps_www.AppendStaticAssetHandlers(mux)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append map provider static asset handler, %w", err)
-		}
-		*/
-		
 		t := template.New("spatial")
 
 		t = t.Funcs(map[string]interface{}{
@@ -290,11 +281,16 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		// maps_opts := maps.DefaultMapsOptions()
+		maps_opts := maps.DefaultMapsOptions()
+
+		err = maps.AppendAssetHandlers(mux, maps_opts)
+
+		if err != nil {
+			return fmt.Errorf("Failed to append map assets, %w", err)
+		}
 
 		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
-
-		// http_pip_handler = maps.AppendResourcesHandlerWithPrefixAndProvider(http_pip_handler, map_provider, maps_opts, path_prefix)
+		http_pip_handler = map_provider.AppendResourcesHandler(http_pip_handler)
 
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 

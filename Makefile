@@ -12,6 +12,5 @@ debug:
 		-map-provider 'leaflet://' \
 		-spatial-database-uri 'rtree:///?strict=false&index_alt_files=0' \
 		-properties-reader-uri 'cachereader://?reader=repo://$(REPO)&cache=gocache://' \
-		-nextzen-apikey $(APIKEY) \
 		-iterator-uri 'repo://' \
 		$(REPO)
