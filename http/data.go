@@ -4,10 +4,11 @@ package http
 
 import (
 	"fmt"
-	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
 	gohttp "net/http"
+
+	"github.com/whosonfirst/go-reader"
+	"github.com/whosonfirst/go-whosonfirst-uri"
 )
 
 func NewDataHandler(r reader.Reader) (gohttp.Handler, error) {

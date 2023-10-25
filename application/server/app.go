@@ -4,10 +4,15 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"html/template"
+	"log"
+	gohttp "net/http"
+	"path/filepath"
+	"strings"
+
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-maps"
-	maps_www "github.com/aaronland/go-http-maps/http/www"
 	"github.com/aaronland/go-http-maps/provider"
 	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
@@ -19,11 +24,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
-	"html/template"
-	"log"
-	gohttp "net/http"
-	"path/filepath"
-	"strings"
 )
 
 type RunOptions struct {
@@ -199,16 +199,10 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to set logger for map provider, %w", err)
 		}
 
-		err = map_provider.AppendAssetHandlersWithPrefix(mux, path_prefix)
+		err = map_provider.AppendAssetHandlers(mux)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append map provider asset handlers, %w", err)
-		}
-
-		err = maps_www.AppendStaticAssetHandlersWithPrefix(mux, path_prefix)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append map provider static asset handler, %w", err)
 		}
 
 		t := template.New("spatial")
@@ -258,7 +252,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
 
-		err = bootstrap.AppendAssetHandlers(mux)
+		err = bootstrap.AppendAssetHandlers(mux, bootstrap_opts)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
@@ -270,6 +264,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to append static assets, %v", err)
 		}
 
+		// point-in-polygon page
+
 		http_pip_opts := &http.PointInPolygonHandlerOptions{
 			Templates:        t,
 			InitialLatitude:  leaflet_initial_latitude,
@@ -277,7 +273,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			InitialZoom:      leaflet_initial_zoom,
 			MaxBounds:        leaflet_max_bounds,
 			MapProvider:      map_provider.Scheme(),
-			// LeafletTileURL:   leaflet_tile_url,
 		}
 
 		http_pip_handler, err := http.PointInPolygonHandler(spatial_app, http_pip_opts)
@@ -288,10 +283,14 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 		maps_opts := maps.DefaultMapsOptions()
 
-		http_pip_handler = bootstrap.AppendResourcesHandlerWithPrefix(http_pip_handler, bootstrap_opts, path_prefix)
+		err = maps.AppendAssetHandlers(mux, maps_opts)
 
-		http_pip_handler = maps.AppendResourcesHandlerWithPrefixAndProvider(http_pip_handler, map_provider, maps_opts, path_prefix)
+		if err != nil {
+			return fmt.Errorf("Failed to append map assets, %w", err)
+		}
 
+		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
+		http_pip_handler = maps.AppendResourcesHandlerWithProvider(http_pip_handler, map_provider, maps_opts)
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 
 		logger.Printf("Register %s handler\n", path_pip)
@@ -301,6 +300,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			path_pip_slash := fmt.Sprintf("%s/", path_pip)
 			mux.Handle(path_pip_slash, http_pip_handler)
 		}
+
+		// index / splash page
 
 		index_opts := &http.IndexHandlerOptions{
 			Templates: t,
@@ -312,8 +313,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to create index handler, %v", err)
 		}
 
-		index_handler = bootstrap.AppendResourcesHandlerWithPrefix(index_handler, bootstrap_opts, path_prefix)
-
+		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
 		index_handler = authenticator.WrapHandler(index_handler)
 
 		path_index := "/"

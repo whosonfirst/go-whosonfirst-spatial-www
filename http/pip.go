@@ -2,11 +2,12 @@ package http
 
 import (
 	"errors"
-	"github.com/whosonfirst/go-whosonfirst-placetypes"
-	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 	"html/template"
 	_ "log"
 	gohttp "net/http"
+
+	"github.com/whosonfirst/go-whosonfirst-placetypes"
+	"github.com/whosonfirst/go-whosonfirst-spatial/app"
 )
 
 type PointInPolygonHandlerOptions struct {

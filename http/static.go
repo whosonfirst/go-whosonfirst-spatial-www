@@ -2,12 +2,13 @@ package http
 
 import (
 	"fmt"
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/static"
 	"io/fs"
 	_ "log"
 	gohttp "net/http"
 	"path/filepath"
 	"strings"
+
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/static"
 )
 
 func StaticAssetsHandler() (gohttp.Handler, error) {
