@@ -13,7 +13,6 @@ import (
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-bootstrap"
 	"github.com/aaronland/go-http-maps"
-	// maps_www "github.com/aaronland/go-http-maps/http/www"
 	"github.com/aaronland/go-http-maps/provider"
 	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
@@ -265,6 +264,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to append static assets, %v", err)
 		}
 
+		// point-in-polygon page
+
 		http_pip_opts := &http.PointInPolygonHandlerOptions{
 			Templates:        t,
 			InitialLatitude:  leaflet_initial_latitude,
@@ -272,7 +273,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			InitialZoom:      leaflet_initial_zoom,
 			MaxBounds:        leaflet_max_bounds,
 			MapProvider:      map_provider.Scheme(),
-			// LeafletTileURL:   leaflet_tile_url,
 		}
 
 		http_pip_handler, err := http.PointInPolygonHandler(spatial_app, http_pip_opts)
@@ -290,8 +290,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		}
 
 		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
-		http_pip_handler = map_provider.AppendResourcesHandler(http_pip_handler)
-
+		http_pip_handler = maps.AppendResourcesHandlerWithProvider(http_pip_handler, map_provider, maps_opts)
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 
 		logger.Printf("Register %s handler\n", path_pip)
@@ -301,6 +300,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			path_pip_slash := fmt.Sprintf("%s/", path_pip)
 			mux.Handle(path_pip_slash, http_pip_handler)
 		}
+
+		// index / splash page
 
 		index_opts := &http.IndexHandlerOptions{
 			Templates: t,
@@ -313,7 +314,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		}
 
 		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
-
 		index_handler = authenticator.WrapHandler(index_handler)
 
 		path_index := "/"

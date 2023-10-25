@@ -9,7 +9,8 @@ cli:
 debug:
 	go run -mod $(GOMOD) cmd/server/main.go \
 		-enable-www \
-		-map-provider 'leaflet://' \
+		-map-provider 'leaflet' \
+		-leaflet-tile-url 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' \
 		-spatial-database-uri 'rtree:///?strict=false&index_alt_files=0' \
 		-properties-reader-uri 'cachereader://?reader=repo://$(REPO)&cache=gocache://' \
 		-iterator-uri 'repo://' \
