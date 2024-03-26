@@ -59,8 +59,8 @@ type RTreeSpatialIndex struct {
 	AltLabel  string
 }
 
-func (i *RTreeSpatialIndex) Bounds() *rtreego.Rect {
-	return i.Rect
+func (i *RTreeSpatialIndex) Bounds() rtreego.Rect {
+	return *i.Rect
 }
 
 type RTreeResults struct {
@@ -252,7 +252,7 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 		// r.Logger.Printf("index %s %v", sp_id, rect)
 
 		sp := &RTreeSpatialIndex{
-			Rect:      rect,
+			Rect:      &rect,
 			Id:        sp_id,
 			FeatureId: str_id,
 			IsAlt:     is_alt,
@@ -449,12 +449,12 @@ func (r *RTreeSpatialDatabase) getIntersectsByCoord(coord *orb.Point) ([]rtreego
 		return nil, fmt.Errorf("Failed to derive rtree bounds, %w", err)
 	}
 
-	return r.getIntersectsByRect(rect)
+	return r.getIntersectsByRect(&rect)
 }
 
 func (r *RTreeSpatialDatabase) getIntersectsByRect(rect *rtreego.Rect) ([]rtreego.Spatial, error) {
 
-	results := r.rtree.SearchIntersect(rect)
+	results := r.rtree.SearchIntersect(*rect)
 	return results, nil
 }
 
