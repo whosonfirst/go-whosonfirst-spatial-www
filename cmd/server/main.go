@@ -7,8 +7,9 @@ import (
 
 import (
 	"context"
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/application/server"
 	"log"
+
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/app/server"	
 )
 
 func main() {
