@@ -1,22 +1,25 @@
 module github.com/whosonfirst/go-whosonfirst-spatial-www
 
-go 1.22
+go 1.22.1
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/aaronland/go-http-bootstrap v0.4.0
 	github.com/aaronland/go-http-maps v0.3.2
 	github.com/aaronland/go-http-ping/v2 v2.0.0
+	github.com/aaronland/go-http-sanitize v0.0.8
 	github.com/aaronland/go-http-server v1.4.1
 	github.com/rs/cors v1.10.1
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/go-http-auth v0.11.0
+	github.com/sfomuseum/go-timings v1.2.1
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-reader-cachereader v1.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.2
-	github.com/whosonfirst/go-whosonfirst-spatial v0.7.3
+	github.com/whosonfirst/go-whosonfirst-spatial v0.7.4
 	github.com/whosonfirst/go-whosonfirst-spatial-pip v0.3.3
 	github.com/whosonfirst/go-whosonfirst-spatial-rtree v0.2.10
+	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
 
@@ -25,7 +28,6 @@ require (
 	github.com/aaronland/go-aws-session v0.2.1 // indirect
 	github.com/aaronland/go-http-leaflet v0.4.0 // indirect
 	github.com/aaronland/go-http-rewrite v1.1.0 // indirect
-	github.com/aaronland/go-http-sanitize v0.0.8 // indirect
 	github.com/aaronland/go-http-static v0.0.3 // indirect
 	github.com/aaronland/go-http-tangramjs v0.3.0 // indirect
 	github.com/aaronland/go-json-query v0.1.4 // indirect
@@ -80,7 +82,6 @@ require (
 	github.com/sfomuseum/go-http-rollup v0.0.2 // indirect
 	github.com/sfomuseum/go-sfomuseum-pmtiles v1.2.0 // indirect
 	github.com/sfomuseum/go-template v1.8.0 // indirect
-	github.com/sfomuseum/go-timings v1.2.1 // indirect
 	github.com/sfomuseum/iso8601duration v1.1.0 // indirect
 	github.com/sfomuseum/runtimevar v1.1.2 // indirect
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e // indirect
@@ -99,7 +100,6 @@ require (
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.1 // indirect
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.3.4 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
-	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8 // indirect
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7 // indirect
 	github.com/whosonfirst/go-writer-featurecollection/v3 v3.0.0-20220916180959-42588e308a3e // indirect
 	github.com/whosonfirst/go-writer/v3 v3.1.0 // indirect
