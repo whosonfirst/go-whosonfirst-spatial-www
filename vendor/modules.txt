@@ -329,7 +329,7 @@ github.com/sfomuseum/go-edtf/tests
 github.com/sfomuseum/go-flags/flagset
 github.com/sfomuseum/go-flags/lookup
 github.com/sfomuseum/go-flags/multi
-# github.com/sfomuseum/go-http-auth v0.9.0
+# github.com/sfomuseum/go-http-auth v0.11.0
 ## explicit; go 1.18
 github.com/sfomuseum/go-http-auth
 # github.com/sfomuseum/go-http-protomaps v0.2.0
@@ -552,7 +552,7 @@ google.golang.org/api/internal/third_party/uritemplates
 google.golang.org/genproto/googleapis/rpc/code
 google.golang.org/genproto/googleapis/rpc/errdetails
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.58.3
+# google.golang.org/grpc v1.58.2
 ## explicit; go 1.19
 google.golang.org/grpc
 google.golang.org/grpc/attributes

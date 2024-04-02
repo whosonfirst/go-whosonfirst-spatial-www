@@ -2,8 +2,6 @@ module github.com/whosonfirst/go-whosonfirst-spatial-www
 
 go 1.22
 
-toolchain go1.22.1
-
 require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/aaronland/go-http-bootstrap v0.4.0
@@ -12,7 +10,7 @@ require (
 	github.com/aaronland/go-http-server v1.4.1
 	github.com/rs/cors v1.10.1
 	github.com/sfomuseum/go-flags v0.10.0
-	github.com/sfomuseum/go-http-auth v0.9.0
+	github.com/sfomuseum/go-http-auth v0.11.0
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-reader-cachereader v1.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.2
@@ -118,7 +116,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.142.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230920204549-e6e6cdab5c13 // indirect
-	google.golang.org/grpc v1.58.3 // indirect
+	google.golang.org/grpc v1.58.2 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	modernc.org/libc v1.22.3 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
