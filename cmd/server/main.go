@@ -7,19 +7,21 @@ import (
 
 import (
 	"context"
-	"log"
+	"log/slog"
+	"os"
 
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/app/server"	
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/app/server"
 )
 
 func main() {
 
 	ctx := context.Background()
-	logger := log.Default()
+	logger := slog.Default()
 
 	err := server.Run(ctx, logger)
 
 	if err != nil {
-		logger.Fatal(err)
+		logger.Error("Failed to start server", "error", err)
+		os.Exit(1)
 	}
 }
