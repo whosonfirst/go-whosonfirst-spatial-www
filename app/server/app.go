@@ -23,7 +23,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http/api"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http/www"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
-	"github.com/whosonfirst/go-whosonfirst-spatial/app"
+	app "github.com/whosonfirst/go-whosonfirst-spatial/app/spatial"
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
