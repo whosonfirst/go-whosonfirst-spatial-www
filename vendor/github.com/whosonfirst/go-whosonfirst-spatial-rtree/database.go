@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net/url"
 	"strconv"
 	"strings"
@@ -43,7 +44,6 @@ type RTreeCache struct {
 
 type RTreeSpatialDatabase struct {
 	database.SpatialDatabase
-	Logger          *log.Logger
 	index_alt_files bool
 	rtree           *rtreego.Rtree
 	gocache         *gocache.Cache
@@ -133,14 +133,11 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 
 	gc := gocache.New(expires, cleanup)
 
-	logger := log.Default()
-
 	rtree := rtreego.NewTree(2, 25, 50)
 
 	mu := new(sync.RWMutex)
 
 	db := &RTreeSpatialDatabase{
-		Logger:          logger,
 		rtree:           rtree,
 		index_alt_files: index_alt_files,
 		gocache:         gc,
@@ -151,7 +148,7 @@ func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialD
 	return db, nil
 }
 
-func (r *RTreeSpatialDatabase) Close(ctx context.Context) error {
+func (r *RTreeSpatialDatabase) Disconnect(ctx context.Context) error {
 	return nil
 }
 
@@ -245,11 +242,9 @@ func (r *RTreeSpatialDatabase) IndexFeature(ctx context.Context, body []byte) er
 				return fmt.Errorf("Failed to derive rtree bounds, %w", err)
 			}
 
-			r.Logger.Printf("%s failed indexing, (%v). Strict mode is disabled, so skipping.", sp_id, err)
+			slog.Error("Failed to index feature", "id", sp_id, "error", err)
 			return nil
 		}
-
-		// r.Logger.Printf("index %s %v", sp_id, rect)
 
 		sp := &RTreeSpatialIndex{
 			Rect:      &rect,
@@ -499,7 +494,7 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 			cache_item, err := r.retrieveCache(ctx, sp)
 
 			if err != nil {
-				r.Logger.Printf("Failed to retrieve cache for %s, %v", sp_id, err)
+				slog.Error("Failed to retrieve cache item", "id", sp_id, "error", err)
 				return
 			}
 
@@ -510,7 +505,6 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 				err = filter.FilterSPR(f, s)
 
 				if err != nil {
-					// r.Logger.Debug("SKIP %s because filter error %s", sp_id, err)
 					return
 				}
 			}
@@ -528,11 +522,10 @@ func (r *RTreeSpatialDatabase) inflateResultsWithChannels(ctx context.Context, r
 			case "MultiPolygon":
 				contains = planar.MultiPolygonContains(orb_geom.(orb.MultiPolygon), *c)
 			default:
-				r.Logger.Printf("Geometry has unsupported geometry type '%s'", geom.Type)
+				slog.Debug("Geometry has unsupported geometry", "type", geom.Type)
 			}
 
 			if !contains {
-				// r.Logger.Debug("SKIP %s because does not contain coord (%v)", sp_id, c)
 				return
 			}
 
