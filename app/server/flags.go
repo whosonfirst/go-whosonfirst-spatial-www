@@ -134,7 +134,7 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 
 	fs.BoolVar(&log_timings, "log-timings", false, "Emit timing metrics to the application's logger")
 
-	fs.StringVar(&map_provider_uri, "map-provider-uri", "leaflet://?leaflet-tile-url=https://tile.openstreetmap.org/{z}/{x}/{y}.png", "...")
+	fs.StringVar(&map_provider_uri, "map-provider-uri", "leaflet://?leaflet-tile-url=https://tile.openstreetmap.org/{z}/{x}/{y}.png", "A valid aaronland/go-http-maps/provider URI.")
 
 	return fs, nil
 }
