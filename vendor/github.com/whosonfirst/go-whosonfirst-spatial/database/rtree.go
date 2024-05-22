@@ -1,4 +1,4 @@
-package rtree
+package database
 
 import (
 	"bytes"
@@ -24,7 +24,6 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
 	"github.com/whosonfirst/go-whosonfirst-feature/properties"
 	"github.com/whosonfirst/go-whosonfirst-spatial"
-	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/filter"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-uri"
@@ -32,7 +31,7 @@ import (
 
 func init() {
 	ctx := context.Background()
-	database.RegisterSpatialDatabase(ctx, "rtree", NewRTreeSpatialDatabase)
+	RegisterSpatialDatabase(ctx, "rtree", NewRTreeSpatialDatabase)
 }
 
 type RTreeCache struct {
@@ -43,7 +42,7 @@ type RTreeCache struct {
 // PLEASE DISCUSS WHY patrickm/go-cache AND NOT whosonfirst/go-cache HERE
 
 type RTreeSpatialDatabase struct {
-	database.SpatialDatabase
+	SpatialDatabase
 	index_alt_files bool
 	rtree           *rtreego.Rtree
 	gocache         *gocache.Cache
@@ -72,7 +71,7 @@ func (r *RTreeResults) Results() []spr.StandardPlacesResult {
 	return r.Places
 }
 
-func NewRTreeSpatialDatabase(ctx context.Context, uri string) (database.SpatialDatabase, error) {
+func NewRTreeSpatialDatabase(ctx context.Context, uri string) (SpatialDatabase, error) {
 
 	u, err := url.Parse(uri)
 
