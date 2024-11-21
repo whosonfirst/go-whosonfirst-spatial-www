@@ -12,5 +12,4 @@ debug:
 		-enable-www \
 		-spatial-database-uri 'rtree:///?strict=false&index_alt_files=0' \
 		-properties-reader-uri 'cachereader://?reader=repo://$(REPO)&cache=gocache://' \
-		-iterator-uri 'repo://' \
-		$(REPO)
+		-iterator-uri 'repo://#$(REPO)'
