@@ -99,7 +99,7 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 
 	desc_iter := spatial_flags.IteratorURIFlagDescription()
 	desc_iter = fmt.Sprintf("Zero or more URIs denoting data sources to use for indexing the spatial database at startup. %s", desc_iter)
-	
+
 	fs.Var(&iterator_uris, "iterator-uri", desc_iter)
 
 	fs.StringVar(&server_uri, "server-uri", "http://localhost:8080", "A valid aaronland/go-http-server URI.")

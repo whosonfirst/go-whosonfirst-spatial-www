@@ -1,26 +1,19 @@
 package main
 
 import (
-	_ "github.com/whosonfirst/go-reader-cachereader"
-)
-
-import (
 	"context"
-	"log/slog"
-	"os"
+	"log"
 
+	_ "github.com/whosonfirst/go-reader-cachereader"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/app/server"
 )
 
 func main() {
 
 	ctx := context.Background()
-	logger := slog.Default()
-
-	err := server.Run(ctx, logger)
+	err := server.Run(ctx)
 
 	if err != nil {
-		logger.Error("Failed to start server", "error", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
