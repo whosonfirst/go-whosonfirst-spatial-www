@@ -17,7 +17,7 @@ require (
 	github.com/whosonfirst/go-reader-cachereader v1.1.1
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
-	github.com/whosonfirst/go-whosonfirst-spatial v0.10.2
+	github.com/whosonfirst/go-whosonfirst-spatial v0.11.0
 	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
@@ -109,7 +109,6 @@ require (
 	github.com/whosonfirst/go-writer-featurecollection/v3 v3.0.0-20220916180959-42588e308a3e // indirect
 	github.com/whosonfirst/go-writer/v3 v3.1.1 // indirect
 	github.com/whosonfirst/walk v0.0.2 // indirect
-	github.com/whosonfirst/warning v0.1.1 // indirect
 	go.mongodb.org/mongo-driver v1.11.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	gocloud.dev v0.37.0 // indirect
