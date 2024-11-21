@@ -70,10 +70,8 @@ $> ./bin/server -h
     	Enable gzip-encoding for data-related and API handlers.
   -enable-www
     	Enable the interactive /debug endpoint to query points and display results.
-  -is-wof
-    	Input data is WOF-flavoured GeoJSON. (Pass a value of '0' or 'false' if you need to index non-WOF documents. (default true)
-  -iterator-uri string
-    	A valid whosonfirst/go-whosonfirst-iterate/v2 URI. Supported schemes are: directory://, featurecollection://, file://, filelist://, geojsonl://, null://, repo://. (default "repo://")
+  -iterator-uri value
+    	Zero or more URIs denoting data sources to use for indexing the spatial database at startup. URIs take the form of {ITERATOR_URI} + "#" + {PIPE-SEPARATED LIST OF ITERATOR SOURCES}. Where {ITERATOR_URI} is expected to be a registered whosonfirst/go-whosonfirst-iterate/v2 iterator (emitter) URI and {ITERATOR SOURCES} are valid input paths for that iterator. Supported whosonfirst/go-whosonfirst-iterate/v2 iterator schemes are: cwd://, directory://, featurecollection://, file://, filelist://, geojsonl://, null://, repo://.
   -leaflet-initial-latitude float
     	The initial latitude for map views to use. (default 37.616906)
   -leaflet-initial-longitude float
@@ -108,7 +106,8 @@ For example:
 
 ```
 $> bin/server \
-	-spatial-database-uri 'rtree:///?strict=false#/usr/local/data/sfomuseum-data-architecture'
+	-spatial-database-uri 'rtree:///?strict=false' \
+	-iterator-uri 'repo://#/usr/local/data/sfomuseum-data-architecture'
 	-enable-www
 	
 	
@@ -125,7 +124,8 @@ If you don't need, or want, to expose a user-facing interface simply remove the 
 ```
 $> bin/server \
 	-enable-geojson \
-	-spatial-database-uri 'rtree:///?strict=false#/usr/local/data/sfomuseum-data-architecture'
+	-spatial-database-uri 'rtree:///?strict=false' \
+	-iterator-uri 'repo://#/usr/local/data/sfomuseum-data-architecture'
 ```
 
 And then to query the point-in-polygon API you would do something like this:
@@ -211,34 +211,6 @@ $> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point
   ]
 }  
 ```
-
-### Indexing "plain old" GeoJSON
-
-There is early support for indexing "plain old" GeoJSON, as in GeoJSON documents that do not following the naming conventions for properties that Who's On First documents use. It is very likely there are still bugs or subtle gotchas.
-
-For example, here's how we could index and serve a GeoJSON FeatureCollection of building footprints:
-
-```
-$> bin/server
-	-spatial-database-uri 'rtree:///?strict=false' \
-	-iterator-uri 'featurecollection://#/usr/local/data/footprint.geojson'
-	
-```
-
-And then:
-
-```
-$> curl -s -XPOST 'http://localhost:8080/api/point-in-polygon '{"latitude": 37.61686957521345, "longitude": -122.3903158758416}' \
-
-| jq '.["places"][]["spr:id"]'
-
-"1014"
-"1031"
-"1015"
-"1026"
-```
-
-Support for returning results in the `properties` or `geojson` format is not available for "plain old" GeoJSON records at this time.
 
 ## See also
 
