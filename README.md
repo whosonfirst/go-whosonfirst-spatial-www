@@ -108,9 +108,9 @@ For example:
 
 ```
 $> bin/server \
-	-spatial-database-uri 'rtree:///?strict=false' \
-	-enable-www \	
-	/usr/local/data/sfomuseum-data-architecture
+	-spatial-database-uri 'rtree:///?strict=false#/usr/local/data/sfomuseum-data-architecture'
+	-enable-www
+	
 	
 11:44:31.902988 [main][index] ERROR 1159157931 failed indexing, (rtreego: improper distance). Strict mode is disabled, so skipping.
 11:44:32.073804 [main] STATUS finished indexing in 744.717822ms
@@ -125,8 +125,7 @@ If you don't need, or want, to expose a user-facing interface simply remove the 
 ```
 $> bin/server \
 	-enable-geojson \
-	-spatial-database-uri 'rtree:///?strict=false' \
-	/usr/local/data/sfomuseum-data-architecture
+	-spatial-database-uri 'rtree:///?strict=false#/usr/local/data/sfomuseum-data-architecture'
 ```
 
 And then to query the point-in-polygon API you would do something like this:
@@ -222,8 +221,8 @@ For example, here's how we could index and serve a GeoJSON FeatureCollection of 
 ```
 $> bin/server
 	-spatial-database-uri 'rtree:///?strict=false' \
-	-iterator-uri featurecollection:// \
-	/usr/local/data/footprint.geojson
+	-iterator-uri 'featurecollection://#/usr/local/data/footprint.geojson'
+	
 ```
 
 And then:

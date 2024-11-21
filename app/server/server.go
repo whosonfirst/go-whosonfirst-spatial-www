@@ -52,10 +52,8 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *slog.Logger) 
 	spatial_opts := &app.SpatialApplicationOptions{
 		SpatialDatabaseURI:     opts.SpatialDatabaseURI,
 		PropertiesReaderURI:    opts.PropertiesReaderURI,
-		IteratorURI:            opts.IteratorURI,
 		EnableCustomPlacetypes: opts.EnableCustomPlacetypes,
 		CustomPlacetypes:       opts.CustomPlacetypes,
-		IsWhosOnFirst:          opts.IsWhosOnFirst,
 	}
 
 	spatial_app, err := app.NewSpatialApplication(ctx, spatial_opts)
@@ -70,14 +68,14 @@ func RunWithOptions(ctx context.Context, opts *RunOptions, logger *slog.Logger) 
 		return fmt.Errorf("Failed to create authenticator, %w", err)
 	}
 
-	if len(opts.IteratorSources) > 0 {
+	go func() {
 
-		err = spatial_app.IndexPaths(ctx, opts.IteratorSources...)
+		err := spatial_app.IndexDatabaseWithIterators(ctx, opts.IteratorSources)
 
 		if err != nil {
-			return fmt.Errorf("Failed to index paths, because %s", err)
+			slog.Error("Failed to index database with iterator", "error", err)
 		}
-	}
+	}()
 
 	mux := gohttp.NewServeMux()
 
