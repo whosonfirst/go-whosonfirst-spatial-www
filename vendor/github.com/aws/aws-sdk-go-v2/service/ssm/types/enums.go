@@ -255,6 +255,7 @@ const (
 	AutomationExecutionStatusChangeCalendarOverrideRejected AutomationExecutionStatus = "ChangeCalendarOverrideRejected"
 	AutomationExecutionStatusCompletedWithSuccess           AutomationExecutionStatus = "CompletedWithSuccess"
 	AutomationExecutionStatusCompletedWithFailure           AutomationExecutionStatus = "CompletedWithFailure"
+	AutomationExecutionStatusExited                         AutomationExecutionStatus = "Exited"
 )
 
 // Values returns all known values for AutomationExecutionStatus. Note that this
@@ -280,6 +281,7 @@ func (AutomationExecutionStatus) Values() []AutomationExecutionStatus {
 		"ChangeCalendarOverrideRejected",
 		"CompletedWithSuccess",
 		"CompletedWithFailure",
+		"Exited",
 	}
 }
 
@@ -533,8 +535,8 @@ type ConnectionStatus string
 
 // Enum values for ConnectionStatus
 const (
-	ConnectionStatusConnected    ConnectionStatus = "Connected"
-	ConnectionStatusNotConnected ConnectionStatus = "NotConnected"
+	ConnectionStatusConnected    ConnectionStatus = "connected"
+	ConnectionStatusNotConnected ConnectionStatus = "notconnected"
 )
 
 // Values returns all known values for ConnectionStatus. Note that this can be
@@ -542,8 +544,8 @@ const (
 // ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionStatus) Values() []ConnectionStatus {
 	return []ConnectionStatus{
-		"Connected",
-		"NotConnected",
+		"connected",
+		"notconnected",
 	}
 }
 
@@ -1778,7 +1780,6 @@ type ResourceType string
 // Enum values for ResourceType
 const (
 	ResourceTypeManagedInstance ResourceType = "ManagedInstance"
-	ResourceTypeDocument        ResourceType = "Document"
 	ResourceTypeEc2Instance     ResourceType = "EC2Instance"
 )
 
@@ -1788,7 +1789,6 @@ const (
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"ManagedInstance",
-		"Document",
 		"EC2Instance",
 	}
 }
@@ -1965,12 +1965,15 @@ type StepExecutionFilterKey string
 
 // Enum values for StepExecutionFilterKey
 const (
-	StepExecutionFilterKeyStartTimeBefore     StepExecutionFilterKey = "StartTimeBefore"
-	StepExecutionFilterKeyStartTimeAfter      StepExecutionFilterKey = "StartTimeAfter"
-	StepExecutionFilterKeyStepExecutionStatus StepExecutionFilterKey = "StepExecutionStatus"
-	StepExecutionFilterKeyStepExecutionId     StepExecutionFilterKey = "StepExecutionId"
-	StepExecutionFilterKeyStepName            StepExecutionFilterKey = "StepName"
-	StepExecutionFilterKeyAction              StepExecutionFilterKey = "Action"
+	StepExecutionFilterKeyStartTimeBefore         StepExecutionFilterKey = "StartTimeBefore"
+	StepExecutionFilterKeyStartTimeAfter          StepExecutionFilterKey = "StartTimeAfter"
+	StepExecutionFilterKeyStepExecutionStatus     StepExecutionFilterKey = "StepExecutionStatus"
+	StepExecutionFilterKeyStepExecutionId         StepExecutionFilterKey = "StepExecutionId"
+	StepExecutionFilterKeyStepName                StepExecutionFilterKey = "StepName"
+	StepExecutionFilterKeyAction                  StepExecutionFilterKey = "Action"
+	StepExecutionFilterKeyParentStepExecutionId   StepExecutionFilterKey = "ParentStepExecutionId"
+	StepExecutionFilterKeyParentStepIteration     StepExecutionFilterKey = "ParentStepIteration"
+	StepExecutionFilterKeyParentStepIteratorValue StepExecutionFilterKey = "ParentStepIteratorValue"
 )
 
 // Values returns all known values for StepExecutionFilterKey. Note that this can
@@ -1984,6 +1987,9 @@ func (StepExecutionFilterKey) Values() []StepExecutionFilterKey {
 		"StepExecutionId",
 		"StepName",
 		"Action",
+		"ParentStepExecutionId",
+		"ParentStepIteration",
+		"ParentStepIteratorValue",
 	}
 }
 
