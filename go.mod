@@ -11,13 +11,13 @@ require (
 	github.com/aaronland/go-http-server v1.5.0
 	github.com/rs/cors v1.11.1
 	github.com/sfomuseum/go-flags v0.10.0
-	github.com/sfomuseum/go-http-auth v0.11.0
+	github.com/sfomuseum/go-http-auth v0.12.0
 	github.com/sfomuseum/go-timings v1.4.0
 	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-reader-cachereader v1.1.1
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
-	github.com/whosonfirst/go-whosonfirst-spatial v0.11.0
+	github.com/whosonfirst/go-whosonfirst-spatial v0.11.1
 	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
