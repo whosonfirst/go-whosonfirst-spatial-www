@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 )
 
@@ -63,6 +64,19 @@ type HeaderV3 struct {
 	CenterLatE7         int32
 }
 
+// HeaderJson is a human-readable representation of parts of the binary header
+// that may need to be manually edited.
+// Omitted parts are the responsibility of the generator program and not editable.
+// The formatting is aligned with the TileJSON / MBTiles specification.
+type HeaderJson struct {
+	TileCompression string    `json:"tile_compression"`
+	TileType        string    `json:"tile_type"`
+	MinZoom         int       `json:"minzoom"`
+	MaxZoom         int       `json:"maxzoom"`
+	Bounds          []float64 `json:"bounds"`
+	Center          []float64 `json:"center"`
+}
+
 func headerContentType(header HeaderV3) (string, bool) {
 	switch header.TileType {
 	case Mvt:
@@ -80,32 +94,93 @@ func headerContentType(header HeaderV3) (string, bool) {
 	}
 }
 
-func headerExt(header HeaderV3) string {
-	switch header.TileType {
+func tileTypeToString(t TileType) string {
+	switch t {
 	case Mvt:
-		return ".mvt"
+		return "mvt"
 	case Png:
-		return ".png"
+		return "png"
 	case Jpeg:
-		return ".jpg"
+		return "jpg"
 	case Webp:
-		return ".webp"
+		return "webp"
 	case Avif:
-		return ".avif"
+		return "avif"
 	default:
 		return ""
 	}
 }
 
-func headerContentEncoding(compression Compression) (string, bool) {
+func stringToTileType(t string) TileType {
+	switch t {
+	case "mvt":
+		return Mvt
+	case "png":
+		return Png
+	case "jpg":
+		return Jpeg
+	case "webp":
+		return Webp
+	case "avif":
+		return Avif
+	default:
+		return UnknownTileType
+	}
+}
+
+func headerExt(header HeaderV3) string {
+	base := tileTypeToString(header.TileType)
+	if base == "" {
+		return ""
+	}
+	return "." + base
+}
+
+func compressionToString(compression Compression) (string, bool) {
 	switch compression {
+	case NoCompression:
+		return "none", false
 	case Gzip:
 		return "gzip", true
 	case Brotli:
 		return "br", true
+	case Zstd:
+		return "zstd", true
 	default:
-		return "", false
+		return "unknown", false
 	}
+}
+
+func stringToCompression(s string) Compression {
+	switch s {
+	case "none":
+		return NoCompression
+	case "gzip":
+		return Gzip
+	case "br":
+		return Brotli
+	case "zstd":
+		return Zstd
+	default:
+		return UnknownCompression
+	}
+}
+
+func headerToJson(header HeaderV3) HeaderJson {
+	compressionString, _ := compressionToString(header.TileCompression)
+	return HeaderJson{
+		TileCompression: compressionString,
+		TileType:        tileTypeToString(header.TileType),
+		MinZoom:         int(header.MinZoom),
+		MaxZoom:         int(header.MaxZoom),
+		Bounds:          []float64{float64(header.MinLonE7) / 10000000, float64(header.MinLatE7) / 10000000, float64(header.MaxLonE7) / 10000000, float64(header.MaxLatE7) / 10000000},
+		Center:          []float64{float64(header.CenterLonE7) / 10000000, float64(header.CenterLatE7) / 10000000, float64(header.CenterZoom)},
+	}
+}
+
+func headerToStringifiedJson(header HeaderV3) string {
+	s, _ := json.MarshalIndent(headerToJson(header), "", "    ")
+	return string(s)
 }
 
 // EntryV3 is an entry in a PMTiles spec version 3 directory.

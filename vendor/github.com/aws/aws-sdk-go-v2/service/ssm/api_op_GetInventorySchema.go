@@ -110,6 +110,9 @@ func (c *Client) addOperationGetInventorySchemaMiddlewares(stack *middleware.Sta
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +123,12 @@ func (c *Client) addOperationGetInventorySchemaMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetInventorySchema(options.Region), middleware.Before); err != nil {
@@ -140,16 +149,20 @@ func (c *Client) addOperationGetInventorySchemaMiddlewares(stack *middleware.Sta
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// GetInventorySchemaAPIClient is a client that implements the GetInventorySchema
-// operation.
-type GetInventorySchemaAPIClient interface {
-	GetInventorySchema(context.Context, *GetInventorySchemaInput, ...func(*Options)) (*GetInventorySchemaOutput, error)
-}
-
-var _ GetInventorySchemaAPIClient = (*Client)(nil)
 
 // GetInventorySchemaPaginatorOptions is the paginator options for
 // GetInventorySchema
@@ -216,6 +229,9 @@ func (p *GetInventorySchemaPaginator) NextPage(ctx context.Context, optFns ...fu
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.GetInventorySchema(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -234,6 +250,14 @@ func (p *GetInventorySchemaPaginator) NextPage(ctx context.Context, optFns ...fu
 
 	return result, nil
 }
+
+// GetInventorySchemaAPIClient is a client that implements the GetInventorySchema
+// operation.
+type GetInventorySchemaAPIClient interface {
+	GetInventorySchema(context.Context, *GetInventorySchemaInput, ...func(*Options)) (*GetInventorySchemaOutput, error)
+}
+
+var _ GetInventorySchemaAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opGetInventorySchema(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

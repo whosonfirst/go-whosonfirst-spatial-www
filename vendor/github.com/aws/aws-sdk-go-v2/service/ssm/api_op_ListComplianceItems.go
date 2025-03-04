@@ -112,6 +112,9 @@ func (c *Client) addOperationListComplianceItemsMiddlewares(stack *middleware.St
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -122,6 +125,12 @@ func (c *Client) addOperationListComplianceItemsMiddlewares(stack *middleware.St
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListComplianceItems(options.Region), middleware.Before); err != nil {
@@ -142,16 +151,20 @@ func (c *Client) addOperationListComplianceItemsMiddlewares(stack *middleware.St
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListComplianceItemsAPIClient is a client that implements the
-// ListComplianceItems operation.
-type ListComplianceItemsAPIClient interface {
-	ListComplianceItems(context.Context, *ListComplianceItemsInput, ...func(*Options)) (*ListComplianceItemsOutput, error)
-}
-
-var _ ListComplianceItemsAPIClient = (*Client)(nil)
 
 // ListComplianceItemsPaginatorOptions is the paginator options for
 // ListComplianceItems
@@ -218,6 +231,9 @@ func (p *ListComplianceItemsPaginator) NextPage(ctx context.Context, optFns ...f
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListComplianceItems(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -236,6 +252,14 @@ func (p *ListComplianceItemsPaginator) NextPage(ctx context.Context, optFns ...f
 
 	return result, nil
 }
+
+// ListComplianceItemsAPIClient is a client that implements the
+// ListComplianceItems operation.
+type ListComplianceItemsAPIClient interface {
+	ListComplianceItems(context.Context, *ListComplianceItemsInput, ...func(*Options)) (*ListComplianceItemsOutput, error)
+}
+
+var _ ListComplianceItemsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListComplianceItems(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

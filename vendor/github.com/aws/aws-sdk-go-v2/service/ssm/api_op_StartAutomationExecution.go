@@ -31,9 +31,10 @@ type StartAutomationExecutionInput struct {
 
 	// The name of the SSM document to run. This can be a public document or a custom
 	// document. To run a shared document belonging to another account, specify the
-	// document ARN. For more information about how to use shared documents, see Using
-	// shared SSM documents (https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-using-shared.html)
-	// in the Amazon Web Services Systems Manager User Guide.
+	// document ARN. For more information about how to use shared documents, see [Sharing SSM documents]in
+	// the Amazon Web Services Systems Manager User Guide.
+	//
+	// [Sharing SSM documents]: https://docs.aws.amazon.com/systems-manager/latest/userguide/documents-ssm-sharing.html
 	//
 	// This member is required.
 	DocumentName *string
@@ -51,6 +52,9 @@ type StartAutomationExecutionInput struct {
 	// The maximum number of targets allowed to run this task in parallel. You can
 	// specify a number, such as 10, or a percentage, such as 10%. The default value is
 	// 10 .
+	//
+	// If both this parameter and the TargetLocation:TargetsMaxConcurrency are
+	// supplied, TargetLocation:TargetsMaxConcurrency takes precedence.
 	MaxConcurrency *string
 
 	// The number of errors that are allowed before the system stops running the
@@ -61,10 +65,15 @@ type StartAutomationExecutionInput struct {
 	// automation on additional targets after the first error result is returned. If
 	// you run an automation on 50 resources and set max-errors to 10%, then the system
 	// stops running the automation on additional targets when the sixth error is
-	// received. Executions that are already running an automation when max-errors is
-	// reached are allowed to complete, but some of these executions may fail as well.
-	// If you need to ensure that there won't be more than max-errors failed
-	// executions, set max-concurrency to 1 so the executions proceed one at a time.
+	// received.
+	//
+	// Executions that are already running an automation when max-errors is reached
+	// are allowed to complete, but some of these executions may fail as well. If you
+	// need to ensure that there won't be more than max-errors failed executions, set
+	// max-concurrency to 1 so the executions proceed one at a time.
+	//
+	// If this parameter and the TargetLocation:TargetsMaxErrors parameter are both
+	// supplied, TargetLocation:TargetsMaxErrors takes precedence.
 	MaxErrors *string
 
 	// The execution mode of the automation. Valid modes include the following: Auto
@@ -80,18 +89,26 @@ type StartAutomationExecutionInput struct {
 	// different ways, such as by purpose, owner, or environment. For example, you
 	// might want to tag an automation to identify an environment or operating system.
 	// In this case, you could specify the following key-value pairs:
+	//
 	//   - Key=environment,Value=test
+	//
 	//   - Key=OS,Value=Windows
+	//
 	// To add tags to an existing automation, use the AddTagsToResource operation.
 	Tags []types.Tag
 
 	// A location is a combination of Amazon Web Services Regions and/or Amazon Web
 	// Services accounts where you want to run the automation. Use this operation to
 	// start an automation in multiple Amazon Web Services Regions and multiple Amazon
-	// Web Services accounts. For more information, see Running Automation workflows
-	// in multiple Amazon Web Services Regions and Amazon Web Services accounts (https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html)
-	// in the Amazon Web Services Systems Manager User Guide.
+	// Web Services accounts. For more information, see [Running automations in multiple Amazon Web Services Regions and accounts]in the Amazon Web Services
+	// Systems Manager User Guide.
+	//
+	// [Running automations in multiple Amazon Web Services Regions and accounts]: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html
 	TargetLocations []types.TargetLocation
+
+	// Specify a publicly accessible URL for a file that contains the TargetLocations
+	// body. Currently, only files in presigned Amazon S3 buckets are supported.
+	TargetLocationsURL *string
 
 	// A key-value mapping of document parameters to target resources. Both Targets
 	// and TargetMaps can't be specified together.
@@ -103,6 +120,9 @@ type StartAutomationExecutionInput struct {
 
 	// A key-value mapping to target resources. Required if you specify
 	// TargetParameterName.
+	//
+	// If both this parameter and the TargetLocation:Targets parameter are supplied,
+	// TargetLocation:Targets takes precedence.
 	Targets []types.Target
 
 	noSmithyDocumentSerde
@@ -162,6 +182,9 @@ func (c *Client) addOperationStartAutomationExecutionMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -172,6 +195,12 @@ func (c *Client) addOperationStartAutomationExecutionMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartAutomationExecutionValidationMiddleware(stack); err != nil {
@@ -193,6 +222,18 @@ func (c *Client) addOperationStartAutomationExecutionMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

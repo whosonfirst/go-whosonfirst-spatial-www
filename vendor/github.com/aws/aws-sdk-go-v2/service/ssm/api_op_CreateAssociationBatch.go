@@ -12,12 +12,14 @@ import (
 )
 
 // Associates the specified Amazon Web Services Systems Manager document (SSM
-// document) with the specified managed nodes or targets. When you associate a
-// document with one or more managed nodes using IDs or tags, Amazon Web Services
-// Systems Manager Agent (SSM Agent) running on the managed node processes the
-// document and configures the node as specified. If you associate a document with
-// a managed node that already has an associated document, the system returns the
-// AssociationAlreadyExists exception.
+// document) with the specified managed nodes or targets.
+//
+// When you associate a document with one or more managed nodes using IDs or tags,
+// Amazon Web Services Systems Manager Agent (SSM Agent) running on the managed
+// node processes the document and configures the node as specified.
+//
+// If you associate a document with a managed node that already has an associated
+// document, the system returns the AssociationAlreadyExists exception.
 func (c *Client) CreateAssociationBatch(ctx context.Context, params *CreateAssociationBatchInput, optFns ...func(*Options)) (*CreateAssociationBatchOutput, error) {
 	if params == nil {
 		params = &CreateAssociationBatchInput{}
@@ -100,6 +102,9 @@ func (c *Client) addOperationCreateAssociationBatchMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -110,6 +115,12 @@ func (c *Client) addOperationCreateAssociationBatchMiddlewares(stack *middleware
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAssociationBatchValidationMiddleware(stack); err != nil {
@@ -131,6 +142,18 @@ func (c *Client) addOperationCreateAssociationBatchMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

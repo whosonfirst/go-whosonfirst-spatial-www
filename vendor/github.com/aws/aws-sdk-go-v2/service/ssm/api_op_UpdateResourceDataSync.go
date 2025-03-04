@@ -16,8 +16,9 @@ import (
 // create a sync in the us-east-2 (Ohio) Region and you choose the Include only
 // the current account option, you can't edit that sync later and choose the
 // Include all accounts from my Organizations configuration option. Instead, you
-// must delete the first resource data sync, and create a new one. This API
-// operation only supports a resource data sync that was created with a
+// must delete the first resource data sync, and create a new one.
+//
+// This API operation only supports a resource data sync that was created with a
 // SyncFromSource SyncType .
 func (c *Client) UpdateResourceDataSync(ctx context.Context, params *UpdateResourceDataSyncInput, optFns ...func(*Options)) (*UpdateResourceDataSyncOutput, error) {
 	if params == nil {
@@ -104,6 +105,9 @@ func (c *Client) addOperationUpdateResourceDataSyncMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +118,12 @@ func (c *Client) addOperationUpdateResourceDataSyncMiddlewares(stack *middleware
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateResourceDataSyncValidationMiddleware(stack); err != nil {
@@ -135,6 +145,18 @@ func (c *Client) addOperationUpdateResourceDataSyncMiddlewares(stack *middleware
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

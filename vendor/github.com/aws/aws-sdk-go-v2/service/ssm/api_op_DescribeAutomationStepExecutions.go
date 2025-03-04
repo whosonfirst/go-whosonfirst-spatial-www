@@ -113,6 +113,9 @@ func (c *Client) addOperationDescribeAutomationStepExecutionsMiddlewares(stack *
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +126,12 @@ func (c *Client) addOperationDescribeAutomationStepExecutionsMiddlewares(stack *
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAutomationStepExecutionsValidationMiddleware(stack); err != nil {
@@ -146,16 +155,20 @@ func (c *Client) addOperationDescribeAutomationStepExecutionsMiddlewares(stack *
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeAutomationStepExecutionsAPIClient is a client that implements the
-// DescribeAutomationStepExecutions operation.
-type DescribeAutomationStepExecutionsAPIClient interface {
-	DescribeAutomationStepExecutions(context.Context, *DescribeAutomationStepExecutionsInput, ...func(*Options)) (*DescribeAutomationStepExecutionsOutput, error)
-}
-
-var _ DescribeAutomationStepExecutionsAPIClient = (*Client)(nil)
 
 // DescribeAutomationStepExecutionsPaginatorOptions is the paginator options for
 // DescribeAutomationStepExecutions
@@ -224,6 +237,9 @@ func (p *DescribeAutomationStepExecutionsPaginator) NextPage(ctx context.Context
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeAutomationStepExecutions(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -242,6 +258,14 @@ func (p *DescribeAutomationStepExecutionsPaginator) NextPage(ctx context.Context
 
 	return result, nil
 }
+
+// DescribeAutomationStepExecutionsAPIClient is a client that implements the
+// DescribeAutomationStepExecutions operation.
+type DescribeAutomationStepExecutionsAPIClient interface {
+	DescribeAutomationStepExecutions(context.Context, *DescribeAutomationStepExecutionsInput, ...func(*Options)) (*DescribeAutomationStepExecutionsOutput, error)
+}
+
+var _ DescribeAutomationStepExecutionsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeAutomationStepExecutions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

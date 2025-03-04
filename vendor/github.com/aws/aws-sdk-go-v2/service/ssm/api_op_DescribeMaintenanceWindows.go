@@ -103,6 +103,9 @@ func (c *Client) addOperationDescribeMaintenanceWindowsMiddlewares(stack *middle
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,12 @@ func (c *Client) addOperationDescribeMaintenanceWindowsMiddlewares(stack *middle
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeMaintenanceWindows(options.Region), middleware.Before); err != nil {
@@ -133,16 +142,20 @@ func (c *Client) addOperationDescribeMaintenanceWindowsMiddlewares(stack *middle
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeMaintenanceWindowsAPIClient is a client that implements the
-// DescribeMaintenanceWindows operation.
-type DescribeMaintenanceWindowsAPIClient interface {
-	DescribeMaintenanceWindows(context.Context, *DescribeMaintenanceWindowsInput, ...func(*Options)) (*DescribeMaintenanceWindowsOutput, error)
-}
-
-var _ DescribeMaintenanceWindowsAPIClient = (*Client)(nil)
 
 // DescribeMaintenanceWindowsPaginatorOptions is the paginator options for
 // DescribeMaintenanceWindows
@@ -211,6 +224,9 @@ func (p *DescribeMaintenanceWindowsPaginator) NextPage(ctx context.Context, optF
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeMaintenanceWindows(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -229,6 +245,14 @@ func (p *DescribeMaintenanceWindowsPaginator) NextPage(ctx context.Context, optF
 
 	return result, nil
 }
+
+// DescribeMaintenanceWindowsAPIClient is a client that implements the
+// DescribeMaintenanceWindows operation.
+type DescribeMaintenanceWindowsAPIClient interface {
+	DescribeMaintenanceWindows(context.Context, *DescribeMaintenanceWindowsInput, ...func(*Options)) (*DescribeMaintenanceWindowsOutput, error)
+}
+
+var _ DescribeMaintenanceWindowsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeMaintenanceWindows(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

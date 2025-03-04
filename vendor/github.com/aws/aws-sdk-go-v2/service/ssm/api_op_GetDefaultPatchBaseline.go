@@ -13,8 +13,10 @@ import (
 
 // Retrieves the default patch baseline. Amazon Web Services Systems Manager
 // supports creating multiple default patch baselines. For example, you can create
-// a default patch baseline for each operating system. If you don't specify an
-// operating system value, the default patch baseline for Windows is returned.
+// a default patch baseline for each operating system.
+//
+// If you don't specify an operating system value, the default patch baseline for
+// Windows is returned.
 func (c *Client) GetDefaultPatchBaseline(ctx context.Context, params *GetDefaultPatchBaselineInput, optFns ...func(*Options)) (*GetDefaultPatchBaselineOutput, error) {
 	if params == nil {
 		params = &GetDefaultPatchBaselineInput{}
@@ -95,6 +97,9 @@ func (c *Client) addOperationGetDefaultPatchBaselineMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -105,6 +110,12 @@ func (c *Client) addOperationGetDefaultPatchBaselineMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetDefaultPatchBaseline(options.Region), middleware.Before); err != nil {
@@ -123,6 +134,18 @@ func (c *Client) addOperationGetDefaultPatchBaselineMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

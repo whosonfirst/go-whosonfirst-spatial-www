@@ -14,13 +14,17 @@ import (
 // define the IAM entity (for example, an Amazon Web Services account) that can
 // manage your Systems Manager resources. The following resources support Systems
 // Manager resource policies.
+//
 //   - OpsItemGroup - The resource policy for OpsItemGroup enables Amazon Web
 //     Services accounts to view and interact with OpsCenter operational work items
 //     (OpsItems).
+//
 //   - Parameter - The resource policy is used to share a parameter with other
 //     accounts using Resource Access Manager (RAM). For more information about
-//     cross-account sharing of parameters, see Working with shared parameters in the
-//     Amazon Web Services Systems Manager User Guide.
+//     cross-account sharing of parameters, see [Working with shared parameters]in the Amazon Web Services Systems
+//     Manager User Guide.
+//
+// [Working with shared parameters]: https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html
 func (c *Client) DeleteResourcePolicy(ctx context.Context, params *DeleteResourcePolicyInput, optFns ...func(*Options)) (*DeleteResourcePolicyOutput, error) {
 	if params == nil {
 		params = &DeleteResourcePolicyInput{}
@@ -107,6 +111,9 @@ func (c *Client) addOperationDeleteResourcePolicyMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +124,12 @@ func (c *Client) addOperationDeleteResourcePolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteResourcePolicyValidationMiddleware(stack); err != nil {
@@ -138,6 +151,18 @@ func (c *Client) addOperationDeleteResourcePolicyMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

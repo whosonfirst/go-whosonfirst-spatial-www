@@ -114,6 +114,9 @@ func (c *Client) addOperationDescribeMaintenanceWindowScheduleMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -124,6 +127,12 @@ func (c *Client) addOperationDescribeMaintenanceWindowScheduleMiddlewares(stack 
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeMaintenanceWindowSchedule(options.Region), middleware.Before); err != nil {
@@ -144,16 +153,20 @@ func (c *Client) addOperationDescribeMaintenanceWindowScheduleMiddlewares(stack 
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeMaintenanceWindowScheduleAPIClient is a client that implements the
-// DescribeMaintenanceWindowSchedule operation.
-type DescribeMaintenanceWindowScheduleAPIClient interface {
-	DescribeMaintenanceWindowSchedule(context.Context, *DescribeMaintenanceWindowScheduleInput, ...func(*Options)) (*DescribeMaintenanceWindowScheduleOutput, error)
-}
-
-var _ DescribeMaintenanceWindowScheduleAPIClient = (*Client)(nil)
 
 // DescribeMaintenanceWindowSchedulePaginatorOptions is the paginator options for
 // DescribeMaintenanceWindowSchedule
@@ -222,6 +235,9 @@ func (p *DescribeMaintenanceWindowSchedulePaginator) NextPage(ctx context.Contex
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeMaintenanceWindowSchedule(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -240,6 +256,14 @@ func (p *DescribeMaintenanceWindowSchedulePaginator) NextPage(ctx context.Contex
 
 	return result, nil
 }
+
+// DescribeMaintenanceWindowScheduleAPIClient is a client that implements the
+// DescribeMaintenanceWindowSchedule operation.
+type DescribeMaintenanceWindowScheduleAPIClient interface {
+	DescribeMaintenanceWindowSchedule(context.Context, *DescribeMaintenanceWindowScheduleInput, ...func(*Options)) (*DescribeMaintenanceWindowScheduleOutput, error)
+}
+
+var _ DescribeMaintenanceWindowScheduleAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeMaintenanceWindowSchedule(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

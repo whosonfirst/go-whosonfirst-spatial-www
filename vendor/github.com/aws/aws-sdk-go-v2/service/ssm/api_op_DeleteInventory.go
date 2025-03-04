@@ -50,11 +50,14 @@ type DeleteInventoryInput struct {
 	// Use the SchemaDeleteOption to delete a custom inventory type (schema). If you
 	// don't choose this option, the system only deletes existing inventory data
 	// associated with the custom inventory type. Choose one of the following options:
+	//
 	// DisableSchema: If you choose this option, the system ignores all inventory data
 	// for the specified version, and any earlier versions. To enable this schema
 	// again, you must call the PutInventory operation for a version greater than the
-	// disabled version. DeleteSchema: This option deletes the specified custom type
-	// from the Inventory service. You can recreate the schema later, if you want.
+	// disabled version.
+	//
+	// DeleteSchema: This option deletes the specified custom type from the Inventory
+	// service. You can recreate the schema later, if you want.
 	SchemaDeleteOption types.InventorySchemaDeleteOption
 
 	noSmithyDocumentSerde
@@ -68,9 +71,10 @@ type DeleteInventoryOutput struct {
 	// begin other operations.
 	DeletionId *string
 
-	// A summary of the delete operation. For more information about this summary, see
-	// Deleting custom inventory (https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-inventory-custom.html#sysman-inventory-delete-summary)
+	// A summary of the delete operation. For more information about this summary, see [Deleting custom inventory]
 	// in the Amazon Web Services Systems Manager User Guide.
+	//
+	// [Deleting custom inventory]: https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html#delete-custom-inventory-summary
 	DeletionSummary *types.InventoryDeletionSummary
 
 	// The name of the inventory data type specified in the request.
@@ -125,6 +129,9 @@ func (c *Client) addOperationDeleteInventoryMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +142,12 @@ func (c *Client) addOperationDeleteInventoryMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opDeleteInventoryMiddleware(stack, options); err != nil {
@@ -159,6 +172,18 @@ func (c *Client) addOperationDeleteInventoryMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

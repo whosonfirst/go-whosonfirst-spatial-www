@@ -13,13 +13,15 @@ import (
 
 // Get information about an OpsItem by using the ID. You must have permission in
 // Identity and Access Management (IAM) to view information about an OpsItem. For
-// more information, see Set up OpsCenter (https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-setup.html)
-// in the Amazon Web Services Systems Manager User Guide. Operations engineers and
-// IT professionals use Amazon Web Services Systems Manager OpsCenter to view,
-// investigate, and remediate operational issues impacting the performance and
-// health of their Amazon Web Services resources. For more information, see
-// OpsCenter (https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html)
-// in the Amazon Web Services Systems Manager User Guide.
+// more information, see [Set up OpsCenter]in the Amazon Web Services Systems Manager User Guide.
+//
+// Operations engineers and IT professionals use Amazon Web Services Systems
+// Manager OpsCenter to view, investigate, and remediate operational issues
+// impacting the performance and health of their Amazon Web Services resources. For
+// more information, see [Amazon Web Services Systems Manager OpsCenter]in the Amazon Web Services Systems Manager User Guide.
+//
+// [Amazon Web Services Systems Manager OpsCenter]: https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter.html
+// [Set up OpsCenter]: https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-setup.html
 func (c *Client) GetOpsItem(ctx context.Context, params *GetOpsItemInput, optFns ...func(*Options)) (*GetOpsItemOutput, error) {
 	if params == nil {
 		params = &GetOpsItemInput{}
@@ -102,6 +104,9 @@ func (c *Client) addOperationGetOpsItemMiddlewares(stack *middleware.Stack, opti
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +117,12 @@ func (c *Client) addOperationGetOpsItemMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetOpsItemValidationMiddleware(stack); err != nil {
@@ -133,6 +144,18 @@ func (c *Client) addOperationGetOpsItemMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

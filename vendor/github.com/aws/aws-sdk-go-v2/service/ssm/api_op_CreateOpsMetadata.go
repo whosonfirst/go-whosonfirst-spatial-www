@@ -45,7 +45,9 @@ type CreateOpsMetadataInput struct {
 	// might want to tag an OpsMetadata object to identify an environment or target
 	// Amazon Web Services Region. In this case, you could specify the following
 	// key-value pairs:
+	//
 	//   - Key=Environment,Value=Production
+	//
 	//   - Key=Region,Value=us-east-2
 	Tags []types.Tag
 
@@ -107,6 +109,9 @@ func (c *Client) addOperationCreateOpsMetadataMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -117,6 +122,12 @@ func (c *Client) addOperationCreateOpsMetadataMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateOpsMetadataValidationMiddleware(stack); err != nil {
@@ -138,6 +149,18 @@ func (c *Client) addOperationCreateOpsMetadataMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

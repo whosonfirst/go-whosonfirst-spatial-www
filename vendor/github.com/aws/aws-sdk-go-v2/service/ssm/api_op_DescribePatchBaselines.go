@@ -29,11 +29,21 @@ func (c *Client) DescribePatchBaselines(ctx context.Context, params *DescribePat
 
 type DescribePatchBaselinesInput struct {
 
-	// Each element in the array is a structure containing a key-value pair. Supported
-	// keys for DescribePatchBaselines include the following:
-	//   - NAME_PREFIX Sample values: AWS- | My-
-	//   - OWNER Sample values: AWS | Self
-	//   - OPERATING_SYSTEM Sample values: AMAZON_LINUX | SUSE | WINDOWS
+	// Each element in the array is a structure containing a key-value pair.
+	//
+	// Supported keys for DescribePatchBaselines include the following:
+	//
+	//   - NAME_PREFIX
+	//
+	// Sample values: AWS- | My-
+	//
+	//   - OWNER
+	//
+	// Sample values: AWS | Self
+	//
+	//   - OPERATING_SYSTEM
+	//
+	// Sample values: AMAZON_LINUX | SUSE | WINDOWS
 	Filters []types.PatchOrchestratorFilter
 
 	// The maximum number of patch baselines to return (per page).
@@ -104,6 +114,9 @@ func (c *Client) addOperationDescribePatchBaselinesMiddlewares(stack *middleware
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +127,12 @@ func (c *Client) addOperationDescribePatchBaselinesMiddlewares(stack *middleware
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribePatchBaselines(options.Region), middleware.Before); err != nil {
@@ -134,16 +153,20 @@ func (c *Client) addOperationDescribePatchBaselinesMiddlewares(stack *middleware
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribePatchBaselinesAPIClient is a client that implements the
-// DescribePatchBaselines operation.
-type DescribePatchBaselinesAPIClient interface {
-	DescribePatchBaselines(context.Context, *DescribePatchBaselinesInput, ...func(*Options)) (*DescribePatchBaselinesOutput, error)
-}
-
-var _ DescribePatchBaselinesAPIClient = (*Client)(nil)
 
 // DescribePatchBaselinesPaginatorOptions is the paginator options for
 // DescribePatchBaselines
@@ -209,6 +232,9 @@ func (p *DescribePatchBaselinesPaginator) NextPage(ctx context.Context, optFns .
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribePatchBaselines(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -227,6 +253,14 @@ func (p *DescribePatchBaselinesPaginator) NextPage(ctx context.Context, optFns .
 
 	return result, nil
 }
+
+// DescribePatchBaselinesAPIClient is a client that implements the
+// DescribePatchBaselines operation.
+type DescribePatchBaselinesAPIClient interface {
+	DescribePatchBaselines(context.Context, *DescribePatchBaselinesInput, ...func(*Options)) (*DescribePatchBaselinesOutput, error)
+}
+
+var _ DescribePatchBaselinesAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribePatchBaselines(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

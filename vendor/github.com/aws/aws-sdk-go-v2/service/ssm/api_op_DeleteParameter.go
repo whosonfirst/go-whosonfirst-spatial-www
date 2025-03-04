@@ -29,8 +29,10 @@ func (c *Client) DeleteParameter(ctx context.Context, params *DeleteParameterInp
 
 type DeleteParameterInput struct {
 
-	// The name of the parameter to delete. You can't enter the Amazon Resource Name
-	// (ARN) for a parameter, only the parameter name itself.
+	// The name of the parameter to delete.
+	//
+	// You can't enter the Amazon Resource Name (ARN) for a parameter, only the
+	// parameter name itself.
 	//
 	// This member is required.
 	Name *string
@@ -88,6 +90,9 @@ func (c *Client) addOperationDeleteParameterMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -98,6 +103,12 @@ func (c *Client) addOperationDeleteParameterMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteParameterValidationMiddleware(stack); err != nil {
@@ -119,6 +130,18 @@ func (c *Client) addOperationDeleteParameterMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

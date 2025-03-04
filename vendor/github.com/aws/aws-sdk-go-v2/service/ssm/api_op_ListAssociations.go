@@ -33,6 +33,7 @@ func (c *Client) ListAssociations(ctx context.Context, params *ListAssociationsI
 type ListAssociationsInput struct {
 
 	// One or more filters. Use a filter to return a more specific list of results.
+	//
 	// Filtering associations using the InstanceID attribute only returns legacy
 	// associations created using the InstanceID attribute. Associations targeting the
 	// managed node that are part of the Target Attributes ResourceGroup or Tags
@@ -108,6 +109,9 @@ func (c *Client) addOperationListAssociationsMiddlewares(stack *middleware.Stack
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -118,6 +122,12 @@ func (c *Client) addOperationListAssociationsMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAssociationsValidationMiddleware(stack); err != nil {
@@ -141,16 +151,20 @@ func (c *Client) addOperationListAssociationsMiddlewares(stack *middleware.Stack
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListAssociationsAPIClient is a client that implements the ListAssociations
-// operation.
-type ListAssociationsAPIClient interface {
-	ListAssociations(context.Context, *ListAssociationsInput, ...func(*Options)) (*ListAssociationsOutput, error)
-}
-
-var _ ListAssociationsAPIClient = (*Client)(nil)
 
 // ListAssociationsPaginatorOptions is the paginator options for ListAssociations
 type ListAssociationsPaginatorOptions struct {
@@ -216,6 +230,9 @@ func (p *ListAssociationsPaginator) NextPage(ctx context.Context, optFns ...func
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListAssociations(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -234,6 +251,14 @@ func (p *ListAssociationsPaginator) NextPage(ctx context.Context, optFns ...func
 
 	return result, nil
 }
+
+// ListAssociationsAPIClient is a client that implements the ListAssociations
+// operation.
+type ListAssociationsAPIClient interface {
+	ListAssociations(context.Context, *ListAssociationsInput, ...func(*Options)) (*ListAssociationsOutput, error)
+}
+
+var _ ListAssociationsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListAssociations(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

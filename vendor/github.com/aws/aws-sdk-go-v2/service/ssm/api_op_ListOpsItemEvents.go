@@ -103,6 +103,9 @@ func (c *Client) addOperationListOpsItemEventsMiddlewares(stack *middleware.Stac
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,12 @@ func (c *Client) addOperationListOpsItemEventsMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListOpsItemEventsValidationMiddleware(stack); err != nil {
@@ -136,16 +145,20 @@ func (c *Client) addOperationListOpsItemEventsMiddlewares(stack *middleware.Stac
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListOpsItemEventsAPIClient is a client that implements the ListOpsItemEvents
-// operation.
-type ListOpsItemEventsAPIClient interface {
-	ListOpsItemEvents(context.Context, *ListOpsItemEventsInput, ...func(*Options)) (*ListOpsItemEventsOutput, error)
-}
-
-var _ ListOpsItemEventsAPIClient = (*Client)(nil)
 
 // ListOpsItemEventsPaginatorOptions is the paginator options for ListOpsItemEvents
 type ListOpsItemEventsPaginatorOptions struct {
@@ -211,6 +224,9 @@ func (p *ListOpsItemEventsPaginator) NextPage(ctx context.Context, optFns ...fun
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListOpsItemEvents(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -229,6 +245,14 @@ func (p *ListOpsItemEventsPaginator) NextPage(ctx context.Context, optFns ...fun
 
 	return result, nil
 }
+
+// ListOpsItemEventsAPIClient is a client that implements the ListOpsItemEvents
+// operation.
+type ListOpsItemEventsAPIClient interface {
+	ListOpsItemEvents(context.Context, *ListOpsItemEventsInput, ...func(*Options)) (*ListOpsItemEventsOutput, error)
+}
+
+var _ ListOpsItemEventsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListOpsItemEvents(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

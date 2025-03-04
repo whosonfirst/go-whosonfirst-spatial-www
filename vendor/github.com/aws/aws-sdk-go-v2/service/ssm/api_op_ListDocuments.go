@@ -39,9 +39,11 @@ type ListDocumentsInput struct {
 	// tags that have been applied to a document. Other valid keys include Owner , Name
 	// , PlatformTypes , DocumentType , and TargetType . For example, to return
 	// documents you own use Key=Owner,Values=Self . To specify a custom key-value
-	// pair, use the format Key=tag:tagName,Values=valueName . This API operation only
-	// supports filtering documents by using a single tag key and one or more tag
-	// values. For example: Key=tag:tagName,Values=valueName1,valueName2
+	// pair, use the format Key=tag:tagName,Values=valueName .
+	//
+	// This API operation only supports filtering documents by using a single tag key
+	// and one or more tag values. For example:
+	// Key=tag:tagName,Values=valueName1,valueName2
 	Filters []types.DocumentKeyValuesFilter
 
 	// The maximum number of items to return for this call. The call also returns a
@@ -113,6 +115,9 @@ func (c *Client) addOperationListDocumentsMiddlewares(stack *middleware.Stack, o
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -123,6 +128,12 @@ func (c *Client) addOperationListDocumentsMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListDocumentsValidationMiddleware(stack); err != nil {
@@ -146,15 +157,20 @@ func (c *Client) addOperationListDocumentsMiddlewares(stack *middleware.Stack, o
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListDocumentsAPIClient is a client that implements the ListDocuments operation.
-type ListDocumentsAPIClient interface {
-	ListDocuments(context.Context, *ListDocumentsInput, ...func(*Options)) (*ListDocumentsOutput, error)
-}
-
-var _ ListDocumentsAPIClient = (*Client)(nil)
 
 // ListDocumentsPaginatorOptions is the paginator options for ListDocuments
 type ListDocumentsPaginatorOptions struct {
@@ -220,6 +236,9 @@ func (p *ListDocumentsPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListDocuments(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -238,6 +257,13 @@ func (p *ListDocumentsPaginator) NextPage(ctx context.Context, optFns ...func(*O
 
 	return result, nil
 }
+
+// ListDocumentsAPIClient is a client that implements the ListDocuments operation.
+type ListDocumentsAPIClient interface {
+	ListDocuments(context.Context, *ListDocumentsInput, ...func(*Options)) (*ListDocumentsOutput, error)
+}
+
+var _ ListDocumentsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListDocuments(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

@@ -6,14 +6,14 @@ import (
 	"context"
 	"fmt"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentity/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists all of the Cognito identity pools registered for your account. You must
-// use AWS Developer credentials to call this API.
+// Lists all of the Cognito identity pools registered for your account.
+//
+// You must use AWS Developer credentials to call this API.
 func (c *Client) ListIdentityPools(ctx context.Context, params *ListIdentityPoolsInput, optFns ...func(*Options)) (*ListIdentityPoolsOutput, error) {
 	if params == nil {
 		params = &ListIdentityPoolsInput{}
@@ -80,25 +80,28 @@ func (c *Client) addOperationListIdentityPoolsMiddlewares(stack *middleware.Stac
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
+		return err
+	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -113,13 +116,19 @@ func (c *Client) addOperationListIdentityPoolsMiddlewares(stack *middleware.Stac
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
 	if err = addOpListIdentityPoolsValidationMiddleware(stack); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListIdentityPools(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -134,16 +143,20 @@ func (c *Client) addOperationListIdentityPoolsMiddlewares(stack *middleware.Stac
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListIdentityPoolsAPIClient is a client that implements the ListIdentityPools
-// operation.
-type ListIdentityPoolsAPIClient interface {
-	ListIdentityPools(context.Context, *ListIdentityPoolsInput, ...func(*Options)) (*ListIdentityPoolsOutput, error)
-}
-
-var _ ListIdentityPoolsAPIClient = (*Client)(nil)
 
 // ListIdentityPoolsPaginatorOptions is the paginator options for ListIdentityPools
 type ListIdentityPoolsPaginatorOptions struct {
@@ -208,6 +221,9 @@ func (p *ListIdentityPoolsPaginator) NextPage(ctx context.Context, optFns ...fun
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListIdentityPools(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -226,6 +242,14 @@ func (p *ListIdentityPoolsPaginator) NextPage(ctx context.Context, optFns ...fun
 
 	return result, nil
 }
+
+// ListIdentityPoolsAPIClient is a client that implements the ListIdentityPools
+// operation.
+type ListIdentityPoolsAPIClient interface {
+	ListIdentityPools(context.Context, *ListIdentityPoolsInput, ...func(*Options)) (*ListIdentityPoolsOutput, error)
+}
+
+var _ ListIdentityPoolsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListIdentityPools(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

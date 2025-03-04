@@ -103,6 +103,9 @@ func (c *Client) addOperationListAssociationVersionsMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,12 @@ func (c *Client) addOperationListAssociationVersionsMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListAssociationVersionsValidationMiddleware(stack); err != nil {
@@ -136,16 +145,20 @@ func (c *Client) addOperationListAssociationVersionsMiddlewares(stack *middlewar
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListAssociationVersionsAPIClient is a client that implements the
-// ListAssociationVersions operation.
-type ListAssociationVersionsAPIClient interface {
-	ListAssociationVersions(context.Context, *ListAssociationVersionsInput, ...func(*Options)) (*ListAssociationVersionsOutput, error)
-}
-
-var _ ListAssociationVersionsAPIClient = (*Client)(nil)
 
 // ListAssociationVersionsPaginatorOptions is the paginator options for
 // ListAssociationVersions
@@ -213,6 +226,9 @@ func (p *ListAssociationVersionsPaginator) NextPage(ctx context.Context, optFns 
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListAssociationVersions(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -231,6 +247,14 @@ func (p *ListAssociationVersionsPaginator) NextPage(ctx context.Context, optFns 
 
 	return result, nil
 }
+
+// ListAssociationVersionsAPIClient is a client that implements the
+// ListAssociationVersions operation.
+type ListAssociationVersionsAPIClient interface {
+	ListAssociationVersions(context.Context, *ListAssociationVersionsInput, ...func(*Options)) (*ListAssociationVersionsOutput, error)
+}
+
+var _ ListAssociationVersionsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListAssociationVersions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

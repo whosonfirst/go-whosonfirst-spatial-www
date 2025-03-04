@@ -11,9 +11,10 @@ import (
 )
 
 // Deletes the Amazon Web Services Systems Manager document (SSM document) and all
-// managed node associations to the document. Before you delete the document, we
-// recommend that you use DeleteAssociation to disassociate all managed nodes that
-// are associated with the document.
+// managed node associations to the document.
+//
+// Before you delete the document, we recommend that you use DeleteAssociation to disassociate all
+// managed nodes that are associated with the document.
 func (c *Client) DeleteDocument(ctx context.Context, params *DeleteDocumentInput, optFns ...func(*Options)) (*DeleteDocumentOutput, error) {
 	if params == nil {
 		params = &DeleteDocumentInput{}
@@ -103,6 +104,9 @@ func (c *Client) addOperationDeleteDocumentMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +117,12 @@ func (c *Client) addOperationDeleteDocumentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDeleteDocumentValidationMiddleware(stack); err != nil {
@@ -134,6 +144,18 @@ func (c *Client) addOperationDeleteDocumentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

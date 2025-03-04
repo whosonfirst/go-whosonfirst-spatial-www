@@ -102,6 +102,9 @@ func (c *Client) addOperationListOpsMetadataMiddlewares(stack *middleware.Stack,
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -112,6 +115,12 @@ func (c *Client) addOperationListOpsMetadataMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListOpsMetadataValidationMiddleware(stack); err != nil {
@@ -135,16 +144,20 @@ func (c *Client) addOperationListOpsMetadataMiddlewares(stack *middleware.Stack,
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListOpsMetadataAPIClient is a client that implements the ListOpsMetadata
-// operation.
-type ListOpsMetadataAPIClient interface {
-	ListOpsMetadata(context.Context, *ListOpsMetadataInput, ...func(*Options)) (*ListOpsMetadataOutput, error)
-}
-
-var _ ListOpsMetadataAPIClient = (*Client)(nil)
 
 // ListOpsMetadataPaginatorOptions is the paginator options for ListOpsMetadata
 type ListOpsMetadataPaginatorOptions struct {
@@ -210,6 +223,9 @@ func (p *ListOpsMetadataPaginator) NextPage(ctx context.Context, optFns ...func(
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListOpsMetadata(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -228,6 +244,14 @@ func (p *ListOpsMetadataPaginator) NextPage(ctx context.Context, optFns ...func(
 
 	return result, nil
 }
+
+// ListOpsMetadataAPIClient is a client that implements the ListOpsMetadata
+// operation.
+type ListOpsMetadataAPIClient interface {
+	ListOpsMetadata(context.Context, *ListOpsMetadataInput, ...func(*Options)) (*ListOpsMetadataOutput, error)
+}
+
+var _ ListOpsMetadataAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListOpsMetadata(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

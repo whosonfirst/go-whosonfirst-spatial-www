@@ -104,6 +104,9 @@ func (c *Client) addOperationListResourceComplianceSummariesMiddlewares(stack *m
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -114,6 +117,12 @@ func (c *Client) addOperationListResourceComplianceSummariesMiddlewares(stack *m
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListResourceComplianceSummaries(options.Region), middleware.Before); err != nil {
@@ -134,16 +143,20 @@ func (c *Client) addOperationListResourceComplianceSummariesMiddlewares(stack *m
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListResourceComplianceSummariesAPIClient is a client that implements the
-// ListResourceComplianceSummaries operation.
-type ListResourceComplianceSummariesAPIClient interface {
-	ListResourceComplianceSummaries(context.Context, *ListResourceComplianceSummariesInput, ...func(*Options)) (*ListResourceComplianceSummariesOutput, error)
-}
-
-var _ ListResourceComplianceSummariesAPIClient = (*Client)(nil)
 
 // ListResourceComplianceSummariesPaginatorOptions is the paginator options for
 // ListResourceComplianceSummaries
@@ -212,6 +225,9 @@ func (p *ListResourceComplianceSummariesPaginator) NextPage(ctx context.Context,
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListResourceComplianceSummaries(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -230,6 +246,14 @@ func (p *ListResourceComplianceSummariesPaginator) NextPage(ctx context.Context,
 
 	return result, nil
 }
+
+// ListResourceComplianceSummariesAPIClient is a client that implements the
+// ListResourceComplianceSummaries operation.
+type ListResourceComplianceSummariesAPIClient interface {
+	ListResourceComplianceSummaries(context.Context, *ListResourceComplianceSummariesInput, ...func(*Options)) (*ListResourceComplianceSummariesOutput, error)
+}
+
+var _ ListResourceComplianceSummariesAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListResourceComplianceSummaries(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

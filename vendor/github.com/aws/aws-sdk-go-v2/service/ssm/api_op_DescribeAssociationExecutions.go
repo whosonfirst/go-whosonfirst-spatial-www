@@ -35,7 +35,12 @@ type DescribeAssociationExecutionsInput struct {
 	AssociationId *string
 
 	// Filters for the request. You can specify the following filters and values.
-	// ExecutionId (EQUAL) Status (EQUAL) CreatedTime (EQUAL, GREATER_THAN, LESS_THAN)
+	//
+	// ExecutionId (EQUAL)
+	//
+	// Status (EQUAL)
+	//
+	// CreatedTime (EQUAL, GREATER_THAN, LESS_THAN)
 	Filters []types.AssociationExecutionFilter
 
 	// The maximum number of items to return for this call. The call also returns a
@@ -106,6 +111,9 @@ func (c *Client) addOperationDescribeAssociationExecutionsMiddlewares(stack *mid
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +124,12 @@ func (c *Client) addOperationDescribeAssociationExecutionsMiddlewares(stack *mid
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAssociationExecutionsValidationMiddleware(stack); err != nil {
@@ -139,16 +153,20 @@ func (c *Client) addOperationDescribeAssociationExecutionsMiddlewares(stack *mid
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeAssociationExecutionsAPIClient is a client that implements the
-// DescribeAssociationExecutions operation.
-type DescribeAssociationExecutionsAPIClient interface {
-	DescribeAssociationExecutions(context.Context, *DescribeAssociationExecutionsInput, ...func(*Options)) (*DescribeAssociationExecutionsOutput, error)
-}
-
-var _ DescribeAssociationExecutionsAPIClient = (*Client)(nil)
 
 // DescribeAssociationExecutionsPaginatorOptions is the paginator options for
 // DescribeAssociationExecutions
@@ -217,6 +235,9 @@ func (p *DescribeAssociationExecutionsPaginator) NextPage(ctx context.Context, o
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeAssociationExecutions(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -235,6 +256,14 @@ func (p *DescribeAssociationExecutionsPaginator) NextPage(ctx context.Context, o
 
 	return result, nil
 }
+
+// DescribeAssociationExecutionsAPIClient is a client that implements the
+// DescribeAssociationExecutions operation.
+type DescribeAssociationExecutionsAPIClient interface {
+	DescribeAssociationExecutions(context.Context, *DescribeAssociationExecutionsInput, ...func(*Options)) (*DescribeAssociationExecutionsOutput, error)
+}
+
+var _ DescribeAssociationExecutionsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeAssociationExecutions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

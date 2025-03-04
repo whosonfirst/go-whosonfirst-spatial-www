@@ -106,6 +106,9 @@ func (c *Client) addOperationListOpsItemRelatedItemsMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -116,6 +119,12 @@ func (c *Client) addOperationListOpsItemRelatedItemsMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListOpsItemRelatedItemsValidationMiddleware(stack); err != nil {
@@ -139,16 +148,20 @@ func (c *Client) addOperationListOpsItemRelatedItemsMiddlewares(stack *middlewar
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListOpsItemRelatedItemsAPIClient is a client that implements the
-// ListOpsItemRelatedItems operation.
-type ListOpsItemRelatedItemsAPIClient interface {
-	ListOpsItemRelatedItems(context.Context, *ListOpsItemRelatedItemsInput, ...func(*Options)) (*ListOpsItemRelatedItemsOutput, error)
-}
-
-var _ ListOpsItemRelatedItemsAPIClient = (*Client)(nil)
 
 // ListOpsItemRelatedItemsPaginatorOptions is the paginator options for
 // ListOpsItemRelatedItems
@@ -216,6 +229,9 @@ func (p *ListOpsItemRelatedItemsPaginator) NextPage(ctx context.Context, optFns 
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListOpsItemRelatedItems(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -234,6 +250,14 @@ func (p *ListOpsItemRelatedItemsPaginator) NextPage(ctx context.Context, optFns 
 
 	return result, nil
 }
+
+// ListOpsItemRelatedItemsAPIClient is a client that implements the
+// ListOpsItemRelatedItems operation.
+type ListOpsItemRelatedItemsAPIClient interface {
+	ListOpsItemRelatedItems(context.Context, *ListOpsItemRelatedItemsInput, ...func(*Options)) (*ListOpsItemRelatedItemsOutput, error)
+}
+
+var _ ListOpsItemRelatedItemsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListOpsItemRelatedItems(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

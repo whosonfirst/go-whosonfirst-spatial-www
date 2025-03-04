@@ -13,13 +13,14 @@ import (
 
 // Lists your resource data sync configurations. Includes information about the
 // last time a sync attempted to start, the last sync status, and the last time a
-// sync successfully completed. The number of sync configurations might be too
-// large to return using a single call to ListResourceDataSync . You can limit the
-// number of sync configurations returned by using the MaxResults parameter. To
-// determine whether there are more sync configurations to list, check the value of
-// NextToken in the output. If there are more sync configurations to list, you can
-// request them by specifying the NextToken returned in the call to the parameter
-// of a subsequent call.
+// sync successfully completed.
+//
+// The number of sync configurations might be too large to return using a single
+// call to ListResourceDataSync . You can limit the number of sync configurations
+// returned by using the MaxResults parameter. To determine whether there are more
+// sync configurations to list, check the value of NextToken in the output. If
+// there are more sync configurations to list, you can request them by specifying
+// the NextToken returned in the call to the parameter of a subsequent call.
 func (c *Client) ListResourceDataSync(ctx context.Context, params *ListResourceDataSyncInput, optFns ...func(*Options)) (*ListResourceDataSyncOutput, error) {
 	if params == nil {
 		params = &ListResourceDataSyncInput{}
@@ -111,6 +112,9 @@ func (c *Client) addOperationListResourceDataSyncMiddlewares(stack *middleware.S
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -121,6 +125,12 @@ func (c *Client) addOperationListResourceDataSyncMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListResourceDataSync(options.Region), middleware.Before); err != nil {
@@ -141,16 +151,20 @@ func (c *Client) addOperationListResourceDataSyncMiddlewares(stack *middleware.S
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// ListResourceDataSyncAPIClient is a client that implements the
-// ListResourceDataSync operation.
-type ListResourceDataSyncAPIClient interface {
-	ListResourceDataSync(context.Context, *ListResourceDataSyncInput, ...func(*Options)) (*ListResourceDataSyncOutput, error)
-}
-
-var _ ListResourceDataSyncAPIClient = (*Client)(nil)
 
 // ListResourceDataSyncPaginatorOptions is the paginator options for
 // ListResourceDataSync
@@ -217,6 +231,9 @@ func (p *ListResourceDataSyncPaginator) NextPage(ctx context.Context, optFns ...
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListResourceDataSync(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -235,6 +252,14 @@ func (p *ListResourceDataSyncPaginator) NextPage(ctx context.Context, optFns ...
 
 	return result, nil
 }
+
+// ListResourceDataSyncAPIClient is a client that implements the
+// ListResourceDataSync operation.
+type ListResourceDataSyncAPIClient interface {
+	ListResourceDataSync(context.Context, *ListResourceDataSyncInput, ...func(*Options)) (*ListResourceDataSyncOutput, error)
+}
+
+var _ ListResourceDataSyncAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListResourceDataSync(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

@@ -11,7 +11,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// All associations for the managed node(s).
+// All associations for the managed nodes.
 func (c *Client) DescribeEffectiveInstanceAssociations(ctx context.Context, params *DescribeEffectiveInstanceAssociationsInput, optFns ...func(*Options)) (*DescribeEffectiveInstanceAssociationsOutput, error) {
 	if params == nil {
 		params = &DescribeEffectiveInstanceAssociationsInput{}
@@ -103,6 +103,9 @@ func (c *Client) addOperationDescribeEffectiveInstanceAssociationsMiddlewares(st
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -113,6 +116,12 @@ func (c *Client) addOperationDescribeEffectiveInstanceAssociationsMiddlewares(st
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeEffectiveInstanceAssociationsValidationMiddleware(stack); err != nil {
@@ -136,16 +145,20 @@ func (c *Client) addOperationDescribeEffectiveInstanceAssociationsMiddlewares(st
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeEffectiveInstanceAssociationsAPIClient is a client that implements the
-// DescribeEffectiveInstanceAssociations operation.
-type DescribeEffectiveInstanceAssociationsAPIClient interface {
-	DescribeEffectiveInstanceAssociations(context.Context, *DescribeEffectiveInstanceAssociationsInput, ...func(*Options)) (*DescribeEffectiveInstanceAssociationsOutput, error)
-}
-
-var _ DescribeEffectiveInstanceAssociationsAPIClient = (*Client)(nil)
 
 // DescribeEffectiveInstanceAssociationsPaginatorOptions is the paginator options
 // for DescribeEffectiveInstanceAssociations
@@ -214,6 +227,9 @@ func (p *DescribeEffectiveInstanceAssociationsPaginator) NextPage(ctx context.Co
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeEffectiveInstanceAssociations(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -232,6 +248,14 @@ func (p *DescribeEffectiveInstanceAssociationsPaginator) NextPage(ctx context.Co
 
 	return result, nil
 }
+
+// DescribeEffectiveInstanceAssociationsAPIClient is a client that implements the
+// DescribeEffectiveInstanceAssociations operation.
+type DescribeEffectiveInstanceAssociationsAPIClient interface {
+	DescribeEffectiveInstanceAssociations(context.Context, *DescribeEffectiveInstanceAssociationsInput, ...func(*Options)) (*DescribeEffectiveInstanceAssociationsOutput, error)
+}
+
+var _ DescribeEffectiveInstanceAssociationsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeEffectiveInstanceAssociations(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

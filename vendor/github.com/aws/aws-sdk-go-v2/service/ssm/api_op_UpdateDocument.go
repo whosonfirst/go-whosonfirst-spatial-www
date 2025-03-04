@@ -54,9 +54,10 @@ type UpdateDocumentInput struct {
 
 	// The version of the document that you want to update. Currently, Systems Manager
 	// supports updating only the latest version of the document. You can specify the
-	// version number of the latest version or use the $LATEST variable. If you change
-	// a document version for a State Manager association, Systems Manager immediately
-	// runs the association unless you previously specifed the
+	// version number of the latest version or use the $LATEST variable.
+	//
+	// If you change a document version for a State Manager association, Systems
+	// Manager immediately runs the association unless you previously specifed the
 	// apply-only-at-cron-interval parameter.
 	DocumentVersion *string
 
@@ -125,6 +126,9 @@ func (c *Client) addOperationUpdateDocumentMiddlewares(stack *middleware.Stack, 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -135,6 +139,12 @@ func (c *Client) addOperationUpdateDocumentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDocumentValidationMiddleware(stack); err != nil {
@@ -156,6 +166,18 @@ func (c *Client) addOperationUpdateDocumentMiddlewares(stack *middleware.Stack, 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

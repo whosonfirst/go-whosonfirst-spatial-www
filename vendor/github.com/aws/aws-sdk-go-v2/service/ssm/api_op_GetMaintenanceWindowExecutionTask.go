@@ -83,13 +83,17 @@ type GetMaintenanceWindowExecutionTaskOutput struct {
 	// retrieved.
 	TaskExecutionId *string
 
-	// The parameters passed to the task when it was run. TaskParameters has been
-	// deprecated. To specify parameters to pass to a task when it runs, instead use
-	// the Parameters option in the TaskInvocationParameters structure. For
-	// information about how Systems Manager handles these options for the supported
-	// maintenance window task types, see MaintenanceWindowTaskInvocationParameters .
+	// The parameters passed to the task when it was run.
+	//
+	// TaskParameters has been deprecated. To specify parameters to pass to a task
+	// when it runs, instead use the Parameters option in the TaskInvocationParameters
+	// structure. For information about how Systems Manager handles these options for
+	// the supported maintenance window task types, see MaintenanceWindowTaskInvocationParameters.
+	//
 	// The map has the following format:
+	//
 	//   - Key : string, between 1 and 255 characters
+	//
 	//   - Value : an array of strings, each between 1 and 255 characters
 	TaskParameters []map[string]types.MaintenanceWindowTaskParameterValueExpression
 
@@ -151,6 +155,9 @@ func (c *Client) addOperationGetMaintenanceWindowExecutionTaskMiddlewares(stack 
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -161,6 +168,12 @@ func (c *Client) addOperationGetMaintenanceWindowExecutionTaskMiddlewares(stack 
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetMaintenanceWindowExecutionTaskValidationMiddleware(stack); err != nil {
@@ -182,6 +195,18 @@ func (c *Client) addOperationGetMaintenanceWindowExecutionTaskMiddlewares(stack 
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

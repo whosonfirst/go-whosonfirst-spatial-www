@@ -115,6 +115,9 @@ func (c *Client) addOperationDescribeMaintenanceWindowExecutionTaskInvocationsMi
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -125,6 +128,12 @@ func (c *Client) addOperationDescribeMaintenanceWindowExecutionTaskInvocationsMi
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeMaintenanceWindowExecutionTaskInvocationsValidationMiddleware(stack); err != nil {
@@ -148,16 +157,20 @@ func (c *Client) addOperationDescribeMaintenanceWindowExecutionTaskInvocationsMi
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeMaintenanceWindowExecutionTaskInvocationsAPIClient is a client that
-// implements the DescribeMaintenanceWindowExecutionTaskInvocations operation.
-type DescribeMaintenanceWindowExecutionTaskInvocationsAPIClient interface {
-	DescribeMaintenanceWindowExecutionTaskInvocations(context.Context, *DescribeMaintenanceWindowExecutionTaskInvocationsInput, ...func(*Options)) (*DescribeMaintenanceWindowExecutionTaskInvocationsOutput, error)
-}
-
-var _ DescribeMaintenanceWindowExecutionTaskInvocationsAPIClient = (*Client)(nil)
 
 // DescribeMaintenanceWindowExecutionTaskInvocationsPaginatorOptions is the
 // paginator options for DescribeMaintenanceWindowExecutionTaskInvocations
@@ -227,6 +240,9 @@ func (p *DescribeMaintenanceWindowExecutionTaskInvocationsPaginator) NextPage(ct
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeMaintenanceWindowExecutionTaskInvocations(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -245,6 +261,14 @@ func (p *DescribeMaintenanceWindowExecutionTaskInvocationsPaginator) NextPage(ct
 
 	return result, nil
 }
+
+// DescribeMaintenanceWindowExecutionTaskInvocationsAPIClient is a client that
+// implements the DescribeMaintenanceWindowExecutionTaskInvocations operation.
+type DescribeMaintenanceWindowExecutionTaskInvocationsAPIClient interface {
+	DescribeMaintenanceWindowExecutionTaskInvocations(context.Context, *DescribeMaintenanceWindowExecutionTaskInvocationsInput, ...func(*Options)) (*DescribeMaintenanceWindowExecutionTaskInvocationsOutput, error)
+}
+
+var _ DescribeMaintenanceWindowExecutionTaskInvocationsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeMaintenanceWindowExecutionTaskInvocations(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

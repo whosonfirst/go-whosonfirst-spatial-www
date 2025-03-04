@@ -48,7 +48,7 @@ type ModifyDocumentPermissionInput struct {
 
 	// The Amazon Web Services users that should no longer have access to the
 	// document. The Amazon Web Services user can either be a group of account IDs or
-	// All. This action has a higher priority than AccountIdsToAdd. If you specify an
+	// All. This action has a higher priority than AccountIdsToAdd . If you specify an
 	// ID to add and the same ID to remove, the system removes access to the document.
 	AccountIdsToRemove []string
 
@@ -109,6 +109,9 @@ func (c *Client) addOperationModifyDocumentPermissionMiddlewares(stack *middlewa
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -119,6 +122,12 @@ func (c *Client) addOperationModifyDocumentPermissionMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyDocumentPermissionValidationMiddleware(stack); err != nil {
@@ -140,6 +149,18 @@ func (c *Client) addOperationModifyDocumentPermissionMiddlewares(stack *middlewa
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

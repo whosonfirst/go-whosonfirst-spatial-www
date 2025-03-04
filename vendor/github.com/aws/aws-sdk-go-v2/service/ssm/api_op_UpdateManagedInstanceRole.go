@@ -13,7 +13,7 @@ import (
 // Changes the Identity and Access Management (IAM) role that is assigned to the
 // on-premises server, edge device, or virtual machines (VM). IAM roles are first
 // assigned to these hybrid nodes during the activation process. For more
-// information, see CreateActivation .
+// information, see CreateActivation.
 func (c *Client) UpdateManagedInstanceRole(ctx context.Context, params *UpdateManagedInstanceRoleInput, optFns ...func(*Options)) (*UpdateManagedInstanceRoleOutput, error) {
 	if params == nil {
 		params = &UpdateManagedInstanceRoleInput{}
@@ -34,9 +34,13 @@ type UpdateManagedInstanceRoleInput struct {
 	// The name of the Identity and Access Management (IAM) role that you want to
 	// assign to the managed node. This IAM role must provide AssumeRole permissions
 	// for the Amazon Web Services Systems Manager service principal ssm.amazonaws.com
-	// . For more information, see Create an IAM service role for a hybrid environment (https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-service-role.html)
-	// in the Amazon Web Services Systems Manager User Guide. You can't specify an IAM
-	// service-linked role for this parameter. You must create a unique role.
+	// . For more information, see [Create the IAM service role required for Systems Manager in hybrid and multicloud environments]in the Amazon Web Services Systems Manager User
+	// Guide.
+	//
+	// You can't specify an IAM service-linked role for this parameter. You must
+	// create a unique role.
+	//
+	// [Create the IAM service role required for Systems Manager in hybrid and multicloud environments]: https://docs.aws.amazon.com/systems-manager/latest/userguide/hybrid-multicloud-service-role.html
 	//
 	// This member is required.
 	IamRole *string
@@ -99,6 +103,9 @@ func (c *Client) addOperationUpdateManagedInstanceRoleMiddlewares(stack *middlew
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +116,12 @@ func (c *Client) addOperationUpdateManagedInstanceRoleMiddlewares(stack *middlew
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateManagedInstanceRoleValidationMiddleware(stack); err != nil {
@@ -130,6 +143,18 @@ func (c *Client) addOperationUpdateManagedInstanceRoleMiddlewares(stack *middlew
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

@@ -11,9 +11,11 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Set the default version of a document. If you change a document version for a
-// State Manager association, Systems Manager immediately runs the association
-// unless you previously specifed the apply-only-at-cron-interval parameter.
+// Set the default version of a document.
+//
+// If you change a document version for a State Manager association, Systems
+// Manager immediately runs the association unless you previously specifed the
+// apply-only-at-cron-interval parameter.
 func (c *Client) UpdateDocumentDefaultVersion(ctx context.Context, params *UpdateDocumentDefaultVersionInput, optFns ...func(*Options)) (*UpdateDocumentDefaultVersionOutput, error) {
 	if params == nil {
 		params = &UpdateDocumentDefaultVersionInput{}
@@ -99,6 +101,9 @@ func (c *Client) addOperationUpdateDocumentDefaultVersionMiddlewares(stack *midd
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -109,6 +114,12 @@ func (c *Client) addOperationUpdateDocumentDefaultVersionMiddlewares(stack *midd
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateDocumentDefaultVersionValidationMiddleware(stack); err != nil {
@@ -130,6 +141,18 @@ func (c *Client) addOperationUpdateDocumentDefaultVersionMiddlewares(stack *midd
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

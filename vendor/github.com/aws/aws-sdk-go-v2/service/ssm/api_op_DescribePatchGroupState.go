@@ -67,8 +67,9 @@ type DescribePatchGroupStateOutput struct {
 
 	// The number of managed nodes with patches installed that are specified in a
 	// RejectedPatches list. Patches with a status of INSTALLED_REJECTED were
-	// typically installed before they were added to a RejectedPatches list. If
-	// ALLOW_AS_DEPENDENCY is the specified option for RejectedPatchesAction , the
+	// typically installed before they were added to a RejectedPatches list.
+	//
+	// If ALLOW_AS_DEPENDENCY is the specified option for RejectedPatchesAction , the
 	// value of InstancesWithInstalledRejectedPatches will always be 0 (zero).
 	InstancesWithInstalledRejectedPatches *int32
 
@@ -143,6 +144,9 @@ func (c *Client) addOperationDescribePatchGroupStateMiddlewares(stack *middlewar
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -153,6 +157,12 @@ func (c *Client) addOperationDescribePatchGroupStateMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribePatchGroupStateValidationMiddleware(stack); err != nil {
@@ -174,6 +184,18 @@ func (c *Client) addOperationDescribePatchGroupStateMiddlewares(stack *middlewar
 		return err
 	}
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil

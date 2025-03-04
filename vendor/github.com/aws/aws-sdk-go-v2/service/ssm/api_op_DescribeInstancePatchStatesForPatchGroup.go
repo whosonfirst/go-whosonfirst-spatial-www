@@ -37,8 +37,11 @@ type DescribeInstancePatchStatesForPatchGroupInput struct {
 	PatchGroup *string
 
 	// Each entry in the array is a structure containing:
+	//
 	//   - Key (string between 1 and 200 characters)
+	//
 	//   - Values (array containing a single string)
+	//
 	//   - Type (string "Equal", "NotEqual", "LessThan", "GreaterThan")
 	Filters []types.InstancePatchStateFilter
 
@@ -110,6 +113,9 @@ func (c *Client) addOperationDescribeInstancePatchStatesForPatchGroupMiddlewares
 	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
+		return err
+	}
 	if err = addClientUserAgent(stack, options); err != nil {
 		return err
 	}
@@ -120,6 +126,12 @@ func (c *Client) addOperationDescribeInstancePatchStatesForPatchGroupMiddlewares
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeInstancePatchStatesForPatchGroupValidationMiddleware(stack); err != nil {
@@ -143,16 +155,20 @@ func (c *Client) addOperationDescribeInstancePatchStatesForPatchGroupMiddlewares
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
+		return err
+	}
 	return nil
 }
-
-// DescribeInstancePatchStatesForPatchGroupAPIClient is a client that implements
-// the DescribeInstancePatchStatesForPatchGroup operation.
-type DescribeInstancePatchStatesForPatchGroupAPIClient interface {
-	DescribeInstancePatchStatesForPatchGroup(context.Context, *DescribeInstancePatchStatesForPatchGroupInput, ...func(*Options)) (*DescribeInstancePatchStatesForPatchGroupOutput, error)
-}
-
-var _ DescribeInstancePatchStatesForPatchGroupAPIClient = (*Client)(nil)
 
 // DescribeInstancePatchStatesForPatchGroupPaginatorOptions is the paginator
 // options for DescribeInstancePatchStatesForPatchGroup
@@ -220,6 +236,9 @@ func (p *DescribeInstancePatchStatesForPatchGroupPaginator) NextPage(ctx context
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeInstancePatchStatesForPatchGroup(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -238,6 +257,14 @@ func (p *DescribeInstancePatchStatesForPatchGroupPaginator) NextPage(ctx context
 
 	return result, nil
 }
+
+// DescribeInstancePatchStatesForPatchGroupAPIClient is a client that implements
+// the DescribeInstancePatchStatesForPatchGroup operation.
+type DescribeInstancePatchStatesForPatchGroupAPIClient interface {
+	DescribeInstancePatchStatesForPatchGroup(context.Context, *DescribeInstancePatchStatesForPatchGroupInput, ...func(*Options)) (*DescribeInstancePatchStatesForPatchGroupOutput, error)
+}
+
+var _ DescribeInstancePatchStatesForPatchGroupAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeInstancePatchStatesForPatchGroup(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
