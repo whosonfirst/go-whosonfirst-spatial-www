@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"html/template"
+	// "html/template"
 	"log/slog"
 	gohttp "net/http"
 	"path/filepath"
@@ -18,8 +18,9 @@ import (
 	"github.com/sfomuseum/go-http-auth"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http/api"
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/http/www"
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
+	// "github.com/whosonfirst/go-whosonfirst-spatial-www/http/www"
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/static/www"
+	// "github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	app "github.com/whosonfirst/go-whosonfirst-spatial/application"
 )
 
@@ -169,89 +170,97 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to assign map config handler, %w", err)
 		}
 
-		t := template.New("spatial")
+		www_fs := gohttp.FS(www.FS)
+		www_handler := gohttp.FileServer(www_fs)
 
-		t = t.Funcs(map[string]interface{}{
+		mux.Handle("/", www_handler)
 
-			"EnsureRoot": func(path string) string {
+		/*
 
-				path = strings.TrimLeft(path, "/")
+			t := template.New("spatial")
 
-				if opts.PathPrefix == "" {
-					return "/" + path
-				}
+			t = t.Funcs(map[string]interface{}{
 
-				path = filepath.Join(opts.PathPrefix, path)
-				return path
-			},
+				"EnsureRoot": func(path string) string {
 
-			"DataRoot": func() string {
+					path = strings.TrimLeft(path, "/")
 
-				path := opts.PathData
+					if opts.PathPrefix == "" {
+						return "/" + path
+					}
 
-				if opts.PathPrefix != "" {
 					path = filepath.Join(opts.PathPrefix, path)
-				}
+					return path
+				},
 
-				return path
-			},
+				"DataRoot": func() string {
 
-			"APIRoot": func() string {
+					path := opts.PathData
 
-				path := opts.PathAPI
+					if opts.PathPrefix != "" {
+						path = filepath.Join(opts.PathPrefix, path)
+					}
 
-				if opts.PathPrefix != "" {
-					path = filepath.Join(opts.PathPrefix, path)
-				}
+					return path
+				},
 
-				return path
-			},
-		})
+				"APIRoot": func() string {
 
-		t, err = t.ParseFS(html.FS, "*.html")
+					path := opts.PathAPI
 
-		if err != nil {
-			return fmt.Errorf("Unable to parse templates, %v", err)
-		}
+					if opts.PathPrefix != "" {
+						path = filepath.Join(opts.PathPrefix, path)
+					}
 
-		// point-in-polygon page
+					return path
+				},
+			})
 
-		http_pip_opts := &www.PointInPolygonHandlerOptions{
-			Templates: t,
-		}
+			t, err = t.ParseFS(html.FS, "*.html")
 
-		http_pip_handler, err := www.PointInPolygonHandler(spatial_app, http_pip_opts)
+			if err != nil {
+				return fmt.Errorf("Unable to parse templates, %v", err)
+			}
 
-		if err != nil {
-			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
-		}
+			// point-in-polygon page
 
-		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
+			http_pip_opts := &www.PointInPolygonHandlerOptions{
+				Templates: t,
+			}
 
-		mux.Handle(opts.PathPIP, http_pip_handler)
+			http_pip_handler, err := www.PointInPolygonHandler(spatial_app, http_pip_opts)
 
-		if !strings.HasSuffix(opts.PathPIP, "/") {
-			path_pip_slash := fmt.Sprintf("%s/", opts.PathPIP)
-			mux.Handle(path_pip_slash, http_pip_handler)
-		}
+			if err != nil {
+				return fmt.Errorf("failed to create (bundled) www handler because %s", err)
+			}
 
-		// index / splash page
+			http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 
-		index_opts := &www.IndexHandlerOptions{
-			Templates: t,
-		}
+			mux.Handle(opts.PathPIP, http_pip_handler)
 
-		index_handler, err := www.IndexHandler(index_opts)
+			if !strings.HasSuffix(opts.PathPIP, "/") {
+				path_pip_slash := fmt.Sprintf("%s/", opts.PathPIP)
+				mux.Handle(path_pip_slash, http_pip_handler)
+			}
 
-		if err != nil {
-			return fmt.Errorf("Failed to create index handler, %v", err)
-		}
+			// index / splash page
 
-		index_handler = authenticator.WrapHandler(index_handler)
+			index_opts := &www.IndexHandlerOptions{
+				Templates: t,
+			}
 
-		path_index := "/"
+			index_handler, err := www.IndexHandler(index_opts)
 
-		mux.Handle(path_index, index_handler)
+			if err != nil {
+				return fmt.Errorf("Failed to create index handler, %v", err)
+			}
+
+			index_handler = authenticator.WrapHandler(index_handler)
+
+			path_index := "/"
+
+			mux.Handle(path_index, index_handler)
+		*/
 	}
 
 	s, err := server.NewServer(ctx, opts.ServerURI)
