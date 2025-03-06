@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/aaronland/go-http-maps/v2"
 	"github.com/sfomuseum/go-flags/flagset"
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-reader"
@@ -46,18 +47,6 @@ var cors_origins multi.MultiCSVString
 // Enable gzip-encoding for data-related and API handlers.
 var enable_gzip bool
 
-// The initial latitude for map views to use.
-var leaflet_initial_latitude float64
-
-// The initial longitude for map views to use.
-var leaflet_initial_longitude float64
-
-// The initial zoom level for map views to use.
-var leaflet_initial_zoom int
-
-// An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.
-var leaflet_max_bounds string
-
 // A valid aaronland/go-http-server URI.
 var server_uri string
 
@@ -74,7 +63,12 @@ var custom_placetypes string
 
 var iterator_uris spatial_flags.MultiCSVIteratorURIFlag
 
-var map_provider_uri string
+var initial_view string
+var map_provider string
+var map_tile_uri string
+var protomaps_theme string
+var leaflet_style string
+var leaflet_point_style string
 
 func DefaultFlagSet() (*flag.FlagSet, error) {
 
@@ -124,14 +118,14 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 	fs.StringVar(&path_pip, "path-pip", "/point-in-polygon", "The URL for the point in polygon web handler")
 	fs.StringVar(&path_data, "path-data", "/data", "The URL for data (GeoJSON) handler")
 
-	fs.Float64Var(&leaflet_initial_latitude, "leaflet-initial-latitude", 37.616906, "The initial latitude for map views to use.")
-	fs.Float64Var(&leaflet_initial_longitude, "leaflet-initial-longitude", -122.386665, "The initial longitude for map views to use.")
-	fs.IntVar(&leaflet_initial_zoom, "leaflet-initial-zoom", 14, "The initial zoom level for map views to use.")
-	fs.StringVar(&leaflet_max_bounds, "leaflet-max-bounds", "", "An optional comma-separated bounding box ({MINX},{MINY},{MAXX},{MAXY}) to set the boundary for map views.")
-
 	fs.BoolVar(&log_timings, "log-timings", false, "Emit timing metrics to the application's logger")
 
-	fs.StringVar(&map_provider_uri, "map-provider-uri", "leaflet://?leaflet-tile-url=https://tile.openstreetmap.org/{z}/{x}/{y}.png", "A valid aaronland/go-http-maps/provider URI.")
+	flag.StringVar(&map_provider, "map-provider", "leaflet", "Valid options are: leaflet, protomaps")
+	flag.StringVar(&map_tile_uri, "map-tile-uri", maps.LEAFLET_OSM_TILE_URL, "A valid Leaflet tile layer URI. See documentation for special-case (interpolated tile) URIs.")
+	flag.StringVar(&protomaps_theme, "protomaps-theme", "white", "A valid Protomaps theme label.")
+	flag.StringVar(&leaflet_style, "leaflet_style", "", "A custom Leaflet style definition for geometries. This may either be a JSON-encoded string or a path on disk.")
+	flag.StringVar(&leaflet_point_style, "leaflet_point_style", "", "A custom Leaflet style definition for points. This may either be a JSON-encoded string or a path on disk.")
+	flag.StringVar(&initial_view, "initial-view", "", "A comma-separated string indicating the map's initial view. Valid options are: 'LON,LAT', 'LON,LAT,ZOOM' or 'MINX,MINY,MAXX,MAXY'.")
 
 	return fs, nil
 }

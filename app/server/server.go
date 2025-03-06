@@ -11,9 +11,7 @@ import (
 	"strings"
 
 	"github.com/NYTimes/gziphandler"
-	"github.com/aaronland/go-http-bootstrap"
-	"github.com/aaronland/go-http-maps"
-	"github.com/aaronland/go-http-maps/provider"
+	"github.com/aaronland/go-http-maps/v2"
 	"github.com/aaronland/go-http-ping/v2"
 	"github.com/aaronland/go-http-server"
 	"github.com/rs/cors"
@@ -156,16 +154,19 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	if opts.EnableWWW {
 
-		map_provider, err := provider.NewProvider(ctx, opts.MapProviderURI)
-
-		if err != nil {
-			return fmt.Errorf("Failed to create map provider, %w", err)
+		maps_opts := &maps.AssignMapConfigHandlerOptions{
+			MapProvider:       opts.MapProvider,
+			MapTileURI:        opts.MapTileURI,
+			InitialView:       opts.InitialView,
+			LeafletStyle:      opts.LeafletStyle,
+			LeafletPointStyle: opts.LeafletPointStyle,
+			ProtomapsTheme:    opts.ProtomapsTheme,
 		}
 
-		err = map_provider.AppendAssetHandlers(mux)
+		err := maps.AssignMapConfigHandler(maps_opts, mux, "/map.json")
 
 		if err != nil {
-			return fmt.Errorf("Failed to append map provider asset handlers, %w", err)
+			return fmt.Errorf("Failed to assign map config handler, %w", err)
 		}
 
 		t := template.New("spatial")
@@ -213,29 +214,10 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Unable to parse templates, %v", err)
 		}
 
-		bootstrap_opts := bootstrap.DefaultBootstrapOptions()
-
-		err = bootstrap.AppendAssetHandlers(mux, bootstrap_opts)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append bootstrap assets, %v", err)
-		}
-
-		err = www.AppendStaticAssetHandlers(mux)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append static assets, %v", err)
-		}
-
 		// point-in-polygon page
 
 		http_pip_opts := &www.PointInPolygonHandlerOptions{
-			Templates:        t,
-			InitialLatitude:  opts.LeafletInitialLatitude,
-			InitialLongitude: opts.LeafletInitialLongitude,
-			InitialZoom:      opts.LeafletInitialZoom,
-			MaxBounds:        opts.LeafletMaxBounds,
-			MapProvider:      map_provider.Scheme(),
+			Templates: t,
 		}
 
 		http_pip_handler, err := www.PointInPolygonHandler(spatial_app, http_pip_opts)
@@ -244,16 +226,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("failed to create (bundled) www handler because %s", err)
 		}
 
-		maps_opts := maps.DefaultMapsOptions()
-
-		err = maps.AppendAssetHandlers(mux, maps_opts)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append map assets, %w", err)
-		}
-
-		http_pip_handler = bootstrap.AppendResourcesHandler(http_pip_handler, bootstrap_opts)
-		http_pip_handler = maps.AppendResourcesHandlerWithProvider(http_pip_handler, map_provider, maps_opts)
 		http_pip_handler = authenticator.WrapHandler(http_pip_handler)
 
 		mux.Handle(opts.PathPIP, http_pip_handler)
@@ -275,7 +247,6 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 			return fmt.Errorf("Failed to create index handler, %v", err)
 		}
 
-		index_handler = bootstrap.AppendResourcesHandler(index_handler, bootstrap_opts)
 		index_handler = authenticator.WrapHandler(index_handler)
 
 		path_index := "/"
