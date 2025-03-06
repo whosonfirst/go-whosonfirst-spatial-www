@@ -26,38 +26,29 @@
 		<details>
 		    <summary>Filters</summary>
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_current" value="is_current">
+			<input class="form-check-input spatial-filter spatial-filter-existential" type="checkbox" id="is_current" value="is_current">
 			<label class="form-check-label" for="is_current">is current</label>
 		    </div>
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_deprecated" value="is_deprecated">
+			<input class="form-check-input spatial-filter spatial-filter-existential" type="checkbox" id="is_deprecated" value="is_deprecated">
 			<label class="form-check-label" for="is_deprecated">is deprecated</label>
 		    </div>
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_ceased" value="is_ceased">
+			<input class="form-check-input spatial-filter spatial-filter-existential" type="checkbox" id="is_ceased" value="is_ceased">
 			<label class="form-check-label" for="is_ceased">is ceased</label>
 		    </div>
 		    
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_superseded" value="is_superseded">
+			<input class="form-check-input spatial-filter spatial-filter-existential" type="checkbox" id="is_superseded" value="is_superseded">
 			<label class="form-check-label" for="is_superseded">is superseded</label>
 		    </div>
 		    
 		    <div class="form-check form-check-inline">
-			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_superseding" value="is_superseding">
+			<input class="form-check-input spatial-filter spatial-filter-existential" type="checkbox" id="is_superseding" value="is_superseding">
 			<label class="form-check-label" for="is_superseding">is superseding</label>
 		    </div>
 
 		    <div id="placetypes"></div>
-
-		    <!--
-		    {{ range $i, $pt := .Placetypes }}			
-		    <div class="form-check form-check-inline">
-			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-placetype" type="checkbox" id="placeype-{{ $pt.Name }}" value="{{ $pt.Name }}">
-			<label class="form-check-label" for="placetype-{{ $pt.Name }}">{{ $pt.Name }}</label>
-		    </div>
-		    {{ end }}
-		    -->
 		    
 		</details>
 
@@ -67,12 +58,12 @@
 		    
 		    <div class="form-group">
 			<label for="inception">Inception</label>
-			<input type="text" class="form-control point-in-polygon-filter point-in-polygon-filter-edtf" id="inception" aria-describedby="extras" placeholder="A valid EDTF srting">
+			<input type="text" class="form-control spatial-filter spatial-filter-edtf" id="inception" aria-describedby="extras" placeholder="A valid EDTF srting">
 		    </div>		    
 
 		    <div class="form-group">
 			<label for="cessation">Cessation</label>
-			<input type="text" class="form-control point-in-polygon-filter point-in-polygon-filter-edtf" id="cessation" aria-describedby="extras" placeholder="A valid EDTF srting">
+			<input type="text" class="form-control spatial-filter spatial-filter-edtf" id="cessation" aria-describedby="extras" placeholder="A valid EDTF srting">
 		    </div>		    
 		</details>
 		
@@ -81,7 +72,7 @@
 
 		    <div class="form-group">
 			<label for="extras">A comma-separated list of additional properties to include</label>
-			<input type="text" class="form-control point-in-polygon-extra" id="extras" aria-describedby="extras" placeholder="">
+			<input type="text" class="form-control spatial-extra" id="extras" aria-describedby="extras" placeholder="">
 		    </div>
 		    
 		</details>
@@ -93,7 +84,6 @@
 	<div class="card">
 	    <div id="pip-results" class="card-body">
 		<div id="pip-matches"></ul>		
-		<div id="pip-candidates"></ul>
 	    </div>	    
 	</div>	
 
@@ -107,7 +97,9 @@
   <!-- replace with https://github.com/sfomuseum/leaflet-crosshairs-control -->
   <script type="text/javascript" src="/javascript/slippymap.crosshairs.js"></script>  
   <script type="text/javascript" src="/javascript/whosonfirst.spatial.api.js"></script>
-  <script type="text/javascript" src="/javascript/whosonfirst.spatial.maps.js"></script>    
+  <script type="text/javascript" src="/javascript/whosonfirst.spatial.maps.js"></script>
+  <script type="text/javascript" src="/javascript/whosonfirst.spatial.results.js"></script>
+  <script type="text/javascript" src="/javascript/whosonfirst.spatial.placetypes.js"></script>        
   <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.js"></script>
   <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.init.js"></script>
   
