@@ -13,6 +13,11 @@ details summary {
 
 #controls {
 	padding-left: 1rem;
+	font-size: small;	
+}
+
+#filters {
+
 }
 
 #map {
@@ -21,8 +26,8 @@ details summary {
 }
 
 #results {
-	font-size: small;
-	overflow: scroll !important;	
+	overflow: scroll !important;
+	height: 70vh;
 }
 
 .grid {
