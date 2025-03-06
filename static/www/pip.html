@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	  <title>go-whosonfirst-spatial point-in-polygon tool</title>
+	  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	  <meta name="referrer" content="origin">
+	  <meta http-equiv="X-UA-Compatible" content="IE=9" />
+	  <meta name="apple-mobile-web-app-capable" content="yes" />
+	  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	  <meta name="HandheldFriendly" content="true" />
+	  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+	  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+	  <link rel="stylesheet" type="text/css" href="/css/leaflet.min.css" />
+	  <link rel="stylesheet" type="text/css" href="/css/leaflet.spinner.control.css" />
+	  <link rel="stylesheet" type="text/css" href="/css/whosonfirst.spatial.pip.css" />	  	  	  
+  </head>
+  <body>
+
+	<div class="card" id="point-in-polygon">
+
+	    <div id="map"></div>
+	    
+	    <div class="card-footer">
+
+		<details>
+		    <summary>Filters</summary>
+		    <div class="form-check form-check-inline">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_current" value="is_current">
+			<label class="form-check-label" for="is_current">is current</label>
+		    </div>
+		    <div class="form-check form-check-inline">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_deprecated" value="is_deprecated">
+			<label class="form-check-label" for="is_deprecated">is deprecated</label>
+		    </div>
+		    <div class="form-check form-check-inline">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_ceased" value="is_ceased">
+			<label class="form-check-label" for="is_ceased">is ceased</label>
+		    </div>
+		    
+		    <div class="form-check form-check-inline">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_superseded" value="is_superseded">
+			<label class="form-check-label" for="is_superseded">is superseded</label>
+		    </div>
+		    
+		    <div class="form-check form-check-inline">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-existential" type="checkbox" id="is_superseding" value="is_superseding">
+			<label class="form-check-label" for="is_superseding">is superseding</label>
+		    </div>
+
+		    <!--
+		    {{ range $i, $pt := .Placetypes }}			
+		    <div class="form-check form-check-inline">
+			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-placetype" type="checkbox" id="placeype-{{ $pt.Name }}" value="{{ $pt.Name }}">
+			<label class="form-check-label" for="placetype-{{ $pt.Name }}">{{ $pt.Name }}</label>
+		    </div>
+		    {{ end }}
+		    -->
+		    
+		</details>
+
+		<details>
+		    <summary>Dates</summary>
+		    <small>Date filtering is still being actively developed. Not all EDTF strings are supported yet.</small>
+		    
+		    <div class="form-group">
+			<label for="inception">Inception</label>
+			<input type="text" class="form-control point-in-polygon-filter point-in-polygon-filter-edtf" id="inception" aria-describedby="extras" placeholder="A valid EDTF srting">
+		    </div>		    
+
+		    <div class="form-group">
+			<label for="cessation">Cessation</label>
+			<input type="text" class="form-control point-in-polygon-filter point-in-polygon-filter-edtf" id="cessation" aria-describedby="extras" placeholder="A valid EDTF srting">
+		    </div>		    
+		</details>
+		
+		<details>
+		    <summary>Extras</summary>
+
+		    <div class="form-group">
+			<label for="extras">A comma-separated list of additional properties to include</label>
+			<input type="text" class="form-control point-in-polygon-extra" id="extras" aria-describedby="extras" placeholder="">
+		    </div>
+		    
+		</details>
+		
+	    </div>
+	</div>
+
+	<div class="card">
+	    <div id="pip-results" class="card-body">
+		<div id="pip-matches"></ul>		
+		<div id="pip-candidates"></ul>
+	    </div>	    
+	</div>
+	      
+  </body>
+  
+  <script type="text/javascript" src="/javascript/leaflet.js"></script>
+  <script type="text/javascript" src="/javascript/protomaps-leaflet.js"></script>
+  <script type="text/javascript" src="/javascript/leaflet.spinner.control.js"></script>	
+  <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.js"></script>
+  <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.init.js"></script>
+  
+</html>

@@ -1,4 +1,7 @@
 window.addEventListener("load", function load(event){
+
+    console.log("INIT PIP");
+    return;
     
     var pip_wrapper = document.getElementById("point-in-polygon");
 
