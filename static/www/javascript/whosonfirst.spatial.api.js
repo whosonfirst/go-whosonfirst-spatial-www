@@ -11,6 +11,12 @@ whosonfirst.spatial.api = (function(){
 	    return self.post(rel_url, args)
 	},
 
+	'intersects': function(args) {
+
+	    var rel_url = "/api/intersects";
+	    return self.post(rel_url, args)
+	},
+	
 	'placetypes': function(args) {
 
 	    var rel_url = "/api/placetypes";
