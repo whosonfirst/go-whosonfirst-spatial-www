@@ -14,23 +14,11 @@ import (
 	spatial_flags "github.com/whosonfirst/go-whosonfirst-spatial/flags"
 )
 
-// Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.
-var path_prefix string
-
 // The root URL for all API handlers
 var path_api string
 
 // The URL for the ping (health check) handler
 var path_ping string
-
-// The URL for the point in polygon web handler
-var path_pip string
-
-// The URL for data (GeoJSON) handler
-var path_data string
-
-// The URL for placetypes (JSON) handler
-var path_placetypes string
 
 // Enable the interactive /debug endpoint to query points and display results.
 var enable_www bool
@@ -114,13 +102,8 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 
 	fs.BoolVar(&enable_gzip, "enable-gzip", false, "Enable gzip-encoding for data-related and API handlers.")
 
-	fs.StringVar(&path_prefix, "path-prefix", "", "Prepend this prefix to all assets (but not HTTP handlers). This is mostly for API Gateway integrations.")
-
 	fs.StringVar(&path_api, "path-api", "/api", "The root URL for all API handlers")
 	fs.StringVar(&path_ping, "path-ping", "/health/ping", "The URL for the ping (health check) handler")
-	fs.StringVar(&path_pip, "path-pip", "/point-in-polygon", "The URL for the point in polygon web handler")
-	fs.StringVar(&path_data, "path-data", "/data", "The URL for data (GeoJSON) handler")
-	fs.StringVar(&path_placetypes, "path-placetypes", "/placetypes", "The URL for placetypes (JSON) handler")
 
 	fs.BoolVar(&log_timings, "log-timings", false, "Emit timing metrics to the application's logger")
 

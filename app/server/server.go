@@ -4,11 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	// "html/template"
 	"log/slog"
 	gohttp "net/http"
 	"path/filepath"
-	"strings"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/aaronland/go-http-maps/v2"
@@ -18,9 +16,7 @@ import (
 	"github.com/sfomuseum/go-http-auth"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/http/api"
-	// "github.com/whosonfirst/go-whosonfirst-spatial-www/http/www"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/static/www"
-	// "github.com/whosonfirst/go-whosonfirst-spatial-www/templates/html"
 	app "github.com/whosonfirst/go-whosonfirst-spatial/application"
 )
 
@@ -118,11 +114,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 		data_handler = gziphandler.GzipHandler(data_handler)
 	}
 
-	if !strings.HasSuffix(opts.PathData, "/") {
-		opts.PathData = fmt.Sprintf("%s/", opts.PathData)
-	}
-
-	mux.Handle(opts.PathData, data_handler)
+	mux.Handle("/data/", data_handler)
 
 	// point-in-polygon handlers
 
@@ -151,6 +143,33 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 
 	mux.Handle(path_api_pip, api_pip_handler)
 
+	// intersects
+
+	api_intersects_opts := &api.IntersectsHandlerOptions{
+		EnableGeoJSON: opts.EnableGeoJSON,
+		LogTimings:    opts.LogTimings,
+	}
+
+	api_intersects_handler, err := api.IntersectsHandler(spatial_app, api_intersects_opts)
+
+	if err != nil {
+		return fmt.Errorf("failed to create point-in-polygon handler because %s", err)
+	}
+
+	api_intersects_handler = authenticator.WrapHandler(api_intersects_handler)
+
+	if opts.EnableCORS {
+		api_intersects_handler = cors_wrapper.Handler(api_intersects_handler)
+	}
+
+	if opts.EnableGzip {
+		api_intersects_handler = gziphandler.GzipHandler(api_intersects_handler)
+	}
+
+	path_api_intersects := filepath.Join(opts.PathAPI, "intersects")
+
+	mux.Handle(path_api_intersects, api_intersects_handler)
+	
 	// www handlers
 
 	if opts.EnableWWW {

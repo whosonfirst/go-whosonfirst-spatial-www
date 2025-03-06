@@ -13,20 +13,20 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-spr-geojson"
 )
 
-const timingsPIPHandler string = "PIP handler"
+const timingsIntersectsHandler string = "PIP handler"
 
-const timingsPIPQuery string = "PIP handler query"
+const timingsIntersectsQuery string = "PIP handler query"
 
-const timingsPIPFeatureCollection string = "PIP handler feature collection"
+const timingsIntersectsFeatureCollection string = "PIP handler feature collection"
 
-const timingsPIPProperties string = "PIP handler properties"
+const timingsIntersectsProperties string = "PIP handler properties"
 
-type PointInPolygonHandlerOptions struct {
+type IntersectsHandlerOptions struct {
 	EnableGeoJSON bool
 	LogTimings    bool
 }
 
-func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPolygonHandlerOptions) (http.Handler, error) {
+func IntersectsHandler(app *spatial_app.SpatialApplication, opts *IntersectsHandlerOptions) (http.Handler, error) {
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
@@ -44,11 +44,11 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			return
 		}
 
-		app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPHandler)
+		app.Monitor.Signal(ctx, timings.SinceStart, timingsIntersectsHandler)
 
 		defer func() {
 
-			app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPHandler)
+			app.Monitor.Signal(ctx, timings.SinceStop, timingsIntersectsHandler)
 
 			if opts.LogTimings {
 
@@ -58,17 +58,17 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			}
 		}()
 
-		pip_fn, err := query.NewSpatialFunction(ctx, "pip://")
+		intersects_fn, err := query.NewSpatialFunction(ctx, "intersects://")
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		var pip_query *query.SpatialQuery
+		var intersects_query *query.SpatialQuery
 
 		dec := json.NewDecoder(req.Body)
-		err = dec.Decode(&pip_query)
+		err = dec.Decode(&intersects_query)
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
@@ -87,11 +87,11 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			return
 		}
 
-		app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPQuery)
+		app.Monitor.Signal(ctx, timings.SinceStart, timingsIntersectsQuery)
 
-		pip_rsp, err := query.ExecuteQuery(ctx, app.SpatialDatabase, pip_fn, pip_query)
+		intersects_rsp, err := query.ExecuteQuery(ctx, app.SpatialDatabase, intersects_fn, intersects_query)
 
-		app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPQuery)
+		app.Monitor.Signal(ctx, timings.SinceStop, timingsIntersectsQuery)
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
@@ -107,11 +107,11 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 				Writer: rsp,
 			}
 
-			app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPFeatureCollection)
+			app.Monitor.Signal(ctx, timings.SinceStart, timingsIntersectsFeatureCollection)
 
-			err := geojson.AsFeatureCollection(ctx, pip_rsp, opts)
+			err := geojson.AsFeatureCollection(ctx, intersects_rsp, opts)
 
-			app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPFeatureCollection)
+			app.Monitor.Signal(ctx, timings.SinceStop, timingsIntersectsFeatureCollection)
 
 			if err != nil {
 				http.Error(rsp, err.Error(), http.StatusInternalServerError)
@@ -119,19 +119,19 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			}
 		}
 
-		if len(pip_query.Properties) > 0 {
+		if len(intersects_query.Properties) > 0 {
 
 			props_opts := &spatial.PropertiesResponseOptions{
 				Reader:       app.PropertiesReader,
-				Keys:         pip_query.Properties,
+				Keys:         intersects_query.Properties,
 				SourcePrefix: "properties",
 			}
 
-			app.Monitor.Signal(ctx, timings.SinceStart, timingsPIPProperties)
+			app.Monitor.Signal(ctx, timings.SinceStart, timingsIntersectsProperties)
 
-			props_rsp, err := spatial.PropertiesResponseResultsWithStandardPlacesResults(ctx, props_opts, pip_rsp)
+			props_rsp, err := spatial.PropertiesResponseResultsWithStandardPlacesResults(ctx, props_opts, intersects_rsp)
 
-			app.Monitor.Signal(ctx, timings.SinceStop, timingsPIPProperties)
+			app.Monitor.Signal(ctx, timings.SinceStop, timingsIntersectsProperties)
 
 			if err != nil {
 				http.Error(rsp, err.Error(), http.StatusInternalServerError)
@@ -150,7 +150,7 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 		}
 
 		enc := json.NewEncoder(rsp)
-		err = enc.Encode(pip_rsp)
+		err = enc.Encode(intersects_rsp)
 
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
@@ -160,6 +160,6 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 		return
 	}
 
-	pip_handler := http.HandlerFunc(fn)
-	return pip_handler, nil
+	intersects_handler := http.HandlerFunc(fn)
+	return intersects_handler, nil
 }
