@@ -169,7 +169,7 @@ func RunWithOptions(ctx context.Context, opts *RunOptions) error {
 	path_api_intersects := filepath.Join(opts.PathAPI, "intersects")
 
 	mux.Handle(path_api_intersects, api_intersects_handler)
-	
+
 	// www handlers
 
 	if opts.EnableWWW {
