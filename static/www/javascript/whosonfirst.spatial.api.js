@@ -15,7 +15,7 @@ whosonfirst.spatial.api = (function(){
 
 	'point_in_polygon': function(args, on_success, on_error) {
 
-	    var rel_url = "/point-in-polygon";
+	    var rel_url = "/api/point-in-polygon";
 	    return self.post(rel_url, args, on_success, on_error);
 	},
 
@@ -64,8 +64,7 @@ whosonfirst.spatial.api = (function(){
 	},
 	
 	'abs_url': function(rel_url) {
-	    var api_root = document.body.getAttribute("data-api-root");
-	    return location.protocol + "//" + location.host + api_root + rel_url;
+	    return location.protocol + "//" + location.host + rel_url;
 	},
 
 	'query_string': function(args){

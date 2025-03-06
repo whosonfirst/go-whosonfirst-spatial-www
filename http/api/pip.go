@@ -32,6 +32,8 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
+		logger := slog.Default()
+		
 		ctx := req.Context()
 
 		if req.Method != "POST" {
@@ -53,7 +55,7 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 			if opts.LogTimings {
 
 				for _, t := range app.Timings {
-					slog.Debug("Timings", "timing", t)
+					logger.Debug("Timings", "timing", t)
 				}
 			}
 		}()

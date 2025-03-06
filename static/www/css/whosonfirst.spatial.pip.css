@@ -23,7 +23,8 @@ details summary {
 
 #map {
 	height: 45vh !important;
-	max-height: 45vh !important;	
+	max-height: 45vh !important;
+	width: 100%;
 }
 
 #pip-results {

@@ -10,16 +10,17 @@
 	  <meta name="HandheldFriendly" content="true" />
 	  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
 	  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
-	  <link rel="stylesheet" type="text/css" href="/css/leaflet.min.css" />
+	  <link rel="stylesheet" type="text/css" href="/css/leaflet.css" />
 	  <link rel="stylesheet" type="text/css" href="/css/leaflet.spinner.control.css" />
-	  <link rel="stylesheet" type="text/css" href="/css/whosonfirst.spatial.pip.css" />	  	  	  
+	  <link rel="stylesheet" type="text/css" href="/css/whosonfirst.spatial.css" />	  
+	  <link rel="stylesheet" type="text/css" href="/css/whosonfirst.spatial.pip.css" />
   </head>
   <body>
 
 	<div class="card" id="point-in-polygon">
 
 	    <div id="map"></div>
-	    
+
 	    <div class="card-footer">
 
 		<details>
@@ -47,14 +48,12 @@
 			<label class="form-check-label" for="is_superseding">is superseding</label>
 		    </div>
 
-		    <!--
 		    {{ range $i, $pt := .Placetypes }}			
 		    <div class="form-check form-check-inline">
 			<input class="form-check-input point-in-polygon-filter point-in-polygon-filter-placetype" type="checkbox" id="placeype-{{ $pt.Name }}" value="{{ $pt.Name }}">
 			<label class="form-check-label" for="placetype-{{ $pt.Name }}">{{ $pt.Name }}</label>
 		    </div>
 		    {{ end }}
-		    -->
 		    
 		</details>
 
@@ -83,7 +82,8 @@
 		    
 		</details>
 		
-	    </div>
+	</div>
+	
 	</div>
 
 	<div class="card">
@@ -91,13 +91,18 @@
 		<div id="pip-matches"></ul>		
 		<div id="pip-candidates"></ul>
 	    </div>	    
-	</div>
-	      
+	</div>	
+
   </body>
   
   <script type="text/javascript" src="/javascript/leaflet.js"></script>
   <script type="text/javascript" src="/javascript/protomaps-leaflet.js"></script>
-  <script type="text/javascript" src="/javascript/leaflet.spinner.control.js"></script>	
+  <script type="text/javascript" src="/javascript/localforage.min.js"></script>    
+  <script type="text/javascript" src="/javascript/whosonfirst.net.js"></script>  
+  <script type="text/javascript" src="/javascript/leaflet.spinner.control.js"></script>
+  <!-- replace with https://github.com/sfomuseum/leaflet-crosshairs-control -->
+  <script type="text/javascript" src="/javascript/slippymap.crosshairs.js"></script>  
+  <script type="text/javascript" src="/javascript/whosonfirst.spatial.api.js"></script>  
   <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.js"></script>
   <script type="text/javascript" src="/javascript/whosonfirst.spatial.pip.init.js"></script>
   
