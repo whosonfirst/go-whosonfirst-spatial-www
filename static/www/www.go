@@ -4,5 +4,5 @@ import (
 	"embed"
 )
 
-//go:embed css/* javascript/* *.html
+//go:embed css/* javascript/* intersects/* point-in-polygon/* *.html
 var FS embed.FS

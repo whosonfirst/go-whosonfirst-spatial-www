@@ -25,12 +25,14 @@ whosonfirst.spatial.intersects = (function(){
 		dragMode: false,
 	    });
 
+	    console.log("PM", map.pm);
+	    
 	    map.on("pm:drawstart", (e) => {
-		// console.log("draw start", e);
+		layers.clearLayers();
 	    });
 
 	    map.on("pm:drawend", (shp) => {
-		console.log("draw start", shp);
+		// console.log("draw start", shp);
 
 		var feature_group = map.pm.getGeomanLayers(true);
 		var feature_collection = feature_group.toGeoJSON();
