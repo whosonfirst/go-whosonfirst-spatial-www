@@ -33,7 +33,7 @@ func PointInPolygonHandler(app *spatial_app.SpatialApplication, opts *PointInPol
 	fn := func(rsp http.ResponseWriter, req *http.Request) {
 
 		logger := slog.Default()
-		
+
 		ctx := req.Context()
 
 		if req.Method != "POST" {

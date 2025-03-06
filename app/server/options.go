@@ -26,9 +26,11 @@ type RunOptions struct {
 	CORSAllowCredentials   bool
 	PathPing               string
 	PathData               string
+	PathPlacetypes         string
 	PathAPI                string
 	PathPrefix             string
 	PathPIP                string
+	PathIntersects         string
 
 	// A string label indicating the map provider to use. Valid options are: leaflet, protomaps.
 	MapProvider string
@@ -66,14 +68,15 @@ func RunOptionsFromFlagSet(ctx context.Context, fs *flag.FlagSet) (*RunOptions, 
 		EnableCustomPlacetypes: enable_custom_placetypes,
 		CustomPlacetypes:       custom_placetypes,
 
-		EnableWWW:     enable_www,
-		EnableGeoJSON: enable_geojson,
-		EnableGzip:    enable_gzip,
-		PathPing:      path_ping,
-		PathData:      path_data,
-		PathAPI:       path_api,
-		PathPrefix:    path_prefix,
-		PathPIP:       path_pip,
+		EnableWWW:      enable_www,
+		EnableGeoJSON:  enable_geojson,
+		EnableGzip:     enable_gzip,
+		PathPing:       path_ping,
+		PathData:       path_data,
+		PathPlacetypes: path_placetypes,
+		PathAPI:        path_api,
+		PathPrefix:     path_prefix,
+		PathPIP:        path_pip,
 
 		LogTimings:           log_timings,
 		EnableCORS:           enable_cors,

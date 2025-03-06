@@ -174,7 +174,6 @@ whosonfirst.spatial.pip = (function(){
 	    layers.addTo(map);
 	    
 	    var spinner = new L.Control.Spinner();
-	    // map.addControl(spinner);
 	    
 	    var update_map = function(e){
 		
@@ -372,7 +371,7 @@ whosonfirst.spatial.pip = (function(){
 		    matches.innerHTML = "";
 		    
 		    map.removeControl(spinner);	    
-		    console.log("SAD", err);
+		    console.error("Point in polygon request failed", err);
 		}
 		
 		args["sort"] = [
@@ -380,9 +379,12 @@ whosonfirst.spatial.pip = (function(){
 		    "name://",
 		    "inception://",
 		];
-
-		console.debug("point in polygon", args);
-		whosonfirst.spatial.api.point_in_polygon(args, on_success, on_error);
+		
+		whosonfirst.spatial.api.point_in_polygon(args).then((rsp) => {
+		    on_success(rsp);
+		}).catch((err) => {
+		    on_error(err);
+		});
 		
 		map.addControl(spinner);	
 		layers.clearLayers();	
@@ -407,6 +409,45 @@ whosonfirst.spatial.pip = (function(){
 	    }
 	    	    
 	    slippymap.crosshairs.init(map);
+
+	    whosonfirst.spatial.api.placetypes({}).then((rsp) => {
+
+		var mk_checkbox = function(id, name){
+
+		    var div = document.createElement("div");
+		    div.setAttribute("class", "form-check form-check-inline");
+
+		    var input = document.createElement("input");
+		    input.setAttribute("type", "checkbox");
+		    input.setAttribute("class", "form-check-input point-in-polygon-filter point-in-polygon-filter-placetype");
+		    input.setAttribute("id", "placetype-" + id);
+		    input.setAttribute("value", name);
+
+		    var label = document.createElement("label");
+		    label.setAttribute("class", "form-check-label");
+		    label.setAttribute("for", "placetype-" + name);
+		    label.appendChild(document.createTextNode(name));
+
+		    div.appendChild(input);
+		    div.appendChild(label);
+
+		    return div;
+		};
+
+		var placetypes_el = document.getElementById("placetypes");
+		
+		var count = rsp.length;
+
+		for (var i=0; i < count; i++){
+		    var pt = rsp[i];
+		    var cb = mk_checkbox(pt.id, pt.name);
+		    placetypes_el.appendChild(cb);
+		}
+		
+	    }).catch((err) => {
+		console.error("SAD PLACETYPES", err);
+	    });
+	    
 	}
 	
     };

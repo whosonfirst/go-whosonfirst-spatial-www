@@ -29,6 +29,9 @@ var path_pip string
 // The URL for data (GeoJSON) handler
 var path_data string
 
+// The URL for placetypes (JSON) handler
+var path_placetypes string
+
 // Enable the interactive /debug endpoint to query points and display results.
 var enable_www bool
 
@@ -117,6 +120,7 @@ func DefaultFlagSet() (*flag.FlagSet, error) {
 	fs.StringVar(&path_ping, "path-ping", "/health/ping", "The URL for the ping (health check) handler")
 	fs.StringVar(&path_pip, "path-pip", "/point-in-polygon", "The URL for the point in polygon web handler")
 	fs.StringVar(&path_data, "path-data", "/data", "The URL for data (GeoJSON) handler")
+	fs.StringVar(&path_placetypes, "path-placetypes", "/placetypes", "The URL for placetypes (JSON) handler")
 
 	fs.BoolVar(&log_timings, "log-timings", false, "Emit timing metrics to the application's logger")
 
