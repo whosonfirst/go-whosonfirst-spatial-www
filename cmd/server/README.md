@@ -82,7 +82,7 @@ The `server` tool in this package absolute works and works well for spot-checkin
 
 ## Example
 
-### FOO
+### WWW
 
 ```
 $> bin/server \
@@ -124,7 +124,31 @@ $> bin/server \
 	-iterator-uri 'repo://#/usr/local/data/sfomuseum-data-architecture'
 ```
 
-And then to query the point-in-polygon API you would do something like this:
+API endpoints for spatial queries exected to be passed a JSON-encoded [query.SpatialQuery](https://github.com/whosonfirst/go-whosonfirst-spatial/blob/intersects/query/query.go) struct which looks like this:
+
+```
+type SpatialQuery struct {
+	Geometry            *geojson.Geometry `json:"geometry"`
+	Placetypes          []string          `json:"placetypes,omitempty"`
+	Geometries          string            `json:"geometries,omitempty"`
+	AlternateGeometries []string          `json:"alternate_geometries,omitempty"`
+	IsCurrent           []int64           `json:"is_current,omitempty"`
+	IsCeased            []int64           `json:"is_ceased,omitempty"`
+	IsDeprecated        []int64           `json:"is_deprecated,omitempty"`
+	IsSuperseded        []int64           `json:"is_superseded,omitempty"`
+	IsSuperseding       []int64           `json:"is_superseding,omitempty"`
+	InceptionDate       string            `json:"inception_date,omitempty"`
+	CessationDate       string            `json:"cessation_date,omitempty"`
+	Properties          []string          `json:"properties,omitempty"`
+	Sort                []string          `json:"sort,omitempty"`
+}
+```
+
+The only mandatory field is `geometry` which is expected to be a GeoJSON-encoded geometry. The type of the geometry will vary depending on the API endpoint being called.
+
+#### Point in polygon
+
+And then to query the `point-in-polygon` API you would do something like this:
 
 ```
 $> curl -XPOST http://localhost:8080/api/point-in-polygon -d '{"geometry": {"type": "Point", "coordinates": [-122.3866653442383,  37.61701894316063 ] } }'
@@ -165,7 +189,7 @@ By default, results are returned as a list of ["standard places response"](https
 
 
 ```
-$> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point-in-polygon -d '{"latitude": 37.61701894316063, "longitude": -122.3866653442383}'
+$> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point-in-polygon -d '{"geometry": {"type": "Point", "coordinates": [-122.3866653442383,  37.61701894316063 ] } }'
 
 {
   "type": "FeatureCollection",
@@ -206,4 +230,56 @@ $> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point
     ... and so on
   ]
 }  
+```
+
+#### Intersects
+
+And then to query the `intersects` API you would do something like this:
+
+```
+$> curl -X POST 'http://localhost:8080/api/intersects' -d '{"geometry":{"type":"Polygon","coordinates":[[[-122.381988,37.617508],[-122.381451,37.618478],[-122.380764,37.616878],[-122.381988,37.617508]]]},"is_current":[1],"placetypes":["wing"],"sort":["placetype://","name://","inception://"]}'
+
+{
+  "places": [
+    {
+      "edtf:inception": "2024-11-05",
+      "edtf:cessation": "..",
+      "wof:id": 1947304591,
+      "wof:parent_id": 1947304067,
+      "wof:name": "Terminal 2",
+      "wof:placetype": "wing",
+      "wof:country": "US",
+      "wof:repo": "sfomuseum-data-architecture",
+      "wof:path": "194/730/459/1/1947304591.geojson",
+      "wof:superseded_by": [],
+      "wof:supersedes": [
+        1914601345
+      ],
+      "wof:belongsto": [
+        102527513,
+        85688637,
+        102191575,
+        85633793,
+        85922583,
+        102087579,
+        554784711,
+        102085387,
+        1947304067
+      ],
+      "mz:uri": "https://data.whosonfirst.org/194/730/459/1/1947304591.geojson",
+      "mz:latitude": 37.617143738306645,
+      "mz:longitude": -122.38300203281219,
+      "mz:min_latitude": 37.615537951009905,
+      "mz:min_longitude": -122.38518014300895,
+      "mz:max_latitude": 37.61830446528581,
+      "mz:max_longitude": -122.38080834240405,
+      "mz:is_current": 1,
+      "mz:is_ceased": 0,
+      "mz:is_deprecated": -1,
+      "mz:is_superseded": 0,
+      "mz:is_superseding": 1,
+      "wof:lastmodified": 1737577131
+    }
+  ]
+}
 ```
