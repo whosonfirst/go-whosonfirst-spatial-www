@@ -97,19 +97,19 @@ $> bin/server \
 
 When you visit `http://localhost:8080` in your web browser you should see something like this:
 
-![](../../docs/images/go-whosonfirst-spatial-landing.png)
+![](../../docs/images/go-whosonfirst-spatial-www-landing.png)
 
 Which isn't very exciting but does itemized the two available endpoints for investigating data.
 
 #### Point-in-polygon
 
-![](../../docs/images/go-whosonfirst-spatial-pip.png)
+![](../../docs/images/go-whosonfirst-spatial-www-pip.png)
 
 The `point-in-polygon` endpoint will display records that contain whatever the center point of the map happens to be.
 
 #### Intersects
 
-![](../../docs/images/go-whosonfirst-spatial-intersects.png)
+![](../../docs/images/go-whosonfirst-spatial-www-intersects.png)
 
 The `intersects` endpoint will display records that intersect a bounding box or a shape drawn on the map.
 
