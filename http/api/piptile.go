@@ -1,5 +1,16 @@
 package api
 
+/*
+
+$> curl -s -X POST http://localhost:8080/api/point-in-polygon-with-tile \
+	-d '{ "is_current": [ 1 ], "tile": { "zoom": 14, "x": 2622, "y": 6341 } }' \
+	| jq -r '.features[]["properties"]["mz:is_current"]' \
+	| wc -l
+
+180
+
+*/
+
 import (
 	"encoding/json"
 	"log/slog"
@@ -38,12 +49,14 @@ func PointInPolygonTileHandler(app *spatial_app.SpatialApplication, opts *PointI
 			http.Error(rsp, "Bad request", http.StatusBadRequest)
 			return
 		}
-		
+
 		spatial_q := tile_query.SpatialQuery()
 
-		fc, err := maptile.PointInPolygonCandidateFeaturessFromTile(ctx, app.SpatialDatabase, spatial_q, map_t)
+		fc, err := maptile.PointInPolygonCandidateFeaturesFromTile(ctx, app.SpatialDatabase, spatial_q, map_t)
 
 		if err != nil {
+			logger.Error("Failed to derive candidate features from map tile", "error", err)
+			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -53,6 +66,7 @@ func PointInPolygonTileHandler(app *spatial_app.SpatialApplication, opts *PointI
 		err = enc.Encode(fc)
 
 		if err != nil {
+			logger.Error("Failed to marshal FeatureCollection results", "error", err)
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
