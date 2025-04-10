@@ -31,6 +31,16 @@ func PointInPolygonTileHandler(app *spatial_app.SpatialApplication, opts *PointI
 
 		ctx := req.Context()
 
+		if req.Method != "POST" {
+			http.Error(rsp, "Unsupported method", http.StatusMethodNotAllowed)
+			return
+		}
+
+		if app.IsIndexing() {
+			http.Error(rsp, "Indexing records", http.StatusServiceUnavailable)
+			return
+		}
+		
 		var tile_query *query.MapTileSpatialQuery
 
 		dec := json.NewDecoder(req.Body)
