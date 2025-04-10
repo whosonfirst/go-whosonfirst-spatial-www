@@ -108,8 +108,8 @@ github.com/whosonfirst/go-whosonfirst-reader v1.0.2 h1:yLsDd6GJOsfMVJz63noH5Haoo
 github.com/whosonfirst/go-whosonfirst-reader v1.0.2/go.mod h1:1M6osxb9qXB3+ARINW4vuEaCTIN55abLRBGbBtfpGJ0=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0 h1:JuKLa6KWke22jBfJ1pM9WQHoz1/3pbDv2C+aR+THPPQ=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0/go.mod h1:EUMHyGzUmqPPxlMmOp+28BFeoBdxxE0HCKRd67lkqGM=
-github.com/whosonfirst/go-whosonfirst-spatial v0.14.0 h1:CgNK1kJdI6Vl5WfYVAE6U9D0ryiLffj7vu1UMPi0epU=
-github.com/whosonfirst/go-whosonfirst-spatial v0.14.0/go.mod h1:lHJm3lOL5HZKJJPqy/DWMPtBFmbmiSD3qwJGnx2ItMM=
+github.com/whosonfirst/go-whosonfirst-spatial v0.15.1 h1:vMz6Sp/B9vMiaMPxf1nXIbkGRKSl50/r84RK0QgTpmo=
+github.com/whosonfirst/go-whosonfirst-spatial v0.15.1/go.mod h1:lHJm3lOL5HZKJJPqy/DWMPtBFmbmiSD3qwJGnx2ItMM=
 github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8 h1:K0rCaKo0xvOtuS/x9r62bEfIK3OTdZqbDmgG+A3xDSs=
 github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8/go.mod h1:Nh7PwBMDT1kUrp9jBMFw+Ilue6up1tz2KhE39btS/ZU=
 github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7 h1:1j4IMuVua4/NhqKm2ke16h2V5Z2XiLoOdXbjDrfZb0E=

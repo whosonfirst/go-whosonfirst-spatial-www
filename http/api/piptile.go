@@ -5,8 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/aaronland/go-http-sanitize"
-	orb_maptile "github.com/paulmach/orb/maptile"
 	spatial_app "github.com/whosonfirst/go-whosonfirst-spatial/application"
 	"github.com/whosonfirst/go-whosonfirst-spatial/maptile"
 	"github.com/whosonfirst/go-whosonfirst-spatial/query"
@@ -22,33 +20,26 @@ func PointInPolygonTileHandler(app *spatial_app.SpatialApplication, opts *PointI
 
 		ctx := req.Context()
 
-		z, err := sanitize.GetInt(req, "z")
+		var tile_query *query.MapTileSpatialQuery
+
+		dec := json.NewDecoder(req.Body)
+		err := dec.Decode(&tile_query)
 
 		if err != nil {
-			logger.Error("Failed to derive z", "error", err)
+			logger.Error("Failed to decode map tile spatial query", "error", err)
 			http.Error(rsp, "Bad request", http.StatusBadRequest)
 			return
 		}
 
-		x, err := sanitize.GetInt(req, "x")
+		map_t, err := tile_query.MapTile()
 
 		if err != nil {
-			logger.Error("Failed to derive x", "error", err)
+			logger.Error("Failed to derive map tile from query", "error", err)
 			http.Error(rsp, "Bad request", http.StatusBadRequest)
 			return
 		}
-
-		y, err := sanitize.GetInt(req, "y")
-		if err != nil {
-			logger.Error("Failed to derive y", "error", err)
-			http.Error(rsp, "Bad request", http.StatusBadRequest)
-			return
-		}
-
-		zm := orb_maptile.Zoom(uint32(z))
-		map_t := orb_maptile.New(uint32(x), uint32(y), zm)
-
-		spatial_q := &query.SpatialQuery{}
+		
+		spatial_q := tile_query.SpatialQuery()
 
 		fc, err := maptile.PointInPolygonCandidateFeaturessFromTile(ctx, app.SpatialDatabase, spatial_q, map_t)
 

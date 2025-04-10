@@ -17,7 +17,7 @@ import (
 // PointInPolygonCandidateFeaturessFromTile will derive the bounds of map tile 't' and use that geometry
 // to perform an "intersects" query against database 'db'. The result set will then be transformed in to
 // GeoJSON FeatureCollection where each feature's geometry will be trim to extent of map tile 't'.
-func PointInPolygonCandidateFeaturessFromTile(ctx context.Context, db database.SpatialDatabase, q *query.SpatialQuery, t orb_maptile.Tile) (*geojson.FeatureCollection, error) {
+func PointInPolygonCandidateFeaturessFromTile(ctx context.Context, db database.SpatialDatabase, q *query.SpatialQuery, t *orb_maptile.Tile) (*geojson.FeatureCollection, error) {
 
 	tile_bounds := t.Bound()
 	tile_geom := tile_bounds.ToPolygon()
