@@ -7,6 +7,8 @@ whosonfirst.spatial.piptile = (function(){
 	
 	init: function(map) {
 
+	    var zoom_el = document.getElementById("at_zoom");
+	    
 	    var layers = L.layerGroup();
 	    layers.addTo(map);
 	    
@@ -18,9 +20,10 @@ whosonfirst.spatial.piptile = (function(){
 
 		console.debug("Map center", pos);
 
-		// To do: Read from UI element...
-		var zm = map.getZoom();
+		var zm = parseInt(zoom_el.value);
 
+		console.debug("derive tile", pos, zm);
+		
 		var tile = self.tileAt(pos, zm)
 		console.debug("Fetch for tile", tile);
 		
@@ -245,6 +248,8 @@ whosonfirst.spatial.piptile = (function(){
 	    };
 	    
 	    map.on("moveend", update_map);
+
+	    zoom_el.onchange = update_map;
 	    
 	    var filters = document.getElementsByClassName("spatial-filter");
 	    var count_filters = filters.length;
