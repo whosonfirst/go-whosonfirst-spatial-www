@@ -10,13 +10,13 @@ require (
 	github.com/aaronland/go-http-server v1.5.0
 	github.com/rs/cors v1.11.1
 	github.com/sfomuseum/go-flags v0.10.0
-	github.com/sfomuseum/go-http-auth v0.12.0
+	github.com/sfomuseum/go-http-auth v1.0.0
 	github.com/sfomuseum/go-timings v1.4.0
-	github.com/whosonfirst/go-reader v1.0.2
+	github.com/whosonfirst/go-reader v1.1.0
 	github.com/whosonfirst/go-reader-cachereader v1.1.1
 	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
-	github.com/whosonfirst/go-whosonfirst-spatial v0.13.0
+	github.com/whosonfirst/go-whosonfirst-spatial v0.16.2
 	github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
@@ -48,6 +48,7 @@ require (
 	github.com/whosonfirst/go-whosonfirst-crawl v0.2.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.28 // indirect
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.2 // indirect
+	github.com/whosonfirst/go-whosonfirst-reader v1.0.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7 // indirect
 	github.com/whosonfirst/go-writer-featurecollection/v3 v3.0.0-20220916180959-42588e308a3e // indirect
