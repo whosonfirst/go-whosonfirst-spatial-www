@@ -1,6 +1,5 @@
 # server
 
-
 ```
 $> ./bin/server -h
   -authenticator-uri string
@@ -80,6 +79,12 @@ func main() {
 
 The `server` tool in this package absolute works and works well for spot-checking small datasets but is not designed for large datasets or public-facing "production" traffic.
 
+Other database-backed implementations of the HTTP server tool include:
+
+* [whosonfirst/go-whosonfirst-spatial-sqlite](https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite/tree/main/cmd/http-server)
+* [whosonfirst/go-whosonfirst-spatial-pmtiles](https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles/tree/main/cmd/http-server)
+* [whosonfirst/go-whosonfirst-spatial-duckddb](https://github.com/whosonfirst/go-whosonfirst-spatial-duckdb/tree/main/cmd/http-server)
+
 ## Example
 
 ### WWW
@@ -99,13 +104,13 @@ When you visit `http://localhost:8080` in your web browser you should see a simp
 
 #### Point-in-polygon
 
-![](../../docs/images/go-whosonfirst-spatial-www-pip.png)
+![](../../docs/images/go-whosonfirst-spatial-rtree-pip.png)
 
 The `point-in-polygon` endpoint will display records that contain whatever the center point of the map happens to be.
 
 #### Point-in-polygon (with tile)
 
-![](../../docs/images/go-whosonfirst-spatial-www-piptile.png)
+![](../../docs/images/go-whosonfirst-spatial-rtree-piptile.png)
 
 The `point-in-polygon-with-tile` endpoint will display all the records which intersect a given Z/X/Y map tile. The idea is that a client would fetch these records in order to allow for local point-in-polygon operations. This allows a client to not send exact coordinate information to a remote server which may be desirable for privacy or security reasons.
 
@@ -113,7 +118,7 @@ _Note: The demo, as written, does not perform client-side point-in-polygon opera
 
 #### Intersects
 
-![](../../docs/images/go-whosonfirst-spatial-www-intersects.png)
+![](../../docs/images/go-whosonfirst-spatial-rtree-intersects.png)
 
 The `intersects` endpoint will display records that intersect a bounding box or a shape drawn on the map.
 
