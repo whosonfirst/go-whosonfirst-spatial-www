@@ -50,7 +50,11 @@ $> ./bin/server -h
 
 ## Note
 
-Please remember that the `cmd/server` tool provided by this package only supports the in-memory `rtree://` (spatial) database. As such all records need to be indexed at start up and do not persist if the server is shut down.
+Please remember that the `cmd/server` tool provided by this package only supports the in-memory `rtree://` (spatial) database. As such all records need to be indexed at start up and do not persist if the server is shut down. Other database-backed implementations of the HTTP server tool, with persistent storage, include:
+
+* [whosonfirst/go-whosonfirst-spatial-sqlite](https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite/tree/main/cmd/http-server)
+* [whosonfirst/go-whosonfirst-spatial-pmtiles](https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles/tree/main/cmd/http-server)
+* [whosonfirst/go-whosonfirst-spatial-duckddb](https://github.com/whosonfirst/go-whosonfirst-spatial-duckdb/tree/main/cmd/http-server)
 
 The "guts" of this application live in the [app/server](../../app/server) package and are designed in such a way that other (faster, more performant, etc) databases can use that with a minimum of fuss. For example here is the code the [equivalent server](https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite/tree/main/cmd/http-server) in the `whosonfirst/go-whosonfirst-spatial-sqlite` package:
 
@@ -78,12 +82,6 @@ func main() {
 ```
 
 The `server` tool in this package absolute works and works well for spot-checking small datasets but is not designed for large datasets or public-facing "production" traffic.
-
-Other database-backed implementations of the HTTP server tool include:
-
-* [whosonfirst/go-whosonfirst-spatial-sqlite](https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite/tree/main/cmd/http-server)
-* [whosonfirst/go-whosonfirst-spatial-pmtiles](https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles/tree/main/cmd/http-server)
-* [whosonfirst/go-whosonfirst-spatial-duckddb](https://github.com/whosonfirst/go-whosonfirst-spatial-duckdb/tree/main/cmd/http-server)
 
 ## Example
 
