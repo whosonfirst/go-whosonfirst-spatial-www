@@ -95,11 +95,7 @@ $> bin/server \
 2025/03/07 11:37:58 INFO Listening for requests address=http://localhost:8080
 ```
 
-When you visit `http://localhost:8080` in your web browser you should see something like this:
-
-![](../../docs/images/go-whosonfirst-spatial-www-landing.png)
-
-Which isn't very exciting but does itemized the two available endpoints for investigating data.
+When you visit `http://localhost:8080` in your web browser you should see a simple landing page describing the available demo endpoints, described below.
 
 #### Point-in-polygon
 
