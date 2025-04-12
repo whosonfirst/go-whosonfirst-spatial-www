@@ -4,7 +4,7 @@ whosonfirst.spatial = whosonfirst.spatial || {};
 whosonfirst.spatial.piptile = (function(){
     
     var self = {
-
+	
 	init: function(map) {
 
 	    var layers = L.layerGroup();
@@ -18,19 +18,11 @@ whosonfirst.spatial.piptile = (function(){
 
 		console.debug("Map center", pos);
 
-		const tileSize = [256, 256]
-		let pixelPoint = map.project(pos, map.getZoom()).floor()
-		let coords = pixelPoint.unscaleBy(tileSize).floor()
-
-		// pull from UI element...
-		const z = map.getZoom()
+		var zm = map.getZoom();
+		var tile = self.tileAt(pos, zm)
 		
-		var tile = {
-		    z: z,
-		    x: coords.x,
-		    y: coords.y,
-		};
-	    
+		console.log("STOP", tile);
+		
 		var args = {
 		    tile: tile,
 		};
@@ -227,7 +219,7 @@ whosonfirst.spatial.piptile = (function(){
 		    "inception://",
 		];
 		
-		whosonfirst.spatial.api.point_in_polygon(args).then((rsp) => {
+		whosonfirst.spatial.api.point_in_polygon_with_tile(args).then((rsp) => {
 		    on_success(rsp);
 		}).catch((err) => {
 		    on_error(err);
@@ -261,8 +253,40 @@ whosonfirst.spatial.piptile = (function(){
 		console.error("Failed to initialize placetypes", err);
 	    });
 	    
-	}
+	},
+
+	tileAt: function(pos, zm) {
+	    const coords = self.fraction(pos, zm);
+	    return { x: parseInt(coords.x), y: parseInt(coords.y), z: zm }
+	},
+
+	// https://github.com/paulmach/orb/blob/v0.11.1/maptile/tile.go#L143
 	
+	fraction: function(pos, zm) {
+
+	    var x;
+	    var y;
+	    
+	    const factor = 1 << zm;
+	    const maxtiles = parseFloat(factor);
+
+	    const lng = pos.lng / 360.0 + 0.5;
+
+	    x = lng * maxtiles;
+
+	    if (pos.lat < -85.0511) {
+		y = maxtiles - 1;
+	    } else if (pos.lat > 85.0511) {
+		y = 0;
+	    } else {
+
+		const siny = Math.sin(pos.lat + Math.PI / 180.0);
+		const lat = 0.5 + 0.5 * Math.log((1.0 + siny)/(1.0 - siny))/(-2 * Math.PI)
+		y = lat * maxtiles;
+	    }
+
+	    return { 'x': x, 'y': y };
+	},
     };
 
     return self;
