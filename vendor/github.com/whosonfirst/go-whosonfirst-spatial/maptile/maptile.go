@@ -2,7 +2,9 @@ package maptile
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log/slog"
 	"strconv"
 
 	"github.com/paulmach/orb"
@@ -10,6 +12,7 @@ import (
 	"github.com/paulmach/orb/geojson"
 	orb_maptile "github.com/paulmach/orb/maptile"
 	wof_reader "github.com/whosonfirst/go-whosonfirst-reader"
+	"github.com/whosonfirst/go-whosonfirst-spatial"
 	"github.com/whosonfirst/go-whosonfirst-spatial/database"
 	"github.com/whosonfirst/go-whosonfirst-spatial/query"
 )
@@ -49,6 +52,13 @@ func PointInPolygonCandidateFeaturesFromTile(ctx context.Context, db database.Sp
 		body, err := wof_reader.LoadBytes(ctx, db, id)
 
 		if err != nil {
+
+			if errors.Is(err, spatial.ErrNotFound) {
+				slog.Warn("Failed to read data for WOF ID, not found", "id", id)
+				continue
+			}
+
+			slog.Info("POO")
 			return nil, fmt.Errorf("Failed to read data for WOF ID %d, %w", id, err)
 		}
 
