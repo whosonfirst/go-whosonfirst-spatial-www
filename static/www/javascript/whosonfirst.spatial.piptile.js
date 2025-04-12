@@ -134,8 +134,6 @@ whosonfirst.spatial.piptile = (function(){
 		    
 		    map.removeControl(spinner);
 
-		    console.log("OK", rsp);
-
 		    var l = L.geoJSON(rsp, {
 			    style: function(feature){
 				return whosonfirst.spatial.results.named_style("match");
@@ -145,11 +143,8 @@ whosonfirst.spatial.piptile = (function(){
 		    layers.addLayer(l);
 		    l.bringToFront();
 		    
-		    return;
-		    
-		    
-		    var places = rsp["places"];
-		    var count = places.length;
+		    var features = rsp["features"];
+		    var count = features.length;
 		    
 		    var matches = document.getElementById("pip-matches");
 		    matches.innerHTML = "";
@@ -157,11 +152,19 @@ whosonfirst.spatial.piptile = (function(){
 		    if (! count){
 			return;
 		    }
+
+		    var places = [];
+
+		    for (var i=0; i < count; i++){
+			places[i] = features[i].properties;
+		    }
 		    
+		    /*
 		    for (var i=0; i < count; i++){
 			var pl = places[i];
 			show_feature(pl["wof:id"]);
 		    }
+		     */
 		    
 		    var table_props = whosonfirst.spatial.results.default_properties();
 		    
