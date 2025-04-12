@@ -21,8 +21,6 @@ whosonfirst.spatial.piptile = (function(){
 		// To do: Read from UI element...
 		var zm = map.getZoom();
 
-		zm = 16;
-		
 		var tile = self.tileAt(pos, zm)
 		console.debug("Fetch for tile", tile);
 		
@@ -134,6 +132,16 @@ whosonfirst.spatial.piptile = (function(){
 		    map.removeControl(spinner);
 
 		    console.log("OK", rsp);
+
+		    var l = L.geoJSON(rsp, {
+			    style: function(feature){
+				return whosonfirst.spatial.results.named_style("match");
+			    },
+		    });
+
+		    layers.addLayer(l);
+		    l.bringToFront();
+		    
 		    return;
 		    
 		    
