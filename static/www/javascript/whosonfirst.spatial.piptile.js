@@ -18,10 +18,13 @@ whosonfirst.spatial.piptile = (function(){
 
 		console.debug("Map center", pos);
 
+		// To do: Read from UI element...
 		var zm = map.getZoom();
-		var tile = self.tileAt(pos, zm)
+
+		zm = 16;
 		
-		console.log("STOP", tile);
+		var tile = self.tileAt(pos, zm)
+		console.debug("Fetch for tile", tile);
 		
 		var args = {
 		    tile: tile,
@@ -129,6 +132,10 @@ whosonfirst.spatial.piptile = (function(){
 		var on_success = function(rsp){
 		    
 		    map.removeControl(spinner);
+
+		    console.log("OK", rsp);
+		    return;
+		    
 		    
 		    var places = rsp["places"];
 		    var count = places.length;
@@ -257,7 +264,7 @@ whosonfirst.spatial.piptile = (function(){
 
 	tileAt: function(pos, zm) {
 	    const coords = self.fraction(pos, zm);
-	    return { x: parseInt(coords.x), y: parseInt(coords.y), z: zm }
+	    return { x: Math.floor(coords.x), y: Math.floor(coords.y), zoom: zm }
 	},
 
 	// https://github.com/paulmach/orb/blob/v0.11.1/maptile/tile.go#L143
@@ -266,23 +273,30 @@ whosonfirst.spatial.piptile = (function(){
 
 	    var x;
 	    var y;
+
+	    // Oh Javascript...
+	    const lon = Number(pos.lng.toPrecision(7));
+	    const lat = Number(pos.lat.toPrecision(7));
+	    const pi = Number(Math.PI.toPrecision(7));
 	    
 	    const factor = 1 << zm;
+	    console.log("factor", factor)
+	    
 	    const maxtiles = parseFloat(factor);
-
-	    const lng = pos.lng / 360.0 + 0.5;
-
-	    x = lng * maxtiles;
-
-	    if (pos.lat < -85.0511) {
+	    const tmp_lon = lon / 360.0 + 0.5;
+	    
+	    x = tmp_lon * maxtiles;
+	    
+	    if (lat < -85.0511) {
 		y = maxtiles - 1;
-	    } else if (pos.lat > 85.0511) {
+	    } else if (lat > 85.0511) {
 		y = 0;
 	    } else {
 
-		const siny = Math.sin(pos.lat + Math.PI / 180.0);
-		const lat = 0.5 + 0.5 * Math.log((1.0 + siny)/(1.0 - siny))/(-2 * Math.PI)
-		y = lat * maxtiles;
+		const siny = Math.sin(lat * pi / 180.0);
+		const tmp_lat = 0.5 + 0.5 * Math.log((1.0 + siny)/(1.0 - siny))/(-2 * pi)
+		
+		y = tmp_lat * maxtiles;
 	    }
 
 	    return { 'x': x, 'y': y };
