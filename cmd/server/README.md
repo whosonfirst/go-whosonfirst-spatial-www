@@ -107,6 +107,14 @@ Which isn't very exciting but does itemized the two available endpoints for inve
 
 The `point-in-polygon` endpoint will display records that contain whatever the center point of the map happens to be.
 
+#### Point-in-polygon (with tile)
+
+![](../../docs/images/go-whosonfirst-spatial-www-piptile.png)
+
+The `point-in-polygon-with-tile` endpoint will display all the records which intersect a given Z/X/Y map tile. The idea is that a client would fetch these records in order to allow for local point-in-polygon operations. This allows a client to not send exact coordinate information to a remote server which may be desirable for privacy or security reasons.
+
+_Note: The demo, as written, does not perform client-side point-in-polygon operations yet._
+
 #### Intersects
 
 ![](../../docs/images/go-whosonfirst-spatial-www-intersects.png)
@@ -124,7 +132,7 @@ $> bin/server \
 	-iterator-uri 'repo://#/usr/local/data/sfomuseum-data-architecture'
 ```
 
-API endpoints for spatial queries exected to be passed a JSON-encoded [query.SpatialQuery](https://github.com/whosonfirst/go-whosonfirst-spatial/blob/intersects/query/query.go) struct which looks like this:
+Most API endpoints for spatial queries exect to be passed a JSON-encoded [query.SpatialQuery](https://github.com/whosonfirst/go-whosonfirst-spatial/blob/intersects/query/query.go) struct which looks like this:
 
 ```
 type SpatialQuery struct {
@@ -145,6 +153,8 @@ type SpatialQuery struct {
 ```
 
 The only mandatory field is `geometry` which is expected to be a GeoJSON-encoded geometry. The type of the geometry will vary depending on the API endpoint being called.
+
+Exceptions to this rule (about passing a `SpatialQuery`) are noted on a case-by-case basis below.
 
 #### Point in polygon
 
@@ -232,9 +242,49 @@ $> curl -H 'Accept: application/geo+json' -XPOST http://localhost:8080/api/point
 }  
 ```
 
+#### Point in polygon (with tile)
+
+To query the `point-in-polygon-with-tile` API you would do something like this:
+
+```
+$> curl 'http://localhost:8080/api/point-in-polygon-with-tile' -X POST -d '{"tile":{"x":2622,"y":6341,"zoom":14},"is_current":[1],"sort":["placetype://","name://","inception://"]}'
+
+// Imagine GeoJSON features here
+```
+
+The `point-in-polygon-with-tile` API will return all the records which intersect a given Z/X/Y map tile. The idea is that a client would fetch these records in order to allow for local point-in-polygon operations.
+
+##### Notes
+
+The `point-in-polygon-with-tile` API does _NOT_ expect a JSON-encoded `SpatialQuery` instance as its input but rather a JSON-encoded `MaptileSpatialQuery` instance as its input. The two data structures are identical except that the latter replaces the required `Geometry` property with a required `Tile` property:
+
+```
+type Tile struct {
+        Zoom uint32 `json:"zoom"`
+        X    uint32 `json:"x"`
+        Y    uint32 `json:"y"`
+}
+
+type MapTileSpatialQuery struct {
+        Tile                *Tile    `json:"tile,omitempty"`
+        Placetypes          []string `json:"placetypes,omitempty"`
+        Geometries          string   `json:"geometries,omitempty"`
+        AlternateGeometries []string `json:"alternate_geometries,omitempty"`
+        IsCurrent           []int64  `json:"is_current,omitempty"`
+        IsCeased            []int64  `json:"is_ceased,omitempty"`
+        IsDeprecated        []int64  `json:"is_deprecated,omitempty"`
+        IsSuperseded        []int64  `json:"is_superseded,omitempty"`
+        IsSuperseding       []int64  `json:"is_superseding,omitempty"`
+        InceptionDate       string   `json:"inception_date,omitempty"`
+        CessationDate       string   `json:"cessation_date,omitempty"`
+        Properties          []string `json:"properties,omitempty"`
+        Sort                []string `json:"sort,omitempty"`
+}
+```
+
 #### Intersects
 
-And then to query the `intersects` API you would do something like this:
+To query the `intersects` API you would do something like this:
 
 ```
 $> curl -X POST 'http://localhost:8080/api/intersects' -d '{"geometry":{"type":"Polygon","coordinates":[[[-122.381988,37.617508],[-122.381451,37.618478],[-122.380764,37.616878],[-122.381988,37.617508]]]},"is_current":[1],"placetypes":["wing"],"sort":["placetype://","name://","inception://"]}'
