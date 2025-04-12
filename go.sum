@@ -88,8 +88,8 @@ github.com/whosonfirst/go-cache v0.5.3 h1:1onzhg7pFFEDoHdoKPQofNBZtz62cKUv8JSwZ5
 github.com/whosonfirst/go-cache v0.5.3/go.mod h1:8y+lZUKB5lbPPGTU8//1OjycyB797Cb5XMC9yuSx1eM=
 github.com/whosonfirst/go-ioutil v1.0.2 h1:+GJPfa42OFn5A+5yJSc5jQTQIkNV3/MhYyg4pavdrC8=
 github.com/whosonfirst/go-ioutil v1.0.2/go.mod h1:2dS1vWdAIkiHDvDF8fYyjv6k2NISmwaIjJJeEDBEdvg=
-github.com/whosonfirst/go-reader v1.0.2 h1:eccnKKSMGR+X1SJyHUZN0/7qE7VbFQULqSVQU0Su3xs=
-github.com/whosonfirst/go-reader v1.0.2/go.mod h1:2w9l/QusYZSiGuEof3RwCHUFnM492SSOF2H7UxS4YIE=
+github.com/whosonfirst/go-reader v1.1.0 h1:FK4m5FTSy9EUxIwAvNhGhLqDmfVOba4ExsF1B0HK7wU=
+github.com/whosonfirst/go-reader v1.1.0/go.mod h1:ek9GZaWThZ67ttojNJ6yVOCN3mijK0q9kKNHSA2kf8Q=
 github.com/whosonfirst/go-reader-cachereader v1.1.1 h1:BeAeS83SZYZxyQENWmDzKLwXzkjHlDWSVsOIgmAGLjo=
 github.com/whosonfirst/go-reader-cachereader v1.1.1/go.mod h1:TVbxziX9juCa13PT54FGYdafMQRjXmm6mWYqco1GaZk=
 github.com/whosonfirst/go-sanitize v0.1.0 h1:ygSqCnakwdzH/m8UEa15zXGDsoo5/JJeRkgmAjXZrBU=
@@ -108,8 +108,8 @@ github.com/whosonfirst/go-whosonfirst-reader v1.0.2 h1:yLsDd6GJOsfMVJz63noH5Haoo
 github.com/whosonfirst/go-whosonfirst-reader v1.0.2/go.mod h1:1M6osxb9qXB3+ARINW4vuEaCTIN55abLRBGbBtfpGJ0=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0 h1:JuKLa6KWke22jBfJ1pM9WQHoz1/3pbDv2C+aR+THPPQ=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0/go.mod h1:EUMHyGzUmqPPxlMmOp+28BFeoBdxxE0HCKRd67lkqGM=
-github.com/whosonfirst/go-whosonfirst-spatial v0.16.0 h1:kOooSb8uVKbtRPpvOruJY/8xA3L7XrvZ2u61g/ybUtE=
-github.com/whosonfirst/go-whosonfirst-spatial v0.16.0/go.mod h1:lHJm3lOL5HZKJJPqy/DWMPtBFmbmiSD3qwJGnx2ItMM=
+github.com/whosonfirst/go-whosonfirst-spatial v0.16.1 h1:Ozi1mPoiBCbUUzJN/Wd1YtV+gauUM2jFiCjHGcvqf3Q=
+github.com/whosonfirst/go-whosonfirst-spatial v0.16.1/go.mod h1:lHJm3lOL5HZKJJPqy/DWMPtBFmbmiSD3qwJGnx2ItMM=
 github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8 h1:K0rCaKo0xvOtuS/x9r62bEfIK3OTdZqbDmgG+A3xDSs=
 github.com/whosonfirst/go-whosonfirst-spr-geojson v0.0.8/go.mod h1:Nh7PwBMDT1kUrp9jBMFw+Ilue6up1tz2KhE39btS/ZU=
 github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7 h1:1j4IMuVua4/NhqKm2ke16h2V5Z2XiLoOdXbjDrfZb0E=
