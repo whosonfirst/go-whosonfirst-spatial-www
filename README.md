@@ -12,13 +12,11 @@ Documentation is incomplete at this time.
 package main
 
 import (
-	_ "github.com/whosonfirst/go-reader-cachereader"
-)
-
-import (
 	"context"
-	"github.com/whosonfirst/go-whosonfirst-spatial-www/application/server"
 	"log"
+
+	_ "github.com/whosonfirst/go-reader-cachereader"
+	"github.com/whosonfirst/go-whosonfirst-spatial-www/application/server"
 )
 
 func main() {
@@ -38,9 +36,9 @@ The default `server` implementation uses an in-memory RTree-based spatial index 
 
 There are also server implementations for the following (spatial) databases:
 
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-sqlite
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-protomaps
-* https://github.com/whosonfirst/go-whosonfirst-spatial-www-duckdb
+* https://github.com/whosonfirst/go-whosonfirst-spatial-sqlite
+* https://github.com/whosonfirst/go-whosonfirst-spatial-pmtiles
+* https://github.com/whosonfirst/go-whosonfirst-spatial-duckdb
 
 ## Tools
 
