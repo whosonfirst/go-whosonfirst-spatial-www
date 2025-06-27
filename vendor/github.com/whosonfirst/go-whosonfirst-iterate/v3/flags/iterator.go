@@ -1,13 +1,11 @@
 package flags
 
-// THERE IS A GOOD CHANGE THIS WILL BE MOVED IN TO THE whosonfirst/go-whosonfirst-iterate PACKAGE...
-
 import (
 	"fmt"
 	"sort"
 	"strings"
 
-	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
+	"github.com/whosonfirst/go-whosonfirst-iterate/v3"
 )
 
 const SEP_FRAGMENT string = "#"
@@ -18,7 +16,7 @@ const SEP_CSV string = ","
 // IteratorURIDescription returns a string describing the use the of the `IteratorURIFlag` flag.
 func IteratorURIFlagDescription() string {
 
-	modes := emitter.Schemes()
+	modes := iterate.IteratorSchemes()
 	sort.Strings(modes)
 
 	valid_modes := strings.Join(modes, ", ")

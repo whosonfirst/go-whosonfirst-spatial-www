@@ -374,11 +374,16 @@ github.com/whosonfirst/go-whosonfirst-flags/date
 github.com/whosonfirst/go-whosonfirst-flags/existential
 github.com/whosonfirst/go-whosonfirst-flags/geometry
 github.com/whosonfirst/go-whosonfirst-flags/placetypes
-# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.7.1
+# github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0
 ## explicit; go 1.22
 github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter
 github.com/whosonfirst/go-whosonfirst-iterate/v2/filters
 github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator
+# github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0
+## explicit; go 1.24
+github.com/whosonfirst/go-whosonfirst-iterate/v3
+github.com/whosonfirst/go-whosonfirst-iterate/v3/filters
+github.com/whosonfirst/go-whosonfirst-iterate/v3/flags
 # github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
 ## explicit; go 1.18
 github.com/whosonfirst/go-whosonfirst-placetypes
@@ -395,7 +400,6 @@ github.com/whosonfirst/go-whosonfirst-spatial
 github.com/whosonfirst/go-whosonfirst-spatial/application
 github.com/whosonfirst/go-whosonfirst-spatial/database
 github.com/whosonfirst/go-whosonfirst-spatial/filter
-github.com/whosonfirst/go-whosonfirst-spatial/flags
 github.com/whosonfirst/go-whosonfirst-spatial/geo
 github.com/whosonfirst/go-whosonfirst-spatial/maptile
 github.com/whosonfirst/go-whosonfirst-spatial/query

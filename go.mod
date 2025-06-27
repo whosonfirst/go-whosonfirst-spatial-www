@@ -14,7 +14,7 @@ require (
 	github.com/sfomuseum/go-timings v1.4.0
 	github.com/whosonfirst/go-reader v1.1.0
 	github.com/whosonfirst/go-reader-cachereader v1.1.1
-	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.7.1
+	github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
 	github.com/whosonfirst/go-whosonfirst-spatial v0.16.2
 	github.com/whosonfirst/go-whosonfirst-spr-geojson/v2 v2.0.0
@@ -80,6 +80,7 @@ require (
 	github.com/whosonfirst/go-whosonfirst-crawl v0.2.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-feature v0.0.28 // indirect
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.2 // indirect
+	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-reader v1.0.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7 // indirect
