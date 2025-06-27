@@ -257,8 +257,10 @@ github.com/whosonfirst/go-whosonfirst-feature v0.0.28 h1:XCNNzjnk1i50UnqrNtrN9xN
 github.com/whosonfirst/go-whosonfirst-feature v0.0.28/go.mod h1:8kc2Ei7mCankyWQcfzLHdKAc1//B/ptY7uEFsT5I8m4=
 github.com/whosonfirst/go-whosonfirst-flags v0.5.2 h1:vSx7fcM04HiSAEF+WOKfuyJawac99skN9HJAeqBXWpI=
 github.com/whosonfirst/go-whosonfirst-flags v0.5.2/go.mod h1:kozBozsyI8cKekUces1m10vJ301sH2EqLZtjX1xCSqQ=
-github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.7.1 h1:XZHxEGI/Y6/Gi81H9pBmXGWQbyH4g1AxRNKZxi/Ag6E=
-github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.7.1/go.mod h1:BNuQWh/bfXq3IeUTeaxXTUkgr2Wt7jo90JrXL7eoSdk=
+github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0 h1:aLThv46NCuScTnulbsgmKPZiCqnv7UH8X4ojO2151KI=
+github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0/go.mod h1:wF/nVhSEVJdkWd24+TcXb5Pir92WDUqRa9oLu/qf9N4=
+github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0 h1:NE5HkwKuHqO+clCGNP5QY2pxblg02mGFeX8lFQ0K5Ho=
+github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0/go.mod h1:8L1KzWtOnRue6Dvc9BI6hy4twHd6zu9XgKn8TlJ4d7g=
 github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3 h1:BuKRV3pal5wanOZxWue7hWFZXlsWevmCY3X06bU+J6s=
 github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3/go.mod h1:lRvLpHHUPxfrU3c4xCcdmFbU1dYJLpO2WQ1LJWoqYJ8=
 github.com/whosonfirst/go-whosonfirst-reader v1.0.2 h1:yLsDd6GJOsfMVJz63noH5HaooEvnmo7vsUSsScJvPfY=
