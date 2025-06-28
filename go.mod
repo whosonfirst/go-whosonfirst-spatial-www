@@ -7,7 +7,7 @@ require (
 	github.com/aaronland/go-http-maps/v2 v2.0.0
 	github.com/aaronland/go-http-ping/v2 v2.0.0
 	github.com/aaronland/go-http-sanitize v0.0.8
-	github.com/aaronland/go-http-server v1.5.0
+	github.com/aaronland/go-http-server/v2 v2.0.1
 	github.com/rs/cors v1.11.1
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/go-http-auth v1.2.0
