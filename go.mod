@@ -16,7 +16,7 @@ require (
 	github.com/whosonfirst/go-reader/v2 v2.0.0
 	github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.7.3
-	github.com/whosonfirst/go-whosonfirst-spatial v0.16.2
+	github.com/whosonfirst/go-whosonfirst-spatial v0.17.0
 	github.com/whosonfirst/go-whosonfirst-spr-geojson/v2 v2.0.0
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
@@ -27,7 +27,7 @@ require (
 	github.com/aaronland/go-roster v1.0.0 // indirect
 	github.com/aaronland/gocloud-blob v0.4.2 // indirect
 	github.com/akrylysov/algnhsa v1.1.0 // indirect
-	github.com/aws/aws-lambda-go v1.47.0 // indirect
+	github.com/aws/aws-lambda-go v1.49.0 // indirect
 	github.com/aws/aws-sdk-go v1.55.6 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.36.3 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.10 // indirect
@@ -66,7 +66,7 @@ require (
 	github.com/natefinch/atomic v1.0.1 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/paulmach/orb v0.11.1 // indirect
-	github.com/peterstace/simplefeatures v0.53.0 // indirect
+	github.com/peterstace/simplefeatures v0.54.0 // indirect
 	github.com/sfomuseum/go-edtf v1.2.1 // indirect
 	github.com/sfomuseum/iso8601duration v1.1.0 // indirect
 	github.com/sfomuseum/runtimevar v1.3.0 // indirect
@@ -78,16 +78,13 @@ require (
 	github.com/whosonfirst/go-ioutil v1.0.2 // indirect
 	github.com/whosonfirst/go-reader v1.1.0 // indirect
 	github.com/whosonfirst/go-sanitize v0.1.0 // indirect
-	github.com/whosonfirst/go-whosonfirst-crawl v0.2.2 // indirect
-	github.com/whosonfirst/go-whosonfirst-feature v0.0.28 // indirect
+	github.com/whosonfirst/go-whosonfirst-feature v0.0.29 // indirect
 	github.com/whosonfirst/go-whosonfirst-flags v0.5.2 // indirect
-	github.com/whosonfirst/go-whosonfirst-iterate/v2 v2.5.0 // indirect
-	github.com/whosonfirst/go-whosonfirst-reader v1.0.2 // indirect
+	github.com/whosonfirst/go-whosonfirst-reader/v2 v2.0.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	github.com/whosonfirst/go-whosonfirst-spr/v2 v2.3.7 // indirect
 	github.com/whosonfirst/go-writer-featurecollection/v3 v3.0.2 // indirect
 	github.com/whosonfirst/go-writer/v3 v3.1.1 // indirect
-	github.com/whosonfirst/walk v0.0.2 // indirect
 	go.mongodb.org/mongo-driver v1.11.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	gocloud.dev v0.41.0 // indirect
