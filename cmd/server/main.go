@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	_ "github.com/whosonfirst/go-reader-cachereader"
+	_ "github.com/whosonfirst/go-reader-cachereader/v2"
 	"github.com/whosonfirst/go-whosonfirst-spatial-www/app/server"
 )
 

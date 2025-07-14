@@ -247,8 +247,10 @@ github.com/whosonfirst/go-ioutil v1.0.2 h1:+GJPfa42OFn5A+5yJSc5jQTQIkNV3/MhYyg4p
 github.com/whosonfirst/go-ioutil v1.0.2/go.mod h1:2dS1vWdAIkiHDvDF8fYyjv6k2NISmwaIjJJeEDBEdvg=
 github.com/whosonfirst/go-reader v1.1.0 h1:FK4m5FTSy9EUxIwAvNhGhLqDmfVOba4ExsF1B0HK7wU=
 github.com/whosonfirst/go-reader v1.1.0/go.mod h1:ek9GZaWThZ67ttojNJ6yVOCN3mijK0q9kKNHSA2kf8Q=
-github.com/whosonfirst/go-reader-cachereader v1.1.1 h1:BeAeS83SZYZxyQENWmDzKLwXzkjHlDWSVsOIgmAGLjo=
-github.com/whosonfirst/go-reader-cachereader v1.1.1/go.mod h1:TVbxziX9juCa13PT54FGYdafMQRjXmm6mWYqco1GaZk=
+github.com/whosonfirst/go-reader-cachereader/v2 v2.0.0 h1:0hRGxZWKWX8RoX3pyLpHJmoE8SOo4FEjmzP9/XDBiew=
+github.com/whosonfirst/go-reader-cachereader/v2 v2.0.0/go.mod h1:ECOAS7z5xLguTQlygLrtuGzvbLL6mj21T8SOWp0VZ04=
+github.com/whosonfirst/go-reader/v2 v2.0.0 h1:BP6aUQ1HAMCZcp27Lh5XDwzlPXV1quwBF1fajRg0ddo=
+github.com/whosonfirst/go-reader/v2 v2.0.0/go.mod h1:u1q/ZH2EeYDioLYx7544lyVl6WXbal4JRyvk2qpIYsk=
 github.com/whosonfirst/go-sanitize v0.1.0 h1:ygSqCnakwdzH/m8UEa15zXGDsoo5/JJeRkgmAjXZrBU=
 github.com/whosonfirst/go-sanitize v0.1.0/go.mod h1:p/emgbafMM0p5iVAz2XWwecYPl06Tw4Jos9rhTKIrt8=
 github.com/whosonfirst/go-whosonfirst-crawl v0.2.2 h1:7nwpNV/BFoPR0R7KMMy1iiYAer7wlHJBUOiL+NLzIFs=
