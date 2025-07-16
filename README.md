@@ -50,10 +50,3 @@ go build -mod vendor -o bin/server cmd/server/main.go
 ### server
 
 Documentation for the `server` tool has been moved in to [cmd/server/README.md](cmd/server/README.md).
-
-## See also
-
-* https://github.com/whosonfirst/go-whosonfirst-spatial
-* https://github.com/whosonfirst/go-whosonfirst-spatial-rtree
-* https://github.com/whosonfirst/go-whosonfirst-spatial-pip
-* https://github.com/aaronland/go-http-maps
