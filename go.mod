@@ -9,14 +9,14 @@ require (
 	github.com/aaronland/go-http-sanitize v0.0.8
 	github.com/aaronland/go-http-server/v2 v2.0.1
 	github.com/rs/cors v1.11.1
-	github.com/sfomuseum/go-flags v0.10.0
+	github.com/sfomuseum/go-flags v0.11.0
 	github.com/sfomuseum/go-http-auth v1.2.0
 	github.com/sfomuseum/go-timings v1.4.0
 	github.com/whosonfirst/go-reader-cachereader/v2 v2.0.0
 	github.com/whosonfirst/go-reader/v2 v2.0.0
-	github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.1.0
+	github.com/whosonfirst/go-whosonfirst-iterate/v3 v3.2.0
 	github.com/whosonfirst/go-whosonfirst-placetypes v0.8.0
-	github.com/whosonfirst/go-whosonfirst-spatial v0.18.0
+	github.com/whosonfirst/go-whosonfirst-spatial v0.18.1
 	github.com/whosonfirst/go-whosonfirst-spr-geojson/v2 v2.0.0
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
@@ -53,6 +53,7 @@ require (
 	github.com/aws/smithy-go v1.22.3 // indirect
 	github.com/dhconnelly/rtreego v1.2.0 // indirect
 	github.com/dominikbraun/graph v0.23.0 // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/g8rswimmer/error-chain v1.0.0 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
@@ -72,7 +73,7 @@ require (
 	github.com/sfomuseum/runtimevar v1.3.0 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/whosonfirst/go-cache v0.5.3 // indirect
 	github.com/whosonfirst/go-ioutil v1.0.2 // indirect
