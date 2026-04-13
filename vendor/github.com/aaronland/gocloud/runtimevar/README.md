@@ -4,7 +4,7 @@ Simple wrapper around the Go Cloud runtimevar package
 
 ## Documentation
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sfomuseum/runtimevar.svg)](https://pkg.go.dev/github.com/sfomuseum/runtimevar)
+[![Go Reference](https://pkg.go.dev/badge/github.com/aaronland/gocloud/runtimevar.svg)](https://pkg.go.dev/github.com/aaronland/gocloud)
 
 ## Example
 
@@ -16,7 +16,7 @@ import (
 	"flag"
 	"fmt"
 	
-	"github.com/sfomuseum/runtimevar"
+	"github.com/aaronland/gocloud/runtimevar"
 )
 
 func main() {
@@ -120,4 +120,3 @@ Credentials for AWS sessions are defined as string labels. They are:
 ## See also
 
 * https://gocloud.dev/howto/runtimevar
-* https://github.com/aaronland/go-aws
