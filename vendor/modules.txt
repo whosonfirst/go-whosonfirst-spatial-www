@@ -366,8 +366,8 @@ github.com/whosonfirst/go-writer-featurecollection/v3
 # github.com/whosonfirst/go-writer/v3 v3.1.1
 ## explicit; go 1.22.1
 github.com/whosonfirst/go-writer/v3
-# go.mongodb.org/mongo-driver v1.11.4
-## explicit; go 1.13
+# go.mongodb.org/mongo-driver v1.17.7
+## explicit; go 1.18
 go.mongodb.org/mongo-driver/bson
 go.mongodb.org/mongo-driver/bson/bsoncodec
 go.mongodb.org/mongo-driver/bson/bsonoptions
